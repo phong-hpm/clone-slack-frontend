@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { extraReducers as authExtraReducers } from "../actions/auth.action";
+import { extraReducers as loginExtraReducers } from "../actions/auth/login";
+import { extraReducers as verifyExtraReducers } from "../actions/auth/verify";
 
 export interface User {
   name: string;
@@ -10,6 +11,7 @@ export interface User {
 export interface AuthState {
   isAuth: boolean;
   isLoading: boolean;
+  isVerified: boolean;
   accessToken: string;
   refreshToken: string;
   user: User;
@@ -18,6 +20,7 @@ export interface AuthState {
 const initialState: AuthState = {
   isAuth: false,
   isLoading: false,
+  isVerified: false,
   accessToken: "",
   refreshToken: "",
   user: {
@@ -39,7 +42,8 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    authExtraReducers(builder);
+    loginExtraReducers(builder);
+    verifyExtraReducers(builder);
   },
 });
 

@@ -1,13 +1,10 @@
-import React, { useEffect, useRef } from "react";
-import axios from "axios";
-import { login, LoginPostData } from "../store/actions/auth.action";
+import React, { FC, useEffect, useRef } from "react";
+import { login, LoginPostData } from "../store/actions/auth/login";
 import { useDispatch, useSelector } from "../store/index";
 import * as authSelectors from "../store/selectors/auth.selector";
 import { useNavigate } from "react-router-dom";
 
-axios.defaults.withCredentials = true;
-
-const Login = () => {
+const Login: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -16,7 +13,6 @@ const Login = () => {
 
   const isAuth = useSelector(authSelectors.isAuth);
   const isLoading = useSelector(authSelectors.isLoading);
-  const accessToken = useSelector(authSelectors.getAccessToken);
 
   const handleLogin = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -31,7 +27,7 @@ const Login = () => {
 
   useEffect(() => {
     if (isLoading) return;
-    if (isAuth) navigate("/rooms");
+    if (isAuth) navigate(-1);
   }, [isLoading, isAuth, navigate]);
 
   return (

@@ -1,8 +1,8 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
 
-import axios, { setAxiosHeaderToken } from "../../utils/axios";
-import { AuthState } from "../slices/auth.slice";
+import axios from "../../../utils/axios";
+import { AuthState } from "../../slices/auth.slice";
 
 export interface LoginPostData {
   email: string;
@@ -25,7 +25,6 @@ export const login = createAsyncThunk<
 >("auth/login", async (postData, thunkAPI) => {
   try {
     const response = await axios.post("auth/login", { postData });
-    setAxiosHeaderToken(response.data.accessToken);
     return response;
   } catch (error: any) {
     const response = error.response as AxiosResponse<string>;

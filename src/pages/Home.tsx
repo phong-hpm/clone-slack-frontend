@@ -1,6 +1,7 @@
+import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Home = () => {
+const Home: FC = () => {
   const navigate = useNavigate();
 
   return (
