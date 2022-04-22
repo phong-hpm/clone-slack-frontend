@@ -5,7 +5,7 @@ import "./App.scss";
 
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import Rooms from "./pages/Rooms";
+import Team from "./pages/Main/Teams";
 
 import RouteAuth from "./components/RouteAuth";
 
@@ -18,10 +18,10 @@ const MainRoute: FC = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
-          path="/rooms"
+          path="/:teamId/*"
           element={
             <RouteAuth>
-              <Rooms />
+              <Team />
             </RouteAuth>
           }
         />

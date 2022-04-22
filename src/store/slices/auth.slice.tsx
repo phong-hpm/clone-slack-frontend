@@ -1,31 +1,25 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { extraReducers as loginExtraReducers } from "../actions/auth/login";
-import { extraReducers as verifyExtraReducers } from "../actions/auth/verify";
-
-export interface User {
-  name: string;
-  email: string;
-}
+import { authExtraReducers as loginExtraReducers } from "../actions/auth/login";
+import { authExtraReducers as verifyExtraReducers } from "../actions/auth/verify";
+import { UserType } from "./users.slice";
 
 export interface AuthState {
   isAuth: boolean;
   isLoading: boolean;
   isVerified: boolean;
-  accessToken: string;
-  refreshToken: string;
-  user: User;
+  user: UserType;
 }
 
 const initialState: AuthState = {
-  isAuth: false,
   isLoading: false,
+  isAuth: false,
   isVerified: false,
-  accessToken: "",
-  refreshToken: "",
   user: {
+    id: "",
     email: "",
     name: "",
+    timeZone: "",
   },
 };
 
@@ -33,12 +27,8 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuth: (state, action: PayloadAction<AuthState>) => {
-      const { user, isAuth, accessToken, refreshToken } = action.payload;
-      state.isAuth = isAuth;
-      state.accessToken = accessToken;
-      state.refreshToken = refreshToken;
-      state.user = user;
+    setUser: (state, action: PayloadAction<UserType>) => {
+      state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -47,7 +37,6 @@ export const authSlice = createSlice({
   },
 });
 
-// Action creators are generated for each case reducer function
-export const { setAuth } = authSlice.actions;
+export const { setUser } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -5,15 +5,28 @@ import {
   useSelector as useReduxSelector,
 } from "react-redux";
 
+// middleware
+import logger from "redux-logger";
+import thunk from "redux-thunk";
+
 // reducer
 import authReducer from "./slices/auth.slice";
+import teamsReducer from "./slices/teams.slice";
+import chanelsReducer from "./slices/chanels.slice";
+import messagesReducer from "./slices/messages.slice";
+import usersReducer from "./slices/users.slice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    teams: teamsReducer,
+    chanels: chanelsReducer,
+    messages: messagesReducer,
+    users: usersReducer,
   },
+  // middleware: [thunk, logger],
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware({ serializableCheck: false });
+    return getDefaultMiddleware({ serializableCheck: false }).concat([thunk, logger]);
   },
 });
 
