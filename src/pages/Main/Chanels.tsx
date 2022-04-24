@@ -1,31 +1,35 @@
-import { FC } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { FC, useRef } from "react";
+import classNames from "classnames";
 
+// redux store
 import { useSelector } from "../../store";
 
+// redux selector
 import * as chanelsSelectors from "../../store/selectors/chanels.selector";
-import * as usersSelectors from "../../store/selectors/users.selector";
 
+// components
 import Messages from "./Messages";
 
-const Chanel: FC = () => {
-  const { teamId } = useParams();
-  const navigate = useNavigate();
+export interface ChanelProps {
+  onAddChanel: (chanelName: string) => void;
+  onSelectChanel: (chanelId: string) => void;
+}
 
+const Chanel: FC<ChanelProps> = ({ onAddChanel, onSelectChanel }) => {
   const chanelList = useSelector(chanelsSelectors.getChanelList);
   const directMessagesList = useSelector(chanelsSelectors.getDirectMessagesList);
-  const userList = useSelector(usersSelectors.getUserList);
+  const selectedChanelId = useSelector(chanelsSelectors.getSelectedChanelId);
 
-  const handleChangeChanel = (id: string) => {
-    navigate(`/${teamId}/${id}`);
-  };
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const addChanel = () => {
-    console.log("add");
+  const handleAddChanel = () => {
+    if (!inputRef.current || !inputRef.current.value) return;
+    onAddChanel(inputRef.current.value);
+    inputRef.current.value = "";
   };
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className="chanels">
       <div
         style={{
           background: "#19171D",
@@ -36,28 +40,37 @@ const Chanel: FC = () => {
       >
         <div>
           <h3>Chanels</h3>
-          {chanelList.map((chanel) => {
-            return (
-              <div key={chanel.id}>
-                <div onClick={() => handleChangeChanel(chanel.id)}># {chanel.name}</div>
-              </div>
-            );
-          })}
-          <input name="chanel name" />
-          <button onClick={addChanel}>+</button>
+          <div className="chanel-list">
+            {chanelList.map((chanel) => {
+              const isActive = chanel.id === selectedChanelId;
+              return (
+                <div key={chanel.id} className={classNames("chanel-item", isActive && "active")}>
+                  <div onClick={() => !isActive && onSelectChanel(chanel.id)}># {chanel.name}</div>
+                </div>
+              );
+            })}
+          </div>
+          <input ref={inputRef} name="chanel name" />
+          <button onClick={handleAddChanel}>+</button>
         </div>
 
         <div>
           <h3>Direct messages</h3>
-          {directMessagesList.map((directMessage) => {
-            return (
-              <div key={directMessage.id}>
-                <div onClick={() => handleChangeChanel(directMessage.id)}>
-                  # {directMessage.name}
+          <div className="chanel-list">
+            {directMessagesList.map((directMessage) => {
+              const isActive = directMessage.id === selectedChanelId;
+              return (
+                <div
+                  key={directMessage.id}
+                  className={classNames("chanel-item", isActive && "active")}
+                >
+                  <div onClick={() => !isActive && onSelectChanel(directMessage.id)}>
+                    # {directMessage.name}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
       <div style={{ flex: "1 0 auto", color: "#d1d2d3" }}>

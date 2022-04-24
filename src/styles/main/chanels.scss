@@ -1,0 +1,9 @@
+.chanels {
+  display: flex;
+  min-height: 100vh;
+
+  .active {
+    background-color: #1164a3;
+    color: #fff;
+  }
+}

@@ -1,9 +1,7 @@
-import { FC, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import useAuthenication from "../hooks/useAuthenication";
+import { FC } from "react";
 
-import { useSelector } from "../store";
-import * as authSelectors from "../store/selectors/auth.selector";
+// hooks
+import useAuthenication from "../hooks/useAuthenication";
 
 export interface RouteAuthProps {
   children: JSX.Element;
@@ -11,15 +9,6 @@ export interface RouteAuthProps {
 
 const RouteAuth: FC<RouteAuthProps> = ({ children }) => {
   useAuthenication();
-  const navigate = useNavigate();
-
-  const isAuth = useSelector(authSelectors.isAuth);
-  const isVerified = useSelector(authSelectors.isVerified);
-  const isLoading = useSelector(authSelectors.isLoading);
-
-  useEffect(() => {
-    if (isVerified && !isAuth && !isLoading) navigate("/login");
-  }, [isAuth, isVerified, isLoading, navigate]);
 
   return children;
 };

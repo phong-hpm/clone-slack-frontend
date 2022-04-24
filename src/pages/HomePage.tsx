@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Home: FC = () => {
+const HomePage: FC = () => {
   const navigate = useNavigate();
 
   return (
@@ -11,4 +11,4 @@ const Home: FC = () => {
   );
 };
 
-export default Home;
+export default HomePage;

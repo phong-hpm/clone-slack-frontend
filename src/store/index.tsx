@@ -15,6 +15,7 @@ import teamsReducer from "./slices/teams.slice";
 import chanelsReducer from "./slices/chanels.slice";
 import messagesReducer from "./slices/messages.slice";
 import usersReducer from "./slices/users.slice";
+import { setupAxios } from "../utils/axios";
 
 export const store = configureStore({
   reducer: {
@@ -24,11 +25,12 @@ export const store = configureStore({
     messages: messagesReducer,
     users: usersReducer,
   },
-  // middleware: [thunk, logger],
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({ serializableCheck: false }).concat([thunk, logger]);
   },
 });
+
+setupAxios(store);
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;

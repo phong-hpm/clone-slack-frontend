@@ -1,4 +1,4 @@
-import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface ChanelType {
   id: string;
@@ -15,31 +15,36 @@ export interface ChanelsState {
   isLoading: boolean;
   list: ChanelType[];
   directMessages: ChanelType[];
-  selected: string;
+  selectedId: string;
 }
 
 const initialState: ChanelsState = {
   isLoading: false,
   list: [],
   directMessages: [],
-  selected: "",
+  selectedId: "",
 };
-
-export const setSelectedChanel = createAction<string>("teams/setSelectedChanel");
 
 export const chanelsSlice = createSlice({
   name: "chanels",
   initialState,
   reducers: {
-    setChanelList: (state, action: PayloadAction<ChanelType[]>) => {
+    setChanelsList: (state, action: PayloadAction<ChanelType[]>) => {
       state.list = action.payload;
+    },
+    addChanelList: (state, action: PayloadAction<ChanelType>) => {
+      state.list.push(action.payload);
     },
     setDirectMessagesList: (state, action: PayloadAction<ChanelType[]>) => {
       state.directMessages = action.payload;
     },
+    setSelectedChanelId: (state, action: PayloadAction<string>) => {
+      state.selectedId = action.payload;
+    },
   },
 });
 
-export const { setChanelList, setDirectMessagesList } = chanelsSlice.actions;
+export const { setSelectedChanelId, setChanelsList, addChanelList, setDirectMessagesList } =
+  chanelsSlice.actions;
 
 export default chanelsSlice.reducer;

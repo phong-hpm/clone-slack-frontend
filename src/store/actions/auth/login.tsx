@@ -1,26 +1,24 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
 
-import axios from "../../../utils/axios";
-
+// redux slices
 import { AuthState } from "../../slices/auth.slice";
-import { ChanelType } from "../../slices/chanels.slice";
 import { TeamType, TeamsState } from "../../slices/teams.slice";
 import { UserType } from "../../slices/users.slice";
+
+// utils
+import axios from "../../../utils/axios";
 
 export interface LoginPostData {
   email: string;
   password: string;
 }
 
-export interface TeamResponseData extends TeamType {
-  chanels: ChanelType[];
-  users: UserType[];
-}
-
 export interface LoginResponseData {
+  accessToken: string;
+  refreshToken: string;
   user: UserType;
-  teams: TeamResponseData[];
+  teams: TeamType[];
 }
 
 export const login = createAsyncThunk<
@@ -41,25 +39,23 @@ export const login = createAsyncThunk<
 export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
   builder
     .addCase(login.pending, (state) => {
-      state.isAuth = false;
-      state.user = {
-        id: "",
-        email: "",
-        name: "",
-        timeZone: "",
-      };
-
       state.isLoading = true;
     })
     .addCase(login.fulfilled, (state, action) => {
-      const { data } = action.payload;
+      const { user, accessToken, refreshToken } = action.payload.data;
 
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
+      state.user = user;
       state.isAuth = true;
-      state.user = data.user;
-
       state.isLoading = false;
     })
     .addCase(login.rejected, (state) => {
+      state.user = { id: "", email: "", name: "", timeZone: "" };
+      state.isAuth = false;
       state.isLoading = false;
     });
 };
@@ -67,19 +63,18 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) =
 export const teamsExtraReducers = (builder: ActionReducerMapBuilder<TeamsState>) => {
   builder
     .addCase(login.pending, (state) => {
-      state.list = [];
-
       state.isLoading = true;
     })
     .addCase(login.fulfilled, (state, action) => {
-      const { data } = action.payload;
+      const { teams } = action.payload.data;
 
-      state.list = data.teams;
-      state.selected = data.teams[0].id || "";
-
+      state.list = teams;
+      // state.selectedId = teams[0].id || "";
       state.isLoading = false;
     })
     .addCase(login.rejected, (state) => {
+      state.list = [];
+      state.selectedId = "";
       state.isLoading = false;
     });
 };

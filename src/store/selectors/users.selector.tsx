@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 
+// redux store
 import { RootState } from "..";
 
 export const getUsers = (state: RootState) => state.users;

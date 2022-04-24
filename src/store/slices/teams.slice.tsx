@@ -1,24 +1,28 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+// redux actions
 import { teamsExtraReducers as loginExtraReducers } from "../actions/auth/login";
 import { teamsExtraReducers as verifyExtraReducers } from "../actions/auth/verify";
+import { teamsExtraReducers as getUserInformationExtraReducers } from "../actions/auth/getUserInformation";
 
 export interface TeamType {
   id: string;
   name: string;
   created: number;
+  chanels: string[];
+  users: string[];
 }
 
 export interface TeamsState {
   isLoading: boolean;
   list: TeamType[];
-  selected: string;
+  selectedId: string;
 }
 
 const initialState: TeamsState = {
   isLoading: false,
   list: [],
-  selected: "",
+  selectedId: "",
 };
 
 export const teamsSlice = createSlice({
@@ -28,16 +32,17 @@ export const teamsSlice = createSlice({
     setTeamsList: (state, action: PayloadAction<TeamType[]>) => {
       state.list = action.payload;
     },
-    setSelectedTeam: (state, action: PayloadAction<string>) => {
-      state.selected = action.payload;
+    setSelectedTeamId: (state, action: PayloadAction<string>) => {
+      state.selectedId = action.payload;
     },
   },
   extraReducers: (builder) => {
     loginExtraReducers(builder);
     verifyExtraReducers(builder);
+    getUserInformationExtraReducers(builder);
   },
 });
 
-export const { setTeamsList, setSelectedTeam } = teamsSlice.actions;
+export const { setTeamsList, setSelectedTeamId } = teamsSlice.actions;
 
 export default teamsSlice.reducer;

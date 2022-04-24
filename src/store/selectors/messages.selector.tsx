@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 
+// redux store
 import { RootState } from "..";
 
 export const getMessages = (state: RootState) => state.messages;

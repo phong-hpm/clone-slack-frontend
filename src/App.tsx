@@ -1,27 +1,39 @@
+import { FC } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import "./App.scss";
 
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-import Team from "./pages/Main/Teams";
+import Login from "./pages/LoginPage";
+import Home from "./pages/HomePage";
+import ChatPage, { ValidateTeamPath } from "./pages/Main";
+import TeamPage from "./pages/TeamPage";
 
 import RouteAuth from "./components/RouteAuth";
 
 import { store } from "./store";
-import { FC } from "react";
+import { RouterPath } from "./utils/constants";
 
 const MainRoute: FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path={RouterPath.LOGIN_PAGE} element={<Login />} />
+        <Route
+          path={RouterPath.TEAM_PAGE}
+          element={
+            <RouteAuth>
+              <TeamPage />
+            </RouteAuth>
+          }
+        />
         <Route
           path="/:teamId/*"
           element={
             <RouteAuth>
-              <Team />
+              <ValidateTeamPath>
+                <ChatPage />
+              </ValidateTeamPath>
             </RouteAuth>
           }
         />

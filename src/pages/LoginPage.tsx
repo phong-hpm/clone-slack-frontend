@@ -1,10 +1,16 @@
 import React, { FC, useEffect, useRef } from "react";
-import { login, LoginPostData } from "../store/actions/auth/login";
-import { useDispatch, useSelector } from "../store/index";
-import * as authSelectors from "../store/selectors/auth.selector";
 import { useNavigate } from "react-router-dom";
 
-const Login: FC = () => {
+// redux store
+import { useDispatch, useSelector } from "../store";
+
+// redux actions
+import { login, LoginPostData } from "../store/actions/auth/login";
+
+// redux selectors
+import * as authSelectors from "../store/selectors/auth.selector";
+
+const LoginPage: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -27,7 +33,7 @@ const Login: FC = () => {
 
   useEffect(() => {
     if (isLoading) return;
-    if (isAuth) navigate(-1);
+    if (isAuth) navigate("/teams");
   }, [isLoading, isAuth, navigate]);
 
   return (
@@ -54,4 +60,4 @@ const Login: FC = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

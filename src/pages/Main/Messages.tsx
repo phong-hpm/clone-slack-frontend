@@ -1,61 +1,87 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useCallback, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import io, { Socket } from "socket.io-client";
 
+// redux store
 import { useSelector } from "../../store";
 
+// redux selectors
+import * as chanelsSelector from "../../store/selectors/chanels.selector";
 import * as authSelectors from "../../store/selectors/auth.selector";
 import * as messagesSelectors from "../../store/selectors/messages.selector";
 import * as usersSelectors from "../../store/selectors/users.selector";
 
-import { addMessageList, setMessagesList } from "../../store/slices/messages.slice";
+// redux slices
+import { addMessageList, MessageType, setMessagesList } from "../../store/slices/messages.slice";
+
+// utils
+import { SocketEvent, SocketEventDefault } from "../../utils/constants";
+
+// hooks
+import useSocket from "../../hooks/useSocket";
 
 const Messages: FC = () => {
   const dispatch = useDispatch();
-  const { teamId, chanelId } = useParams();
+  const { teamId } = useParams();
 
+  const selectedChanelId = useSelector(chanelsSelector.getSelectedChanelId);
   const user = useSelector(authSelectors.getUser);
   const messageList = useSelector(messagesSelectors.getMessageList);
   const userList = useSelector(usersSelectors.getUserList);
 
-  const socketRef = useRef<Socket>();
+  const { socket, updateNamespace } = useSocket();
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSendMessage = () => {
-    socketRef.current?.emit("add-message", {
+    socket?.emit(SocketEvent.EMIT_ADD_MESSAGE, {
       userId: user.id,
-      data: {
-        text: textareaRef.current?.value,
-      },
+      data: { text: textareaRef.current?.value },
     });
+
+    // clear textarea value after message added
     textareaRef.current!.value = "";
   };
 
+  const addNewMessage = useCallback(
+    (message: MessageType) => dispatch(addMessageList(message)),
+    [dispatch]
+  );
+
+  const updateMessageList = useCallback(
+    (messages: MessageType[]) => dispatch(setMessagesList(messages)),
+    [dispatch]
+  );
+
+  // update namespace when selectedChanel was updated
   useEffect(() => {
-    const socket = io(`ws://localhost:8000/${teamId}/${chanelId}`, { autoConnect: false });
-    socketRef.current = socket;
-    socket.auth = { email: user.email, name: user.name };
+    if (!selectedChanelId) return;
+    updateNamespace(`/${teamId}/${selectedChanelId}`);
+  }, [teamId, selectedChanelId, updateNamespace]);
 
-    socket.on("connect", () => {
-      socket.emit("load-messages", {});
-    });
+  useEffect(() => {
+    if (!socket) return;
 
-    socket.on("messages-data", (data) => {
-      console.log("connected message", data);
-      dispatch(setMessagesList(data));
-    });
+    console.log("socket", socket);
 
-    socket.on("message-data", (data) => {
-      dispatch(addMessageList(data));
-    });
+    socket
+      .on(SocketEventDefault.CONNECT, () => {
+        console.log("connected");
+        socket.emit(SocketEvent.EMIT_LOAD_MESSAGES, {});
+      })
+      .on(SocketEventDefault.DISCONNECT, () => {
+        console.log("disconnected");
+      });
 
-    if (teamId && chanelId && user.id) socket.connect();
+    socket
+      .on(SocketEvent.ON_MESSAGES, updateMessageList)
+      .on(SocketEvent.ON_NEW_MESSAGE, addNewMessage);
 
+    socket.connect();
     return () => {
-      socketRef.current?.disconnect();
+      socket?.disconnect();
     };
-  }, [teamId, chanelId, user, dispatch]);
+  }, [socket, updateMessageList, addNewMessage, dispatch]);
 
   const renderMessages = () => {
     if (!userList.length || !messageList.length) return null;
