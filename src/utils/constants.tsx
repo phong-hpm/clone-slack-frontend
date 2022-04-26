@@ -27,6 +27,10 @@ export const teamIdRegExp = new RegExp(
   /^T-[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$/
 );
 
+export const chanelIdRegExp = new RegExp(
+  /^(C|D)-[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$/
+);
+
 export enum RouterPath {
   HOME_PAGE = "/",
   LOGIN_PAGE = "/login",

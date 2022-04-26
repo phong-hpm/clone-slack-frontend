@@ -26,7 +26,7 @@ export const store = configureStore({
     users: usersReducer,
   },
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware({ serializableCheck: false }).concat([thunk, logger]);
+    return getDefaultMiddleware({ serializableCheck: false }).concat([thunk]);
   },
 });
 

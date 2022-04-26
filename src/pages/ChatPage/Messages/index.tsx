@@ -1,24 +1,27 @@
-import { FC, useCallback, useEffect, useRef } from "react";
+import { FC, useCallback, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
 // redux store
-import { useSelector } from "../../store";
+import { useSelector } from "../../../store";
 
 // redux selectors
-import * as chanelsSelector from "../../store/selectors/chanels.selector";
-import * as authSelectors from "../../store/selectors/auth.selector";
-import * as messagesSelectors from "../../store/selectors/messages.selector";
-import * as usersSelectors from "../../store/selectors/users.selector";
+import * as chanelsSelector from "../../../store/selectors/chanels.selector";
+import * as authSelectors from "../../../store/selectors/auth.selector";
+import * as messagesSelectors from "../../../store/selectors/messages.selector";
+import * as usersSelectors from "../../../store/selectors/users.selector";
 
 // redux slices
-import { addMessageList, MessageType, setMessagesList } from "../../store/slices/messages.slice";
+import { addMessageList, MessageType, setMessagesList } from "../../../store/slices/messages.slice";
 
 // utils
-import { SocketEvent, SocketEventDefault } from "../../utils/constants";
+import { SocketEvent, SocketEventDefault } from "../../../utils/constants";
 
 // hooks
-import useSocket from "../../hooks/useSocket";
+import useSocket from "../../../hooks/useSocket";
+
+// components
+import MessageTextArea from "./MessageTextArea";
 
 const Messages: FC = () => {
   const dispatch = useDispatch();
@@ -31,16 +34,8 @@ const Messages: FC = () => {
 
   const { socket, updateNamespace } = useSocket();
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleSendMessage = () => {
-    socket?.emit(SocketEvent.EMIT_ADD_MESSAGE, {
-      userId: user.id,
-      data: { text: textareaRef.current?.value },
-    });
-
-    // clear textarea value after message added
-    textareaRef.current!.value = "";
+  const handleSendMessage = (text: string) => {
+    socket?.emit(SocketEvent.EMIT_ADD_MESSAGE, { userId: user.id, data: { text } });
   };
 
   const addNewMessage = useCallback(
@@ -62,11 +57,8 @@ const Messages: FC = () => {
   useEffect(() => {
     if (!socket) return;
 
-    console.log("socket", socket);
-
     socket
       .on(SocketEventDefault.CONNECT, () => {
-        console.log("connected");
         socket.emit(SocketEvent.EMIT_LOAD_MESSAGES, {});
       })
       .on(SocketEventDefault.DISCONNECT, () => {
@@ -84,33 +76,23 @@ const Messages: FC = () => {
   }, [socket, updateMessageList, addNewMessage, dispatch]);
 
   const renderMessages = () => {
-    if (!userList.length || !messageList.length) return null;
+    if (!userList.length || !messageList.length) return <></>;
 
-    return messageList.map((mes) => {
-      const userOwner = userList.find((user) => mes.user === user.id);
+    return messageList.map((message) => {
+      const userOwner = userList.find((user) => message.user === user.id);
       return (
-        <div key={mes.id} style={{ padding: "5px" }}>
-          <div style={{ fontWeight: "bold" }}>{userOwner!.name}</div>
-          <div>{mes.text}</div>
+        <div key={message.id} className="message-item">
+          <div className="message-user">{userOwner!.name}</div>
+          <div className="message-text">{message.text}</div>
         </div>
       );
     });
   };
 
   return (
-    <div
-      style={{
-        background: "#1A1D21",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div style={{ flex: "1 0 auto" }}>{renderMessages()}</div>
-      <div style={{ flex: "0 0 auto" }}>
-        <textarea ref={textareaRef} />
-        <button onClick={handleSendMessage}>send</button>
-      </div>
+    <div className="messages">
+      <div className="messages-list">{renderMessages()}</div>
+      <MessageTextArea onSend={handleSendMessage} />
     </div>
   );
 };

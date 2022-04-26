@@ -2,24 +2,15 @@ import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
 // redux store
-import { useDispatch, useSelector } from "../store";
+import { useSelector } from "../store";
 
 // redux selectors
 import * as teamsSelectors from "../store/selectors/teams.selector";
 
-// redux slices
-import { setSelectedTeamId } from "../store/slices/teams.slice";
-
 const TeamPage: FC = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const teamList = useSelector(teamsSelectors.getTeamList);
-
-  const handleSelectTeam = (id: string) => {
-    dispatch(setSelectedTeamId(id));
-    navigate(`/${id}`);
-  };
 
   return (
     <div>
@@ -27,7 +18,7 @@ const TeamPage: FC = () => {
       {teamList.map((team) => {
         return (
           <div key={team.id}>
-            <div onClick={() => handleSelectTeam(team.id)}>{team.name}</div>
+            <div onClick={() => navigate(`/${team.id}`)}>{team.name}</div>
           </div>
         );
       })}

@@ -1,0 +1,8 @@
+.chat-page {
+  display: flex;
+  align-items: stretch;
+  min-height: 100vh;
+}
+
+@import "./chanels.scss";
+@import "./messages/index.scss";

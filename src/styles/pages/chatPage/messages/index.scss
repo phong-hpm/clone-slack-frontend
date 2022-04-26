@@ -1,0 +1,27 @@
+.messages {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  background: #1a1d21;
+  max-height: 100vh;
+
+  .messages-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+
+  .message-item {
+    padding: 8px 20px;
+  }
+
+  .message-user {
+    font-weight: bold;
+    color: #ffffff;
+  }
+
+  .message-text {
+    color: #ababad;
+  }
+}
+
+@import "./messageTextarea.scss";

@@ -54,6 +54,9 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) =
       state.isLoading = false;
     })
     .addCase(login.rejected, (state) => {
+      localStorage.setItem("accessToken", "");
+      localStorage.setItem("refreshToken", "");
+
       state.user = { id: "", email: "", name: "", timeZone: "" };
       state.isAuth = false;
       state.isLoading = false;

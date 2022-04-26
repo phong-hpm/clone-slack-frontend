@@ -2,19 +2,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
 // redux store
-import { useSelector } from "../store";
+import { useDispatch, useSelector } from "../store";
+import { renewAccessToken } from "../store/actions/auth/renewToken";
 
 // redux selector
 import * as authSelectors from "../store/selectors/auth.selector";
+import { setIsAuth } from "../store/slices/auth.slice";
 
 // utils
 import { SocketEvent, SocketEventDefault } from "../utils/constants";
 
-export interface UseSocketProps {
-  namespace?: string;
-}
-
 const useSocket = () => {
+  const dispatch = useDispatch();
+
   const isAuth = useSelector(authSelectors.isAuth);
   const user = useSelector(authSelectors.getUser);
   const accessToken = useSelector(authSelectors.getAccessToken);
@@ -36,8 +36,6 @@ const useSocket = () => {
   useEffect(() => {
     if (!isAuth || !namespace) return;
 
-    console.log("namespace", `-${namespace}-`, `ws://localhost:8000/${namespace}`);
-
     // setup socket
     socketRef.current = io(`ws://localhost:8000/${namespace}`, {
       autoConnect: false,
@@ -46,21 +44,22 @@ const useSocket = () => {
 
     // authenticated listener
     socketRef.current.on(SocketEvent.ON_AUTHENTICATED, ({ authenticated }) => {
-      console.log("authenticated", authenticated);
+      dispatch(setIsAuth(authenticated));
     });
 
     // authentication failed listener
     socketRef.current.on(SocketEvent.ON_ATOKEN_EXPIRED, () => {
-      console.log("token is expired");
+      dispatch(setIsAuth(false));
+      dispatch(renewAccessToken());
     });
 
     // connection's errors listener
     socketRef.current.on(SocketEventDefault.CONNECT_ERROR, (error) => {
-      console.log(error.name, error.message);
+      // console.log(error.name, error.message);
     });
 
     setSocket(socketRef.current);
-  }, [isAuth, namespace, accessToken, user]);
+  }, [isAuth, namespace, accessToken, user, dispatch]);
 
   // disconnect socket when component us unmounting
   useEffect(() => {

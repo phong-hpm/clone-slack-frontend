@@ -52,10 +52,7 @@ export const teamsExtraReducers = (builder: ActionReducerMapBuilder<TeamsState>)
     .addCase(verify.fulfilled, (state, action) => {
       const { data } = action.payload;
 
-      if (data.verified) {
-        state.list = [...data.teams].sort((a, b) => a.created - b.created);
-        // state.selectedId = state.list[0].id || "";
-      }
+      if (data.verified) state.list = [...data.teams].sort((a, b) => a.created - b.created);
       state.isLoading = false;
     })
     .addCase(verify.rejected, (state) => {

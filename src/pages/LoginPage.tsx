@@ -10,6 +10,9 @@ import { login, LoginPostData } from "../store/actions/auth/login";
 // redux selectors
 import * as authSelectors from "../store/selectors/auth.selector";
 
+// utils
+import { RouterPath } from "../utils/constants";
+
 const LoginPage: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,7 +36,7 @@ const LoginPage: FC = () => {
 
   useEffect(() => {
     if (isLoading) return;
-    if (isAuth) navigate("/teams");
+    if (isAuth) navigate(RouterPath.TEAM_PAGE);
   }, [isLoading, isAuth, navigate]);
 
   return (
