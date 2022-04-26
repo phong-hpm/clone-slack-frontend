@@ -4,10 +4,18 @@ const components: Theme["components"] = {
   MuiSvgIcon: {
     styleOverrides: {
       root: {
-        // fontSize: "20px",
+        fontSize: "inherit",
         color: "inherit",
       },
     },
+    variants: [
+      {
+        props: { fontSize: "medium" },
+        style: {
+          fontSize: "18px",
+        },
+      },
+    ],
   },
 };
 

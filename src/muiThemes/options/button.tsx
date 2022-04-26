@@ -5,8 +5,8 @@ const components: Theme["components"] = {
     styleOverrides: {
       root: {
         fontSize: "inherit",
-        fontWeight: 800,
-        textTransform: "capitalize",
+        fontWeight: 900,
+        textTransform: "initial",
       },
     },
     variants: [
@@ -24,6 +24,24 @@ const components: Theme["components"] = {
             backgroundColor: "#35373b",
             color: "rgba(209, 210, 211, 0.75)",
           },
+        },
+      },
+      {
+        props: { variant: "outlined", color: "primary" },
+        style: {
+          color: "#d1d2d3",
+          backgroundColor: "transparent",
+          borderColor: "transparent",
+
+          "&:hover": {
+            backgroundColor: "rgba(232, 232, 232, 0.04)",
+            borderColor: "transparent",
+          },
+
+          // "&:disabled": {
+          //   backgroundColor: "#35373b",
+          //   color: "rgba(209, 210, 211, 0.75)",
+          // },
         },
       },
     ],

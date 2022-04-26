@@ -8,9 +8,7 @@ export interface ModalHeaderProps {
 const ModalHeader: FC<ModalHeaderProps> = ({ children }) => {
   return (
     <Box py={2.5} pl={3.5} pr={9}>
-      <Typography variant="h2">
-        <strong>{children}</strong>
-      </Typography>
+      <Typography variant="h2">{children}</Typography>
     </Box>
   );
 };

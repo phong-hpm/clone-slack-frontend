@@ -14,6 +14,7 @@ import MuiAutocomplete from "./options/autocomplete";
 import MuiPopper from "./options/popper";
 import MuiSwitch from "./options/switch";
 import MuiInputAdornment from "./options/inputAdornment";
+import MuiAvatar from "./options/avatar";
 
 const mainOptions: ThemeOptions = {
   palette: {
@@ -23,16 +24,19 @@ const mainOptions: ThemeOptions = {
     },
   },
   typography: {
-    fontSize: 14,
+    // fontSize: 14,
+    // htmlFontSize: (16 / 15) * 16,
+
     fontFamily: "Lato, sans-serif",
-    htmlFontSize: (16 / 15) * 16,
+
+    allVariants: { fontSize: "15px", lineHeight: "22px" },
     h1: { fontSize: "32px" },
-    h2: { fontSize: "28px" },
-    h3: { fontSize: "24px" },
-    h4: { fontSize: "18px" },
-    h5: { fontSize: "14px" },
-    h6: { fontSize: "13px" },
-  } as any,
+    h2: { fontSize: "28px", lineHeight: "34px", fontWeight: 900 },
+    h3: { fontSize: "22px", lineHeight: "30px", fontWeight: 900 },
+    h4: { fontSize: "18px", lineHeight: "24px", fontWeight: 900 },
+    h5: { fontSize: "13px", lineHeight: "18px", fontWeight: 400 },
+    h6: { fontSize: "12px", lineHeight: "17px", fontWeight: 400 },
+  },
   components: {
     MuiButton,
     MuiIconButton,
@@ -46,6 +50,7 @@ const mainOptions: ThemeOptions = {
     MuiInputAdornment,
     MuiPopper,
     MuiSwitch,
+    MuiAvatar,
   },
 };
 

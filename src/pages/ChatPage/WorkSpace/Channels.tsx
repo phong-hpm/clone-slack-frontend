@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 // redux store
@@ -7,11 +7,20 @@ import { useDispatch, useSelector } from "../../../store";
 // redux selector
 import * as channelsSelectors from "../../../store/selectors/channels.selector";
 
-// components
-import { Box } from "@mui/material";
+// redux slices
 import { setSelectedChannelId } from "../../../store/slices/channels.slice";
+
+// components
+import { Box, List, ListItemButton, ListItemIcon, Typography } from "@mui/material";
 import CreateChannelModal from "./CreateChannelModal";
 import ChannelList from "./ChannelList";
+
+// icons
+import {
+  AlternateEmail as AlternateEmailIcon,
+  LocationCity as LocationCityIcon,
+  MoreVert as MoreVertIcon,
+} from "@mui/icons-material";
 
 export interface ChannelProps {
   onAddChannel: (channelName: string, desc: string) => void;
@@ -24,19 +33,9 @@ const ChannelContent: FC<ChannelProps> = ({ onAddChannel }) => {
 
   const channelList = useSelector(channelsSelectors.getChannelList);
   const directMessagesList = useSelector(channelsSelectors.getDirectMessagesList);
-  const selectedChannelId = useSelector(channelsSelectors.getSelectedChannelId);
+  const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   const [openModal, setOpenModal] = useState(false);
-
-  const selectedChannel = useMemo(
-    () => channelList.find((channel) => channel.id === selectedChannelId),
-    [selectedChannelId, channelList]
-  );
-
-  const selectedDirectMessage = useMemo(
-    () => directMessagesList.find((channel) => channel.id === selectedChannelId),
-    [selectedChannelId, directMessagesList]
-  );
 
   const handleAddChannel = (channelName: string, desc: string) => {
     onAddChannel(channelName, desc);
@@ -49,7 +48,30 @@ const ChannelContent: FC<ChannelProps> = ({ onAddChannel }) => {
   };
 
   return (
-    <Box>
+    <Box mt={1.5}>
+      <List component="div" disablePadding>
+        <ListItemButton sx={{ p: 0, pl: 1.25 }} onClick={() => {}}>
+          <ListItemIcon sx={{ minWidth: 28 }}>
+            <AlternateEmailIcon fontSize="small" />
+          </ListItemIcon>
+          <Typography sx={{ lineHeight: "28px" }}>Mentions & reactions</Typography>
+        </ListItemButton>
+
+        <ListItemButton sx={{ p: 0, pl: 1.25 }} onClick={() => {}}>
+          <ListItemIcon sx={{ minWidth: 28 }}>
+            <LocationCityIcon fontSize="small" />
+          </ListItemIcon>
+          <Typography sx={{ lineHeight: "28px" }}>Slack Connect</Typography>
+        </ListItemButton>
+
+        <ListItemButton sx={{ p: 0, pl: 1.25 }} onClick={() => {}}>
+          <ListItemIcon sx={{ minWidth: 28 }}>
+            <MoreVertIcon />
+          </ListItemIcon>
+          <Typography sx={{ lineHeight: "28px" }}>More</Typography>
+        </ListItemButton>
+      </List>
+
       <ChannelList
         label="Channels"
         channels={channelList}
@@ -61,7 +83,7 @@ const ChannelContent: FC<ChannelProps> = ({ onAddChannel }) => {
       <ChannelList
         label="Direct messages"
         channels={directMessagesList}
-        selectedChannel={selectedDirectMessage}
+        selectedChannel={selectedChannel}
         onSelect={handleSelectChannel}
         onClickAdd={() => setOpenModal(true)}
         addText="Add teammates"

@@ -42,10 +42,19 @@ const ChannelList: FC<ChannelListProps> = ({
   onClickAdd,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isMouseEnter, setIsMouseEnter] = useState(true);
+  const [isMouseEnter, setIsMouseEnter] = useState(false);
+
+  const handleClickAdd = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    onClickAdd();
+  };
+
+  const handleClickSelect = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  };
 
   return (
-    <Box>
+    <>
       <Box
         display="flex"
         px={1.25}
@@ -56,7 +65,7 @@ const ChannelList: FC<ChannelListProps> = ({
         sx={{ cursor: "pointer" }}
       >
         <Box mr={1}>
-          <IconButton sx={{ padding: 0 }}>
+          <IconButton size="small">
             {isCollapsed ? <ArrowRightIcon /> : <ArrowDropDownIcon />}
           </IconButton>
         </Box>
@@ -64,12 +73,12 @@ const ChannelList: FC<ChannelListProps> = ({
         {isMouseEnter && (
           <>
             <Box ml={1}>
-              <IconButton size="small" sx={{ padding: 0 }}>
+              <IconButton size="small" onClick={handleClickSelect}>
                 <MoreVertIcon />
               </IconButton>
             </Box>
             <Box ml={1}>
-              <IconButton size="small" sx={{ padding: 0 }}>
+              <IconButton size="small" onClick={handleClickAdd}>
                 <AddIcon />
               </IconButton>
             </Box>
@@ -94,7 +103,7 @@ const ChannelList: FC<ChannelListProps> = ({
               </ListItemButton>
             );
           })}
-          <ListItemButton sx={{ p: 0, pl: 4 }} onClick={() => onClickAdd()}>
+          <ListItemButton sx={{ p: 0, pl: 4 }} onClick={handleClickAdd}>
             <ListItemIcon sx={{ minWidth: 28 }}>
               <AddIcon fontSize="small" />
             </ListItemIcon>
@@ -110,7 +119,7 @@ const ChannelList: FC<ChannelListProps> = ({
           <ListItemText primary={selectedChannel.name} />
         </ListItemButton>
       )}
-    </Box>
+    </>
   );
 };
 

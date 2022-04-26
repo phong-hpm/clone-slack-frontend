@@ -45,7 +45,7 @@ const Modal: FC<ModalProps> = ({ isCloseBtn, isOpen, onClose, children, ...props
         {isCloseBtn && (
           <Box position="absolute" top="20px" right="20px">
             <IconButton onClick={onClose}>
-              <CloseIcon />
+              <CloseIcon fontSize="medium" />
             </IconButton>
           </Box>
         )}

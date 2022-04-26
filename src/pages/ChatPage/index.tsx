@@ -19,6 +19,7 @@ import { RouterPath, teamIdRegExp, channelIdRegExp } from "../../utils/constants
 import { Box } from "@mui/material";
 import WorkSpace from "./WorkSpace";
 import Conversation from "./Conversation";
+import ChatBar from "./ChatBar";
 
 export const ChatPage: FC = () => {
   const dispatch = useDispatch();
@@ -55,11 +56,15 @@ export const ChatPage: FC = () => {
   if (isCheckingPrams) return <></>;
 
   return (
-    <Box display="flex" minHeight="100vh">
-      <Box flex="0 0 260px" bgcolor="#19171D" borderRight={1} borderColor="rgba(209,210,211,0.1)">
+    <Box display="flex" flexDirection="column" height="100vh">
+      <ChatBar />
+      {/* 
+        minHeight="1px"
+        cheat: this box will fit with the rest height of parent,
+              althought its height is less than or greater than prarent's height
+      */}
+      <Box flex="1" display="flex" minHeight="1px">
         <WorkSpace />
-      </Box>
-      <Box flex="1 1 auto" bgcolor="#1A1D21">
         <Conversation />
       </Box>
     </Box>

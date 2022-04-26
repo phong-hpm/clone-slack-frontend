@@ -28,6 +28,8 @@ import useSocket from "../../../hooks/useSocket";
 
 // components
 import Channels from "./Channels";
+import { Box } from "@mui/system";
+import WorkSpaceSidebar from "./WorkSpaceSidebar";
 
 const WorkSpace: FC = () => {
   const dispatch = useDispatch();
@@ -114,16 +116,18 @@ const WorkSpace: FC = () => {
   if (!selectedChannelId) return null;
 
   return (
-    <Routes>
-      <Route
-        path="/:channelId"
-        element={
-          <>
-            <Channels onAddChannel={handleSendChannel} />
-          </>
-        }
-      />
-    </Routes>
+    <Box
+      flexBasis={260}
+      bgcolor="#19171D"
+      color="#a3a3a6"
+      borderRight={1}
+      borderColor="rgba(209,210,211,0.1)"
+    >
+      <WorkSpaceSidebar />
+      <Routes>
+        <Route path="/:channelId" element={<Channels onAddChannel={handleSendChannel} />} />
+      </Routes>
+    </Box>
   );
 };
 
