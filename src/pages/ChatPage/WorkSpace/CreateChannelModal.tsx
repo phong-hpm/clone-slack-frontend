@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 
 // redux store
@@ -8,7 +8,7 @@ import { useSelector } from "../../../store";
 import * as authSelectors from "../../../store/selectors/auth.selector";
 
 // components
-import { Modal, ModalProps, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal";
 import {
   Box,
   Button,
@@ -27,7 +27,7 @@ import IconLock from "@mui/icons-material/Lock";
 import IconTag from "@mui/icons-material/Tag";
 import IconDone from "@mui/icons-material/Done";
 
-export interface CreateChanelModalProps {
+export interface CreateChannelModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (name: string, desc: string) => void;
@@ -39,15 +39,15 @@ const nameSuggestions = [
   { label: "team", desc: "For updates and work from a department or team" },
 ];
 
-const CreateChanelModal: FC<CreateChanelModalProps> = ({ isOpen, onSubmit, onClose }) => {
+const CreateChannelModal: FC<CreateChannelModalProps> = ({ isOpen, onSubmit, onClose }) => {
   const user = useSelector(authSelectors.getUser);
 
   const [isPrivate, setIsPrivate] = useState(false);
-  const [chanelName, setChanelName] = useState("");
+  const [channelName, setChannelName] = useState("");
   const [desc, setDesc] = useState("");
 
   const handleSubmit = () => {
-    onSubmit(chanelName, desc);
+    onSubmit(channelName, desc);
   };
 
   return (
@@ -87,11 +87,11 @@ const CreateChanelModal: FC<CreateChanelModalProps> = ({ isOpen, onSubmit, onClo
                         </InputAdornment>
                       ),
                       endAdornment: (
-                        <InputAdornment position="end">{80 - chanelName.length}</InputAdornment>
+                        <InputAdornment position="end">{80 - channelName.length}</InputAdornment>
                       ),
                     }}
-                    value={chanelName}
-                    onChange={(e) => setChanelName(e.target.value)}
+                    value={channelName}
+                    onChange={(e) => setChannelName(e.target.value)}
                   />
                 )}
                 renderOption={(liProps, { label, desc }) => {
@@ -159,4 +159,4 @@ const CreateChanelModal: FC<CreateChanelModalProps> = ({ isOpen, onSubmit, onClo
   );
 };
 
-export default CreateChanelModal;
+export default CreateChannelModal;

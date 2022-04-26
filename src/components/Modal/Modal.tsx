@@ -1,8 +1,12 @@
 import { FC } from "react";
 import ReactModal, { Props } from "react-modal";
+
+// components
 import { Box, IconButton } from "@mui/material";
 
-import { ReactComponent as IconTime } from "../../assets/icons/time.svg";
+// icons
+import { Close as CloseIcon } from "@mui/icons-material";
+
 export interface ModalProps
   extends Pick<
     Props,
@@ -41,7 +45,7 @@ const Modal: FC<ModalProps> = ({ isCloseBtn, isOpen, onClose, children, ...props
         {isCloseBtn && (
           <Box position="absolute" top="20px" right="20px">
             <IconButton onClick={onClose}>
-              <IconTime />
+              <CloseIcon />
             </IconButton>
           </Box>
         )}

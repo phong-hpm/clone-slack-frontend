@@ -12,7 +12,7 @@ import thunk from "redux-thunk";
 // reducer
 import authReducer from "./slices/auth.slice";
 import teamsReducer from "./slices/teams.slice";
-import chanelsReducer from "./slices/chanels.slice";
+import channelsReducer from "./slices/channels.slice";
 import messagesReducer from "./slices/messages.slice";
 import usersReducer from "./slices/users.slice";
 import { setupAxios } from "../utils/axios";
@@ -21,12 +21,12 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     teams: teamsReducer,
-    chanels: chanelsReducer,
+    channels: channelsReducer,
     messages: messagesReducer,
     users: usersReducer,
   },
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware({ serializableCheck: false }).concat([thunk]);
+    return getDefaultMiddleware({ serializableCheck: false }).concat([thunk, logger]);
   },
 });
 

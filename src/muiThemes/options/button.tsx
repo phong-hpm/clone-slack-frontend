@@ -4,6 +4,7 @@ const components: Theme["components"] = {
   MuiButton: {
     styleOverrides: {
       root: {
+        fontSize: "inherit",
         fontWeight: 800,
         textTransform: "capitalize",
       },

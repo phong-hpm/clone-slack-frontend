@@ -9,7 +9,7 @@ export interface TeamType {
   id: string;
   name: string;
   created: number;
-  chanels: string[];
+  channels: string[];
   users: string[];
 }
 

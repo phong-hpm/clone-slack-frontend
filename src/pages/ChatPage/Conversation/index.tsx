@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "../../../store";
 
 // redux selectors
-import * as chanelsSelector from "../../../store/selectors/chanels.selector";
+import * as channelsSelector from "../../../store/selectors/channels.selector";
 import * as authSelectors from "../../../store/selectors/auth.selector";
 import * as messagesSelectors from "../../../store/selectors/messages.selector";
 import * as usersSelectors from "../../../store/selectors/users.selector";
@@ -21,13 +21,14 @@ import { SocketEvent, SocketEventDefault } from "../../../utils/constants";
 import useSocket from "../../../hooks/useSocket";
 
 // components
+import { Box } from "@mui/material";
 import MessageTextArea from "./MessageTextArea";
 
 const Messages: FC = () => {
   const dispatch = useDispatch();
   const { teamId } = useParams();
 
-  const selectedChanelId = useSelector(chanelsSelector.getSelectedChanelId);
+  const selectedChannelId = useSelector(channelsSelector.getSelectedChannelId);
   const user = useSelector(authSelectors.getUser);
   const messageList = useSelector(messagesSelectors.getMessageList);
   const userList = useSelector(usersSelectors.getUserList);
@@ -48,11 +49,11 @@ const Messages: FC = () => {
     [dispatch]
   );
 
-  // update namespace when selectedChanel was updated
+  // update namespace when selectedChannel was updated
   useEffect(() => {
-    if (!selectedChanelId) return;
-    updateNamespace(`/${teamId}/${selectedChanelId}`);
-  }, [teamId, selectedChanelId, updateNamespace]);
+    if (!selectedChannelId) return;
+    updateNamespace(`/${teamId}/${selectedChannelId}`);
+  }, [teamId, selectedChannelId, updateNamespace]);
 
   useEffect(() => {
     if (!socket) return;
@@ -90,10 +91,14 @@ const Messages: FC = () => {
   };
 
   return (
-    <div className="messages">
-      <div className="messages-list">{renderMessages()}</div>
-      <MessageTextArea onSend={handleSendMessage} />
-    </div>
+    <Box display="flex" flexDirection="column" className="messages">
+      <Box flex="1 1 auto" className="messages-list">
+        {renderMessages()}
+      </Box>
+      <Box flex="0 0 auto">
+        <MessageTextArea onSend={handleSendMessage} />
+      </Box>
+    </Box>
   );
 };
 

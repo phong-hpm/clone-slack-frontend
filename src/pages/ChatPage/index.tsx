@@ -9,15 +9,16 @@ import { useSelector } from "../../store";
 import * as teamsSelectors from "../../store/selectors/teams.selector";
 
 // redux slices
-import { setSelectedChanelId } from "../../store/slices/chanels.slice";
+import { setSelectedChannelId } from "../../store/slices/channels.slice";
 import { setSelectedTeamId } from "../../store/slices/teams.slice";
 
 // utils
-import { RouterPath, teamIdRegExp, chanelIdRegExp } from "../../utils/constants";
+import { RouterPath, teamIdRegExp, channelIdRegExp } from "../../utils/constants";
 
 // components
-import ChatBox from "./Chanels";
-import Messages from "./Messages";
+import { Box } from "@mui/material";
+import WorkSpace from "./WorkSpace";
+import Conversation from "./Conversation";
 
 export const ChatPage: FC = () => {
   const dispatch = useDispatch();
@@ -39,25 +40,29 @@ export const ChatPage: FC = () => {
     }
   }, [params.teamId, navigate, dispatch]);
 
-  // check chanelId param after teamId was checked
+  // check channelId param after teamId was checked
   useEffect(() => {
     // wait for checking teamId
     if (!selectedTeamId) return;
 
-    if (params["*"] && chanelIdRegExp.test(params["*"])) {
-      dispatch(setSelectedChanelId(params["*"]));
+    if (params["*"] && channelIdRegExp.test(params["*"])) {
+      dispatch(setSelectedChannelId(params["*"]));
     }
     setIsCheckingParams(false);
   }, [selectedTeamId, params, navigate, dispatch]);
 
-  // render children after teamId and chanelId were checkced
+  // render children after teamId and channelId were checkced
   if (isCheckingPrams) return <></>;
 
   return (
-    <div className="chat-page">
-      <ChatBox />
-      <Messages />
-    </div>
+    <Box display="flex" minHeight="100vh">
+      <Box flex="0 0 260px" bgcolor="#19171D" borderRight={1} borderColor="rgba(209,210,211,0.1)">
+        <WorkSpace />
+      </Box>
+      <Box flex="1 1 auto" bgcolor="#1A1D21">
+        <Conversation />
+      </Box>
+    </Box>
   );
 };
 

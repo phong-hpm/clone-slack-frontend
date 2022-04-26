@@ -6,15 +6,15 @@ export const SocketEventDefault = {
 
 export const SocketEvent = {
   // emit
-  EMIT_LOAD_CHANELS: "EMIT_LOAD_CHANELS",
-  EMIT_ADD_CHANEL: "EMIT_ADD_CHANEL",
+  EMIT_LOAD_CHANNELS: "EMIT_LOAD_CHANNELS",
+  EMIT_ADD_CHANNEL: "EMIT_ADD_CHANNEL",
 
   EMIT_LOAD_MESSAGES: "EMIT_LOAD_MESSAGES",
   EMIT_ADD_MESSAGE: "EMIT_ADD_MESSAGE",
 
   // on
-  ON_CHANELS: "ON_CHANELS",
-  ON_NEW_CHANEL: "ON_NEW_CHANEL",
+  ON_CHANNELS: "ON_CHANNELS",
+  ON_NEW_CHANNEL: "ON_NEW_CHANNEL",
 
   ON_MESSAGES: "ON_MESSAGES",
   ON_NEW_MESSAGE: "ON_NEW_MESSAGE",
@@ -27,7 +27,7 @@ export const teamIdRegExp = new RegExp(
   /^T-[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$/
 );
 
-export const chanelIdRegExp = new RegExp(
+export const channelIdRegExp = new RegExp(
   /^(C|D)-[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$/
 );
 
