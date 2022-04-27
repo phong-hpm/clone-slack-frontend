@@ -14,13 +14,7 @@ import { setSelectedChannelId } from "../../../store/slices/channels.slice";
 import { Box, List, ListItemButton, ListItemIcon, Typography } from "@mui/material";
 import CreateChannelModal from "./CreateChannelModal";
 import ChannelList from "./ChannelList";
-
-// icons
-import {
-  AlternateEmail as AlternateEmailIcon,
-  LocationCity as LocationCityIcon,
-  MoreVert as MoreVertIcon,
-} from "@mui/icons-material";
+import SlackIcon from "../../../components/SlackIcon";
 
 export interface ChannelProps {
   onAddChannel: (channelName: string, desc: string) => void;
@@ -52,21 +46,21 @@ const ChannelContent: FC<ChannelProps> = ({ onAddChannel }) => {
       <List component="div" disablePadding>
         <ListItemButton sx={{ p: 0, pl: 1.25 }} onClick={() => {}}>
           <ListItemIcon sx={{ minWidth: 28 }}>
-            <AlternateEmailIcon fontSize="small" />
+            <SlackIcon fontSize="inherit" icon="mentions" />
           </ListItemIcon>
           <Typography sx={{ lineHeight: "28px" }}>Mentions & reactions</Typography>
         </ListItemButton>
 
         <ListItemButton sx={{ p: 0, pl: 1.25 }} onClick={() => {}}>
           <ListItemIcon sx={{ minWidth: 28 }}>
-            <LocationCityIcon fontSize="small" />
+            <SlackIcon fontSize="inherit" icon="buildings" />
           </ListItemIcon>
           <Typography sx={{ lineHeight: "28px" }}>Slack Connect</Typography>
         </ListItemButton>
 
         <ListItemButton sx={{ p: 0, pl: 1.25 }} onClick={() => {}}>
           <ListItemIcon sx={{ minWidth: 28 }}>
-            <MoreVertIcon />
+            <SlackIcon icon="ellipsis-vertical-filled" />
           </ListItemIcon>
           <Typography sx={{ lineHeight: "28px" }}>More</Typography>
         </ListItemButton>

@@ -3,9 +3,7 @@ import ReactModal, { Props } from "react-modal";
 
 // components
 import { Box, IconButton } from "@mui/material";
-
-// icons
-import { Close as CloseIcon } from "@mui/icons-material";
+import SlackIcon from "../../components/SlackIcon";
 
 export interface ModalProps
   extends Pick<
@@ -44,8 +42,8 @@ const Modal: FC<ModalProps> = ({ isCloseBtn, isOpen, onClose, children, ...props
         {children}
         {isCloseBtn && (
           <Box position="absolute" top="20px" right="20px">
-            <IconButton onClick={onClose}>
-              <CloseIcon fontSize="medium" />
+            <IconButton onClick={onClose} sx={{ borderRadius: "4px" }}>
+              <SlackIcon icon="close" />
             </IconButton>
           </Box>
         )}

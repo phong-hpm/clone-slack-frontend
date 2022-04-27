@@ -6,7 +6,6 @@ const components: Theme["components"] = {
       root: {
         fontSize: "inherit",
         color: "inherit",
-        // borderRadius: "4px",
         padding: "7px",
       },
     },
@@ -14,7 +13,7 @@ const components: Theme["components"] = {
       {
         props: { size: "small" },
         style: {
-          padding: "0px",
+          padding: "2px",
         },
       },
       {

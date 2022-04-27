@@ -8,7 +8,6 @@ import { useSelector } from "../../../store";
 import * as authSelectors from "../../../store/selectors/auth.selector";
 
 // components
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal";
 import {
   Box,
   Button,
@@ -21,11 +20,8 @@ import {
   Typography,
   TextField,
 } from "@mui/material";
-
-// icons
-import IconLock from "@mui/icons-material/Lock";
-import IconTag from "@mui/icons-material/Tag";
-import IconDone from "@mui/icons-material/Done";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../components/Modal";
+import SlackIcon from "../../../components/SlackIcon";
 
 export interface CreateChannelModalProps {
   isOpen: boolean;
@@ -80,9 +76,9 @@ const CreateChannelModal: FC<CreateChannelModalProps> = ({ isOpen, onSubmit, onC
                       startAdornment: (
                         <InputAdornment position="start">
                           {isPrivate ? (
-                            <IconLock fontSize="inherit" />
+                            <SlackIcon icon="lock" />
                           ) : (
-                            <IconTag fontSize="inherit" />
+                            <SlackIcon icon="channel-pane-hash" />
                           )}
                         </InputAdornment>
                       ),
@@ -131,8 +127,8 @@ const CreateChannelModal: FC<CreateChannelModalProps> = ({ isOpen, onSubmit, onC
             <Box position="relative">
               <Switch checked={isPrivate} onChange={(_, checked) => setIsPrivate(checked)} />
               {isPrivate && (
-                <Box position="absolute" top="7px" left="10px">
-                  <IconDone fontSize="inherit" />
+                <Box position="absolute" top="5px" left="7px">
+                  <SlackIcon icon="form-checkbox-check" />
                 </Box>
               )}
             </Box>

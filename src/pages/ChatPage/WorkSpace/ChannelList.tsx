@@ -14,15 +14,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-
-// icons
-import {
-  Add as AddIcon,
-  ArrowDropDown as ArrowDropDownIcon,
-  ArrowRight as ArrowRightIcon,
-  MoreVert as MoreVertIcon,
-  Tag as TagIcon,
-} from "@mui/icons-material";
+import SlackIcon from "../../../components/SlackIcon";
 
 export interface ChannelListProps {
   label: string;
@@ -57,6 +49,7 @@ const ChannelList: FC<ChannelListProps> = ({
     <>
       <Box
         display="flex"
+        mt={1}
         px={1.25}
         py={0.75}
         onClick={() => setIsCollapsed(!isCollapsed)}
@@ -66,7 +59,7 @@ const ChannelList: FC<ChannelListProps> = ({
       >
         <Box mr={1}>
           <IconButton size="small">
-            {isCollapsed ? <ArrowRightIcon /> : <ArrowDropDownIcon />}
+            {isCollapsed ? <SlackIcon icon="caret-right" /> : <SlackIcon icon="caret-down" />}
           </IconButton>
         </Box>
         <Typography flex="1">{label}</Typography>
@@ -74,12 +67,12 @@ const ChannelList: FC<ChannelListProps> = ({
           <>
             <Box ml={1}>
               <IconButton size="small" onClick={handleClickSelect}>
-                <MoreVertIcon />
+                <SlackIcon icon="ellipsis-vertical-filled" />
               </IconButton>
             </Box>
             <Box ml={1}>
               <IconButton size="small" onClick={handleClickAdd}>
-                <AddIcon />
+                <SlackIcon icon="plus" />
               </IconButton>
             </Box>
           </>
@@ -97,7 +90,7 @@ const ChannelList: FC<ChannelListProps> = ({
                 onClick={() => !isSelected && onSelect(channel.id)}
               >
                 <ListItemIcon sx={{ minWidth: 28 }}>
-                  <TagIcon fontSize="inherit" />
+                  <SlackIcon icon="channel-pane-hash" />
                 </ListItemIcon>
                 <Typography sx={{ lineHeight: "28px" }}>{channel.name}</Typography>
               </ListItemButton>
@@ -105,7 +98,7 @@ const ChannelList: FC<ChannelListProps> = ({
           })}
           <ListItemButton sx={{ p: 0, pl: 4 }} onClick={handleClickAdd}>
             <ListItemIcon sx={{ minWidth: 28 }}>
-              <AddIcon fontSize="small" />
+              <SlackIcon icon="plus-small" />
             </ListItemIcon>
             <Typography sx={{ lineHeight: "28px" }}>{addText}</Typography>
           </ListItemButton>
@@ -114,7 +107,7 @@ const ChannelList: FC<ChannelListProps> = ({
       {isCollapsed && selectedChannel && (
         <ListItemButton selected={true} sx={{ p: 0, pl: 4 }}>
           <ListItemIcon sx={{ minWidth: 28 }}>
-            <TagIcon fontSize="inherit" />
+            <SlackIcon icon="channel-pane-hash" />
           </ListItemIcon>
           <ListItemText primary={selectedChannel.name} />
         </ListItemButton>

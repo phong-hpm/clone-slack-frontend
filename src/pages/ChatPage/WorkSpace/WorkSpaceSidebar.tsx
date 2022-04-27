@@ -9,9 +9,7 @@ import * as authSelectors from "../../../store/selectors/auth.selector";
 // components
 import { Box } from "@mui/system";
 import { IconButton, Menu, MenuItem, Typography } from "@mui/material";
-
-// icons
-import { Edit as EditIcon, KeyboardArrowDown as KeyboardArrowDownIcon } from "@mui/icons-material";
+import SlackIcon from "../../../components/SlackIcon";
 
 const WorkSpaceSidebar: FC = () => {
   const user = useSelector(authSelectors.getUser);
@@ -40,11 +38,11 @@ const WorkSpaceSidebar: FC = () => {
       >
         <Box flex="1" display="flex" alignItems="center">
           <Typography variant="h4">{user.name}</Typography>
-          <KeyboardArrowDownIcon fontSize="small" />
+          <SlackIcon icon="chevron-down" />
         </Box>
         <Box>
           <IconButton color="secondary" onClick={handleAddNewMessage}>
-            <EditIcon fontSize="medium" />
+            <SlackIcon icon="compose" fontSize="large" />
           </IconButton>
         </Box>
       </Box>

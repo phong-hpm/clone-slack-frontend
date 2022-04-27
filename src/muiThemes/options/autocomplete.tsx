@@ -5,7 +5,7 @@ const components: Theme["components"] = {
     styleOverrides: {
       root: {
         ".MuiInputBase-root": {
-          padding: "4px 16px",
+          padding: "4px 10px",
 
           ".MuiAutocomplete-input": {
             // padding: "0 4px",
