@@ -8,6 +8,7 @@ import { UserType } from "../../slices/users.slice";
 
 // utils
 import axios from "../../../utils/axios";
+import { stateDefault } from "../../../utils/constants";
 
 interface UserResponseData extends UserType {
   teams: TeamType[];
@@ -38,12 +39,13 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) =
         id: user.id,
         email: user.email,
         name: user.name,
+        realname: user.realname,
         timeZone: user.timeZone,
       };
       state.isLoading = false;
     })
     .addCase(getUserInformation.rejected, (state) => {
-      state.user = { id: "", email: "", name: "", timeZone: "" };
+      state.user = stateDefault.USER;
       state.isAuth = false;
       state.isLoading = false;
     });

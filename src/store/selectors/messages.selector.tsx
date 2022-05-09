@@ -7,4 +7,8 @@ export const getMessages = (state: RootState) => state.messages;
 
 export const isLoading = createSelector([getMessages], (messages) => messages.isLoading);
 
-export const getMessageList = createSelector([getMessages], (messages) => messages.list);
+const getList = createSelector([getMessages], (messages) => messages.list);
+
+export const getMessageList = createSelector([getList], (list) =>
+  [...list].sort((a, b) => a.created - b.created)
+);

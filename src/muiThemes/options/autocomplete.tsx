@@ -6,10 +6,6 @@ const components: Theme["components"] = {
       root: {
         ".MuiInputBase-root": {
           padding: "4px 10px",
-
-          ".MuiAutocomplete-input": {
-            // padding: "0 4px",
-          },
         },
       },
     },

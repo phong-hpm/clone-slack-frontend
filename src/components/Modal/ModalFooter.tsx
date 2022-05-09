@@ -7,7 +7,7 @@ export interface ModalFooterProps {
 
 export const ModalFooter: FC<ModalFooterProps> = ({ children }) => {
   return (
-    <Box px={3.5} py={2.5}>
+    <Box px={3} py={2.5}>
       {children}
     </Box>
   );

@@ -11,6 +11,9 @@ import { Box } from "@mui/system";
 import { IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import SlackIcon from "../../../components/SlackIcon";
 
+// utils
+import { color } from "../../../utils/constants";
+
 const WorkSpaceSidebar: FC = () => {
   const user = useSelector(authSelectors.getUser);
 
@@ -27,7 +30,7 @@ const WorkSpaceSidebar: FC = () => {
   };
 
   return (
-    <Box borderBottom={1} borderColor="rgba(209, 210, 211, 0.1)" color="#d1d2d3">
+    <Box borderBottom={1} borderColor={color.BORDER} color={color.PRIMARY}>
       <Box
         ref={anchorRef}
         display="flex"
@@ -47,13 +50,10 @@ const WorkSpaceSidebar: FC = () => {
         </Box>
       </Box>
       <Menu
-        id="basic-menu"
+        variant="menu"
         anchorEl={anchorRef.current}
         open={isShowMenu}
         onClose={() => setShowMenu(false)}
-        MenuListProps={{
-          "aria-labelledby": "basic-button",
-        }}
       >
         <MenuItem onClick={handleSelect}>Profile</MenuItem>
         <MenuItem onClick={handleSelect}>My account</MenuItem>

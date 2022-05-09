@@ -1,19 +1,18 @@
 import { FC, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
 // redux store
-import { useSelector } from "../../store";
+import { useDispatch, useSelector } from "store";
 
 // redux selectors
-import * as teamsSelectors from "../../store/selectors/teams.selector";
+import * as teamsSelectors from "store/selectors/teams.selector";
 
 // redux slices
-import { setSelectedChannelId } from "../../store/slices/channels.slice";
-import { setSelectedTeamId } from "../../store/slices/teams.slice";
+import { setSelectedChannelId } from "store/slices/channels.slice";
+import { setSelectedTeamId } from "store/slices/teams.slice";
 
 // utils
-import { RouterPath, teamIdRegExp, channelIdRegExp } from "../../utils/constants";
+import { RouterPath, teamIdRegExp, channelIdRegExp } from "utils/constants";
 
 // components
 import { Box } from "@mui/material";

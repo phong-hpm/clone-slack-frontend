@@ -1,8 +1,29 @@
+.e-icon {
+  display: inline-block;
+  text-align: center;
+  width: 16px;
+  font-size: 16px;
+  line-height: 16px;
+}
+.e-icon-fontsize-large {
+  width: 18px;
+  font-size: 18px;
+  line-height: 18px;
+}
+.e-icon-fontsize-medium {
+  width: 15px;
+  font-size: 15px;
+  line-height: 15px;
+}
+.e-icon-fontsize-small {
+  width: 13px;
+  font-size: 13px;
+  line-height: 13px;
+}
+
 .c-icon {
   position: relative;
   display: inline-flex;
-  width: 20px;
-  height: 20px;
   font-size: 20px;
   font-weight: inherit;
   align-items: center;
@@ -17,6 +38,12 @@
 .c-icon-img {
   &.c-icon-fontsize-large {
     font-size: 18px;
+  }
+  &.c-icon-fontsize-medium {
+    font-size: 15px;
+  }
+  &.c-icon-fontsize-small {
+    font-size: 13px;
   }
 }
 

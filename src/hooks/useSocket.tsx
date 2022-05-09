@@ -2,15 +2,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
 // redux store
-import { useDispatch, useSelector } from "../store";
-import { renewAccessToken } from "../store/actions/auth/renewToken";
+import { useDispatch, useSelector } from "store";
+import { renewAccessToken } from "store/actions/auth/renewToken";
 
 // redux selector
-import * as authSelectors from "../store/selectors/auth.selector";
-import { setIsAuth } from "../store/slices/auth.slice";
+import * as authSelectors from "store/selectors/auth.selector";
+import { setIsAuth } from "store/slices/auth.slice";
 
 // utils
-import { SocketEvent, SocketEventDefault } from "../utils/constants";
+import { SocketEvent, SocketEventDefault } from "utils/constants";
 
 const useSocket = () => {
   const dispatch = useDispatch();
@@ -39,7 +39,7 @@ const useSocket = () => {
     // setup socket
     socketRef.current = io(`ws://localhost:8000/${namespace}`, {
       autoConnect: false,
-      auth: { email: user.email, name: user.name, accessToken },
+      auth: { userId: user.id, email: user.email, name: user.name, accessToken },
     });
 
     // authenticated listener
@@ -54,9 +54,7 @@ const useSocket = () => {
     });
 
     // connection's errors listener
-    socketRef.current.on(SocketEventDefault.CONNECT_ERROR, (error) => {
-      // console.log(error.name, error.message);
-    });
+    socketRef.current.on(SocketEventDefault.CONNECT_ERROR, (error) => {});
 
     setSocket(socketRef.current);
   }, [isAuth, namespace, accessToken, user, dispatch]);

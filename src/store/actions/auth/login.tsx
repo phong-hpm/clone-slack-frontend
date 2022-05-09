@@ -8,6 +8,7 @@ import { UserType } from "../../slices/users.slice";
 
 // utils
 import axios from "../../../utils/axios";
+import { stateDefault } from "../../../utils/constants";
 
 export interface LoginPostData {
   email: string;
@@ -57,7 +58,7 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) =
       localStorage.setItem("accessToken", "");
       localStorage.setItem("refreshToken", "");
 
-      state.user = { id: "", email: "", name: "", timeZone: "" };
+      state.user = stateDefault.USER;
       state.isAuth = false;
       state.isLoading = false;
     });

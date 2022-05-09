@@ -8,6 +8,7 @@ import { authExtraReducers as getUserInformationExtraReducers } from "../actions
 
 // redux slices
 import { UserType } from "./users.slice";
+import { stateDefault } from "../../utils/constants";
 
 export interface AuthState {
   accessToken: string;
@@ -23,12 +24,7 @@ const initialState: AuthState = {
   isLoading: false,
   isAuth: false,
   isVerified: false,
-  user: {
-    id: "",
-    email: "",
-    name: "",
-    timeZone: "",
-  },
+  user: stateDefault.USER,
 };
 
 export const authSlice = createSlice({

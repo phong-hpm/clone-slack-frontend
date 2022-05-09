@@ -4,8 +4,8 @@ const components: Theme["components"] = {
   MuiIcon: {
     styleOverrides: {
       root: {
-        fontSize: "inherit",
         color: "inherit",
+        fontSize: "inherit",
       },
     },
   },

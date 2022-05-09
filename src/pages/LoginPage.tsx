@@ -2,16 +2,16 @@ import React, { FC, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 // redux store
-import { useDispatch, useSelector } from "../store";
+import { useDispatch, useSelector } from "store";
 
 // redux actions
-import { login, LoginPostData } from "../store/actions/auth/login";
+import { login, LoginPostData } from "store/actions/auth/login";
 
 // redux selectors
-import * as authSelectors from "../store/selectors/auth.selector";
+import * as authSelectors from "store/selectors/auth.selector";
 
 // utils
-import { RouterPath } from "../utils/constants";
+import { RouterPath } from "utils/constants";
 
 const LoginPage: FC = () => {
   const dispatch = useDispatch();

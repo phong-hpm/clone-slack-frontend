@@ -1,41 +1,36 @@
 import { FC } from "react";
+import classnames from "classnames";
 
-const iconImgName = ["ellipsis-vertical-filled", "close", "close-small", "compose"];
+// utils
+import { iconName, iconImgName } from "../utils/constants";
 
 export interface SlackIconProps {
-  fontSize?: "inherit" | "small" | "meidum" | "large";
-  icon:
-    | "caret-right"
-    | "caret-down"
-    | "plus"
-    | "plus-small"
-    | "channel-pane-hash"
-    | "mentions"
-    | "more-vert"
-    | "buildings"
-    | "mentions"
-    | "hash-medium-bold"
-    | "chevron-down"
-    | "lock"
-    | "channel"
-    | "form-checkbox-check"
-
-    // icon images
-    | "ellipsis-vertical-filled"
-    | "close"
-    | "close-small"
-    | "compose";
+  fontSize?: "inherit" | "small" | "medium" | "large";
+  color?: string;
+  icon: typeof iconName[number] | typeof iconImgName[number];
 }
 
-const SlackIcon: FC<SlackIconProps> = ({ icon, fontSize }) => {
-  return iconImgName.includes(icon) ? (
+const SlackIcon: FC<SlackIconProps> = ({ icon, color, fontSize }) => {
+  if (!iconImgName.includes(icon)) {
+    return (
+      <i
+        className={classnames(
+          "c-icon",
+          icon && `c-icon--${icon}`,
+          fontSize && `c-icon-fontsize-${fontSize}`
+        )}
+        style={{ color }}
+      />
+    );
+  }
+
+  return (
     <span
       role="img"
-      className={`c-icon-img ${fontSize && `c-icon-fontsize-${fontSize}`}`}
+      className={classnames("c-icon-img", fontSize && `c-icon-fontsize-${fontSize}`)}
       data-ndw={icon}
+      style={{ color }}
     />
-  ) : (
-    <i className={`c-icon ${fontSize && `c-icon-fontsize-${fontSize}`} c-icon--${icon}`} />
   );
 };
 

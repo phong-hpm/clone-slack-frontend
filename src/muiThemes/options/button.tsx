@@ -1,47 +1,93 @@
 import { Theme } from "@mui/material";
 
+// utils
+import { color, rgba } from "../../utils/constants";
+
 const components: Theme["components"] = {
   MuiButton: {
     styleOverrides: {
       root: {
+        color: "inherit",
         fontSize: "inherit",
         fontWeight: 900,
         textTransform: "initial",
+        transitionDuration: "0ms",
+        boxShadow: " none",
+        minWidth: "auto",
       },
     },
     variants: [
       {
-        props: { variant: "contained", color: "primary" },
+        props: { color: "primary" },
         style: {
-          backgroundColor: "#007a5a",
-          color: "#ffffff",
+          backgroundColor: color.SUCCESS,
+          color: color.LIGHT,
 
           "&:hover": {
             backgroundColor: "#148567",
           },
 
           "&:disabled": {
-            backgroundColor: "#35373b",
-            color: "rgba(209, 210, 211, 0.75)",
+            backgroundColor: color.LOW_SOLID,
+            color: rgba(color.PRIMARY, 0.75),
           },
         },
       },
       {
-        props: { variant: "outlined", color: "primary" },
+        props: { color: "error" },
         style: {
-          color: "#d1d2d3",
+          color: color.PRIMARY,
+          backgroundColor: color.DANGER,
+        },
+      },
+      {
+        props: { variant: "text" },
+        style: {
+          color: color.PRIMARY,
           backgroundColor: "transparent",
           borderColor: "transparent",
 
           "&:hover": {
-            backgroundColor: "rgba(232, 232, 232, 0.04)",
-            borderColor: "transparent",
+            backgroundColor: rgba(color.MAX, 0.04),
+            borderColor: rgba(color.MAX, 0.04),
           },
 
-          // "&:disabled": {
-          //   backgroundColor: "#35373b",
-          //   color: "rgba(209, 210, 211, 0.75)",
-          // },
+          "&:disabled": {
+            backgroundColor: color.LOW_SOLID,
+            color: rgba(color.PRIMARY, 0.75),
+          },
+        },
+      },
+      {
+        props: { variant: "outlined" },
+        style: {
+          color: color.PRIMARY,
+          backgroundColor: "transparent",
+          borderColor: color.BORDER_ITEM,
+
+          "&:hover": {
+            backgroundColor: rgba(color.MAX, 0.04),
+            borderColor: color.BORDER_ITEM,
+          },
+
+          "&:disabled": {
+            backgroundColor: color.LOW_SOLID,
+            color: rgba(color.PRIMARY, 0.75),
+          },
+        },
+      },
+      {
+        props: { size: "small" },
+        style: {
+          fontSize: "13px",
+          height: "28px",
+        },
+      },
+      {
+        props: { size: "large" },
+        style: {
+          paddingLeft: 12,
+          paddingRight: 12,
         },
       },
     ],

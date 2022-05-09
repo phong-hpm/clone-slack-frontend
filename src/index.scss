@@ -61,24 +61,30 @@ body {
   min-height: 100vh;
 }
 
-/* width */
+// /* width */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
-/* Track */
+// /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
-}
+  background: rgba(209, 210, 211, 0.52);
+  border-radius: 4px;
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  &:hover {
+    background: rgba(209, 210, 211, 0.52);
+  }
+  &:after {
+    content: "";
+    display: block;
+    width: 4px;
+    background: #000;
+  }
 }
 
 @import "./styles";

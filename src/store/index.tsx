@@ -6,7 +6,7 @@ import {
 } from "react-redux";
 
 // middleware
-import logger from "redux-logger";
+// import logger from "redux-logger";
 import thunk from "redux-thunk";
 
 // reducer
@@ -26,7 +26,7 @@ export const store = configureStore({
     users: usersReducer,
   },
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware({ serializableCheck: false }).concat([thunk, logger]);
+    return getDefaultMiddleware({ serializableCheck: false }).concat([thunk]);
   },
 });
 

@@ -12,24 +12,32 @@ import MuiListItemIcon from "./options/listItemIcon";
 import MuiTextField from "./options/textField";
 import MuiAutocomplete from "./options/autocomplete";
 import MuiPopper from "./options/popper";
+import MuiPopover from "./options/popover";
 import MuiSwitch from "./options/switch";
 import MuiInputAdornment from "./options/inputAdornment";
 import MuiAvatar from "./options/avatar";
+import MuiButtonGroup from "./options/buttonGroup";
+import MuiMenu from "./options/menu";
+import MuiMenuItem from "./options/menuItem";
+import MuiDivider from "./options/divider";
+import MuiLink from "./options/link";
+import MuiTooltip from "./options/tooltip";
+import MuiChip from "./options/chip";
+
+// utils
+import { color } from "../utils/constants";
 
 const mainOptions: ThemeOptions = {
   palette: {
     mode: "dark",
     text: {
-      primary: "#d1d2d3",
+      primary: color.PRIMARY,
     },
   },
   typography: {
-    // fontSize: 14,
-    // htmlFontSize: (16 / 15) * 16,
-
     fontFamily: "Lato, sans-serif",
 
-    allVariants: { fontSize: "15px", lineHeight: "22px" },
+    allVariants: { fontSize: "15px", lineHeight: "22px", color: "inherit" },
     h1: { fontSize: "32px" },
     h2: { fontSize: "28px", lineHeight: "34px", fontWeight: 900 },
     h3: { fontSize: "22px", lineHeight: "30px", fontWeight: 900 },
@@ -49,14 +57,17 @@ const mainOptions: ThemeOptions = {
     MuiAutocomplete,
     MuiInputAdornment,
     MuiPopper,
+    MuiPopover,
     MuiSwitch,
     MuiAvatar,
+    MuiButtonGroup,
+    MuiMenu,
+    MuiMenuItem,
+    MuiDivider,
+    MuiLink,
+    MuiTooltip,
+    MuiChip,
   },
 };
 
 export default createTheme(mainOptions);
-
-// font-size: 12 | 13 | 14 | 15 | 18 | 24 | 32
-
-// title: #d1d2d3
-//

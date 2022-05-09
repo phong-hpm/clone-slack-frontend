@@ -1,31 +1,35 @@
 import { Theme } from "@mui/material";
 
+// utils
+import { color, css } from "../../utils/constants";
+
 const components: Theme["components"] = {
   MuiPopper: {
     styleOverrides: {
+      backgroundColor: color.MIN_SOLID,
       root: {
         ".MuiPaper-root": {
-          boxShadow: "0 0 0 1px rgba(232, 232,232, 0.13), 0 5px 10px rgba(0,0,0,.12)",
+          boxShadow: css.BOX_SHADOW,
         },
 
         ".MuiAutocomplete-listbox": {
           backgroundImage: "none",
-          backgroundColor: "rgba(34, 37, 41, 1)",
+          backgroundColor: color.MIN_SOLID,
 
           ".MuiAutocomplete-option": {
-            color: "rgba(232, 232, 232, 0.7)",
+            color: color.HIGH,
             padding: "4px 16px",
 
             "&.Mui-focused": {
-              backgroundColor: "#1264a3",
+              backgroundColor: color.SELECTED_ITEM,
             },
 
             ".label": {
-              color: "rgb(209, 210, 211)",
+              color: color.PRIMARY,
             },
 
             ".desc": {
-              color: "gba(232, 232, 232, 0.7)",
+              color: color.HIGH,
             },
           },
         },

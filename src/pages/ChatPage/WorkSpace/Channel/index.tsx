@@ -2,19 +2,19 @@ import { FC, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 // redux store
-import { useDispatch, useSelector } from "../../../store";
+import { useDispatch, useSelector } from "store";
 
 // redux selector
-import * as channelsSelectors from "../../../store/selectors/channels.selector";
+import * as channelsSelectors from "store/selectors/channels.selector";
 
 // redux slices
-import { setSelectedChannelId } from "../../../store/slices/channels.slice";
+import { setSelectedChannelId } from "store/slices/channels.slice";
 
 // components
 import { Box, List, ListItemButton, ListItemIcon, Typography } from "@mui/material";
 import CreateChannelModal from "./CreateChannelModal";
 import ChannelList from "./ChannelList";
-import SlackIcon from "../../../components/SlackIcon";
+import SlackIcon from "components/SlackIcon";
 
 export interface ChannelProps {
   onAddChannel: (channelName: string, desc: string) => void;

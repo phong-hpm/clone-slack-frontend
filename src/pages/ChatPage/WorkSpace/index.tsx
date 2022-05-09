@@ -1,81 +1,41 @@
-import { FC, useCallback, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { FC, useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 // redux store
-import { useSelector } from "../../../store";
+import { useDispatch, useSelector } from "store";
 
 // redux selectors
-import * as authSelectors from "../../../store/selectors/auth.selector";
-import * as teamsSelectors from "../../../store/selectors/teams.selector";
-import * as channelsSelectors from "../../../store/selectors/channels.selector";
+import * as channelsSelectors from "store/selectors/channels.selector";
 
 // redux slices
-import {
-  ChannelType,
-  setChannelsList,
-  setDirectMessagesList,
-  addChannelList,
-  setSelectedChannelId,
-} from "../../../store/slices/channels.slice";
-import { setUserList, UserType } from "../../../store/slices/users.slice";
+import { setSelectedChannelId } from "store/slices/channels.slice";
 
 // utils
-import { SocketEvent, SocketEventDefault } from "../../../utils/constants";
+import { color } from "utils/constants";
 
 // hooks
-import useSocket from "../../../hooks/useSocket";
+import useChannelSocket from "../hooks/useChannelSocket";
 
 // components
-import Channels from "./Channels";
+import Channels from "./Channel";
 import { Box } from "@mui/system";
 import WorkSpaceSidebar from "./WorkSpaceSidebar";
+
+// contexts
+import ChannelSocketProvider from "../Context/ChannelSocketContext";
 
 const WorkSpace: FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const user = useSelector(authSelectors.getUser);
-  const selectedTeamId = useSelector(teamsSelectors.getSelectedId);
   const selectedChannelId = useSelector(channelsSelectors.getSelectedChannelId);
   const channelList = useSelector(channelsSelectors.getChannelList);
 
-  const { socket, updateNamespace } = useSocket();
-
-  const handleSendChannel = (channelName: string, desc: string) => {
-    console.log(channelName, desc);
-    socket?.emit(SocketEvent.EMIT_ADD_CHANNEL, { userId: user.id, data: { channelName } });
-  };
-
-  const addNewChannel = useCallback(
-    (channel: ChannelType) => dispatch(addChannelList(channel)),
-    [dispatch]
-  );
-
-  const updateChannels = useCallback(
-    (data: { channels?: ChannelType[]; users?: UserType[] }) => {
-      const { channels, users } = data || {};
-
-      if (users) dispatch(setUserList(users));
-
-      if (channels) {
-        const channelsList: ChannelType[] = [];
-        const directMessagesList: ChannelType[] = [];
-        channels.forEach((channel: ChannelType) => {
-          channel.type === "direct_message"
-            ? directMessagesList.push(channel)
-            : channelsList.push(channel);
-        });
-        dispatch(setChannelsList(channelsList));
-        dispatch(setDirectMessagesList(directMessagesList));
-      }
-    },
-    [dispatch]
-  );
+  const { handleSendChannel } = useChannelSocket();
 
   // after got channelList
   // when selectedChannelId is emtpy
-  // set general channel as  selected channel
+  // set general channel as selected channel
   useEffect(() => {
     if (selectedChannelId || !channelList.length) return;
 
@@ -85,48 +45,20 @@ const WorkSpace: FC = () => {
     navigate(generalChannel.id);
   }, [selectedChannelId, channelList, navigate, dispatch]);
 
-  // update namespace for socket
-  useEffect(() => {
-    if (selectedTeamId) {
-      updateNamespace(`/${selectedTeamId}`);
-    }
-  }, [selectedTeamId, updateNamespace]);
-
-  // setup socket Channels
-  useEffect(() => {
-    if (!socket) return;
-
-    socket
-      .on(SocketEventDefault.CONNECT, () => {
-        socket.emit(SocketEvent.EMIT_LOAD_CHANNELS, { userId: user.id });
-      })
-      .on(SocketEventDefault.DISCONNECT, () => {});
-
-    socket
-      .on(SocketEvent.ON_CHANNELS, updateChannels)
-      .on(SocketEvent.ON_NEW_CHANNEL, addNewChannel);
-
-    socket.connect();
-    return () => {
-      socket?.disconnect();
-    };
-  }, [user, socket, updateChannels, addNewChannel]);
-
-  // wait for setting selected channel id
-  if (!selectedChannelId) return null;
-
   return (
     <Box
       flexBasis={260}
-      bgcolor="#19171D"
-      color="#a3a3a6"
+      bgcolor={color.BG_WORK_SPACE}
+      color={color.SILVER_QUICK}
       borderRight={1}
-      borderColor="rgba(209,210,211,0.1)"
+      borderColor={color.BORDER}
     >
-      <WorkSpaceSidebar />
-      <Routes>
-        <Route path="/:channelId" element={<Channels onAddChannel={handleSendChannel} />} />
-      </Routes>
+      <ChannelSocketProvider>
+        <WorkSpaceSidebar />
+        <Routes>
+          <Route path="/:channelId" element={<Channels onAddChannel={handleSendChannel} />} />
+        </Routes>
+      </ChannelSocketProvider>
     </Box>
   );
 };

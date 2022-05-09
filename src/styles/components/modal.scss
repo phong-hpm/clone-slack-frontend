@@ -18,10 +18,46 @@
   flex-direction: column;
   height: auto;
   max-height: 100%;
+  min-height: 150px;
   width: 100%;
   max-width: 520px;
+  min-width: 400px;
   overflow: hidden;
   box-shadow: rgba(232, 232, 232, 0.13) 0px 0px 0px 1px, rgba(0, 0, 0, 0.35) 0px 18px 48px 0px;
   background: #1a1d21;
   border-radius: 8px;
+
+  &.modal-anchor {
+    position: absolute;
+    overflow: visible;
+    width: 400px;
+    min-width: auto;
+  }
+
+  &.modal-arrow {
+    &::before {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 0);
+      width: 40px;
+      height: 20px;
+      background: #1a1d21;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%, 50%) rotateZ(45deg);
+      width: 20px;
+      height: 20px;
+      box-shadow: rgba(232, 232, 232, 0.13) 0px 0px 0px 1px, rgba(0, 0, 0, 0.35) 0px 18px 48px 0px;
+      background: #1a1d21;
+    }
+  }
 }

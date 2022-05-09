@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 
 // redux slices
-import { ChannelType } from "../../../store/slices/channels.slice";
+import { ChannelType } from "../../../../store/slices/channels.slice";
 
 // components
 import {
@@ -14,7 +14,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import SlackIcon from "../../../components/SlackIcon";
+import SlackIcon from "../../../../components/SlackIcon";
 
 export interface ChannelListProps {
   label: string;
@@ -59,7 +59,7 @@ const ChannelList: FC<ChannelListProps> = ({
       >
         <Box mr={1}>
           <IconButton size="small">
-            {isCollapsed ? <SlackIcon icon="caret-right" /> : <SlackIcon icon="caret-down" />}
+            <SlackIcon icon={isCollapsed ? "caret-right" : "caret-down"} />
           </IconButton>
         </Box>
         <Typography flex="1">{label}</Typography>

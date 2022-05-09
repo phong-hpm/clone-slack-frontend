@@ -8,6 +8,7 @@ import { UserType } from "../../slices/users.slice";
 
 // utils
 import axios from "../../../utils/axios";
+import { stateDefault } from "../../../utils/constants";
 
 export interface VerifyResponseData {
   verified: boolean;
@@ -39,7 +40,7 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) =
     .addCase(verify.rejected, (state) => {
       state.isAuth = false;
       state.isVerified = true;
-      state.user = { id: "", email: "", name: "", timeZone: "" };
+      state.user = stateDefault.USER;
       state.isLoading = false;
     });
 };

@@ -1,5 +1,8 @@
 import { Theme } from "@mui/material";
 
+// utils
+import { color } from "../../utils/constants";
+
 const components: Theme["components"] = {
   MuiIconButton: {
     styleOverrides: {
@@ -7,6 +10,12 @@ const components: Theme["components"] = {
         fontSize: "inherit",
         color: "inherit",
         padding: "7px",
+        opacity: 1,
+
+        "&.Mui-disabled": {
+          opacity: 0.3,
+          color: "inherit",
+        },
       },
     },
     variants: [
@@ -19,10 +28,10 @@ const components: Theme["components"] = {
       {
         props: { color: "secondary" },
         style: {
-          backgroundColor: "#d1d2d3",
+          backgroundColor: color.PRIMARY,
           color: "#19171d",
           "&:hover": {
-            backgroundColor: "#d1d2d3",
+            backgroundColor: color.PRIMARY,
             color: "#19171d",
           },
         },

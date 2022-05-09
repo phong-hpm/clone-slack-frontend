@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { FC } from "react";
 
 export interface ModalHeaderProps {
@@ -7,8 +7,8 @@ export interface ModalHeaderProps {
 
 const ModalHeader: FC<ModalHeaderProps> = ({ children }) => {
   return (
-    <Box py={2.5} pl={3.5} pr={9}>
-      <Typography variant="h2">{children}</Typography>
+    <Box py={2.5} pl={3} pr={9}>
+      {children}
     </Box>
   );
 };
