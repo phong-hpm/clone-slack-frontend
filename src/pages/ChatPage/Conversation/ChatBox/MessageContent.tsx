@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect, useRef, useState } from "react";
+import { FC, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 // redux store
 import { useSelector } from "store";
@@ -9,6 +9,7 @@ import { MessageType } from "store/slices/messages.slice";
 
 // redux selectors
 import * as authSelectors from "store/selectors/auth.selector";
+import * as usersSelectors from "store/selectors/users.selector";
 
 // components
 import ReactQuill from "react-quill";
@@ -22,6 +23,7 @@ import useMessageSocket from "../../hooks/useMessageSocket";
 // utils
 import { dayFormat } from "utils/dayjs";
 import { color, rgba } from "utils/constants";
+import { addNecessaryFields } from "utils/message";
 
 // images
 import defaultAvatar from "assets/images/default_avatar.png";
@@ -37,14 +39,20 @@ export interface MessageContentProps {
   message: MessageType;
 }
 
-const MessageContent: FC<MessageContentProps> = ({ userOwner, message }) => {
+const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messageProp }) => {
   const quillRef = useRef<ReactQuill>(null);
   const anchorEmojiModalRef = useRef<HTMLDivElement>(null);
 
   const { emitEditMessage, emitRemoveMessage, emitReactionMessage } = useMessageSocket();
 
   const user = useSelector(authSelectors.getUser);
+  const userList = useSelector(usersSelectors.getUserList);
 
+  // [message] state will help to keep message reference
+  // case: when user update 1 message, [MessageList] will re-render
+  //       if not keep message re-ference,
+  //       all [MessageContent] will be triggered re-render
+  const [message, setMessage] = useState(messageProp);
   const [isShowShareMessageModal, setShowShareMessageModal] = useState(false);
   const [isHovering, setHovering] = useState(false);
   const [isEditing, setEditing] = useState(false);
@@ -61,6 +69,13 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message }) => {
     setHovering(false);
     emitRemoveMessage(message.id);
   };
+
+  // useEffect will help to increate performance
+  useEffect(() => {
+    const isOwner = messageProp.user === user.id;
+    const delta = addNecessaryFields(messageProp.delta, userList, user.id);
+    setMessage({ ...messageProp, isOwner, delta });
+  }, [user.id, userList, messageProp]);
 
   useLayoutEffect(() => {
     if (isEditing || !quillRef.current || !message.delta.ops?.length) return;

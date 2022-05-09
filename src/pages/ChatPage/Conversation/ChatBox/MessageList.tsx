@@ -1,16 +1,10 @@
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 // redux store
 import { useSelector } from "store";
 
 // redux selectors
 import * as messagesSelectors from "store/selectors/messages.selector";
-import * as usersSelectors from "store/selectors/users.selector";
-import * as authSelectors from "store/selectors/auth.selector";
-
-// redux slices
-import { UserType } from "store/slices/users.slice";
-import { MessageType } from "store/slices/messages.slice";
 
 // components
 import {
@@ -29,72 +23,19 @@ import {
 import MessageContent from "./MessageContent";
 
 // utils
-import { addNecessaryFields } from "utils/message";
-import { dayFormat, isToday, minuteDiff } from "utils/dayjs";
 import { color } from "utils/constants";
 import SlackIcon from "components/SlackIcon";
 
-interface UserMessageType {
-  userOwner?: UserType;
-  message: MessageType;
-}
-
 const MessageList: FC = () => {
-  const messageList = useSelector(messagesSelectors.getMessageList);
   const isLoading = useSelector(messagesSelectors.isLoading);
-  const userList = useSelector(usersSelectors.getUserList);
-  const user = useSelector(authSelectors.getUser);
+  // messages in [userMessagesDayGroup] were have the same reference with it's previous reference
+  //    only updated message's reference was changed
+  // If update [userMessagesDayGroup], we MUST NOT to create new message's reference in it
+  const userMessagesDayGroup = useSelector(messagesSelectors.getGroupedMessageList);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [anchorJumpMenu, setAnchorJumpMenu] = useState<HTMLButtonElement | null>(null);
-
-  const mappedMessageList = useMemo(() => {
-    if (!userList.length || !messageList.length) return [];
-
-    return messageList.map((message) => {
-      return {
-        ...message,
-        isOwner: message.user === user.id,
-        delta: addNecessaryFields(message.delta, userList, user.id),
-      };
-    });
-  }, [user, userList, messageList]);
-
-  const userMessagesDayGroup = useMemo(() => {
-    if (!mappedMessageList.length) return [];
-
-    const dayGroups: { day: string; minuteGroups: UserMessageType[] }[] = [];
-
-    const minuteGroups: UserMessageType[] = [];
-    let curUserId = "";
-    let curCreated = 0;
-
-    for (let i = 0; i < mappedMessageList.length; i++) {
-      const curMinuteGroup: UserMessageType = { message: mappedMessageList[i] };
-      const { user: userId, created } = mappedMessageList[i];
-
-      // add group if message was created after previous message over 5 minutes
-      if (userId !== curUserId || minuteDiff(created, curCreated) > 5) {
-        curMinuteGroup.userOwner = userList.find((user) => userId === user.id);
-      }
-      minuteGroups.push(curMinuteGroup);
-      curUserId = userId;
-      curCreated = created;
-
-      // created to day string
-      const createdDay = isToday(created) ? "today" : dayFormat(created, "dddd, MMM Do");
-      // check if not same day
-      if (dayGroups[dayGroups.length - 1]?.day !== createdDay) {
-        dayGroups.push({ day: createdDay, minuteGroups: [] });
-      }
-
-      // add minute group to current day group
-      dayGroups[dayGroups.length - 1].minuteGroups.push(curMinuteGroup);
-    }
-
-    return dayGroups;
-  }, [userList, mappedMessageList]);
 
   // scroll to bottom after messages were loaded
   useEffect(() => {
