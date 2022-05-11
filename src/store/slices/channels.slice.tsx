@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface ChannelType {
   id: string;
   name: string;
-  type: "direct_message" | "chanel";
+  type: "direct_message" | "channel";
   isAllUser: boolean;
   users: string[];
   creater: string;

@@ -23,7 +23,7 @@ const EmojiModal: FC<EmojiModalProps> = ({ onEmojiSelect, onClose, ...props }) =
       transformOrigin={{ horizontal: "left", vertical: "bottom" }}
       transformExtra={{ vertical: 8 }}
       onClose={onClose}
-      style={{ content: { width: "352px", backgroundColor: "rgb(21, 22, 23)" } }}
+      style={{ content: { minWidth: "352px", width: "352px", backgroundColor: "rgb(21, 22, 23)" } }}
       {...props}
     >
       <Box

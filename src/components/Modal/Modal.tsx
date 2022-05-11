@@ -23,11 +23,15 @@ export interface ModalProps
   > {
   isOpen: boolean;
   isCloseBtn?: boolean;
+  isCloseBtnCorner?: boolean;
   isArrow?: boolean;
   onAfterOpen?: () => void;
+  shouldCloseOnEsc?: boolean;
+  shouldCloseOnOverlayClick?: boolean;
   onClose: () => void;
   anchorEl?: Element | null | undefined;
   autoWidth?: boolean;
+  autoHeight?: boolean;
   anchorOrigin?: PopoverOrigin;
   transformOrigin?: PopoverOrigin;
   transformExtra?: { horizontal?: number; vertical?: number };
@@ -119,9 +123,13 @@ const computeOverViewportPosition = (
 
 const Modal: FC<ModalProps> = ({
   isCloseBtn,
+  isCloseBtnCorner,
   isArrow,
   isOpen,
+  shouldCloseOnEsc = true,
+  shouldCloseOnOverlayClick = true,
   autoWidth,
+  autoHeight,
   anchorEl,
   style: styleProp,
   className,
@@ -141,11 +149,16 @@ const Modal: FC<ModalProps> = ({
   const style = useMemo(() => {
     const { content = {}, overlay = {} } = styleProp || {};
     const modalStyles: ReactModal.Styles = {
-      content: { ...position, width: autoWidth ? "auto" : undefined, ...content },
+      content: {
+        width: autoWidth ? "auto" : undefined,
+        height: autoHeight ? "auto" : undefined,
+        ...position,
+        ...content,
+      },
       overlay: { ...overlay },
     };
     return modalStyles;
-  }, [autoWidth, position, styleProp]);
+  }, [autoWidth, autoHeight, position, styleProp]);
 
   const computePosition = useCallback(() => {
     if (!contentEl || !anchorEl) return;
@@ -198,8 +211,8 @@ const Modal: FC<ModalProps> = ({
       <ReactModal
         contentRef={setContentEl}
         isOpen={isOpen}
-        shouldCloseOnEsc
-        shouldCloseOnOverlayClick
+        shouldCloseOnEsc={shouldCloseOnEsc}
+        shouldCloseOnOverlayClick={shouldCloseOnOverlayClick}
         onAfterOpen={onAfterOpen}
         onRequestClose={onClose}
         portalClassName="modal-portal"
@@ -217,6 +230,13 @@ const Modal: FC<ModalProps> = ({
           <Box position="absolute" top="16px" right="16px">
             <IconButton onClick={onClose} sx={{ borderRadius: 1 }}>
               <SlackIcon icon="close" />
+            </IconButton>
+          </Box>
+        )}
+        {isCloseBtnCorner && (
+          <Box position="absolute" top={-10} right={-10}>
+            <IconButton color="secondary" onClick={onClose} size="medium">
+              <SlackIcon fontSize="small" icon="close" />
             </IconButton>
           </Box>
         )}

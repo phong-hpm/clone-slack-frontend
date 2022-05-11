@@ -2,6 +2,18 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { Delta } from "quill";
 
+export interface MessageFileType {
+  id: string;
+  url: string;
+  created: number;
+  fileType: "webm";
+  size: number;
+  type: "audio" | "video";
+  wavePeaks: number[];
+  mineType: "audio/webm";
+  duration: number;
+}
+
 export interface MessageType {
   id: string;
   type: string;
@@ -13,6 +25,7 @@ export interface MessageType {
   isEdited?: boolean;
   isStared?: boolean;
   reactions: { id: string; users: string[]; count: number }[];
+  files?: MessageFileType[];
 }
 
 export interface MessagesState {

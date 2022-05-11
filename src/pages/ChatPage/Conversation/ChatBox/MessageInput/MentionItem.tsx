@@ -30,7 +30,7 @@ const MentionItem: FC<MentionItemProps> = ({ userId, userMention }) => {
         </Box>
       )}
       <Box p={0.5}>
-        <Status isOnline={userMention.isOnline} />
+        <Status isOnline={userMention.isOnline} fontSize="large" />
       </Box>
       {!!userMention.realname && (
         <Box p={0.5}>

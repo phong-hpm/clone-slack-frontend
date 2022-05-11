@@ -1,5 +1,8 @@
 import { FC, useEffect, useLayoutEffect, useRef, useState } from "react";
 
+// images
+import defaultAvatar from "assets/images/default_avatar.png";
+
 // redux store
 import { useSelector } from "store";
 
@@ -14,25 +17,22 @@ import * as usersSelectors from "store/selectors/users.selector";
 // components
 import ReactQuill from "react-quill";
 import { Delta } from "quill";
-import { Avatar, Box, Chip, Link, Tooltip, Typography } from "@mui/material";
-import EmojiIcon from "components/EmojiIcon";
+import { Avatar, Box, Typography } from "@mui/material";
+import MessageInput from "../MessageInput";
+import { updateReadonlyLinkField } from "utils/message";
+import MessageActions from "../MessageActions";
+import ShareMessageModal from "../ShareMessageModal";
+import Bookmark from "./Bookmark";
 
 // hooks
-import useMessageSocket from "../../hooks/useMessageSocket";
+import useMessageSocket from "../../../hooks/useMessageSocket";
 
 // utils
 import { dayFormat } from "utils/dayjs";
 import { color, rgba } from "utils/constants";
 import { addNecessaryFields } from "utils/message";
-
-// images
-import defaultAvatar from "assets/images/default_avatar.png";
-import MessageInput from "./MessageInput";
-import { updateReadonlyLinkField } from "utils/message";
-import MessageActions from "./MessageActions";
-import SlackIcon from "components/SlackIcon";
-import ShareMessageModal from "./ShareMessageModal";
-import EmojiModal from "./EmojiModal";
+import Reactions from "./Reactions";
+import MediaFileList from "./MediaFileList";
 
 export interface MessageContentProps {
   userOwner?: UserType;
@@ -41,9 +41,8 @@ export interface MessageContentProps {
 
 const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messageProp }) => {
   const quillRef = useRef<ReactQuill>(null);
-  const anchorEmojiModalRef = useRef<HTMLDivElement>(null);
 
-  const { emitEditMessage, emitRemoveMessage, emitReactionMessage } = useMessageSocket();
+  const { emitEditMessage, emitRemoveMessage } = useMessageSocket();
 
   const user = useSelector(authSelectors.getUser);
   const userList = useSelector(usersSelectors.getUserList);
@@ -56,7 +55,6 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
   const [isShowShareMessageModal, setShowShareMessageModal] = useState(false);
   const [isHovering, setHovering] = useState(false);
   const [isEditing, setEditing] = useState(false);
-  const [isShowEmojiModal, setShowEmojiModal] = useState(false);
 
   const isShowActions = isHovering && !isEditing;
 
@@ -87,7 +85,7 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
   // 1: when user change status to NOT editing, should remove hovering status
   useLayoutEffect(() => setHovering(false), [isEditing]);
 
-  if (!message.delta.ops?.length) return <></>;
+  if (!message.delta.ops?.length && !message.files?.length) return <></>;
 
   const bgcolor = isEditing
     ? "rgba(242, 199, 68, 0.2)"
@@ -106,19 +104,10 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
       onMouseOver={() => setHovering(!isEditing)}
       onMouseLeave={() => setHovering(false)}
     >
-      {message.isStared && (
-        <Box display="flex" px={2.5} py={0.5}>
-          <Box flexBasis={36} display="flex" justifyContent="end" mt={0.5} mr={1}>
-            <SlackIcon color={color.DANGER} fontSize="small" icon="bookmark-filled" />
-          </Box>
+      {/* stared */}
+      <Bookmark message={message} />
 
-          <Link component="button" underline="hover" color={rgba(color.MAX, 0.7)}>
-            <Typography variant="h5">Added to your saved items</Typography>
-          </Link>
-        </Box>
-      )}
-
-      <Box display="flex" px={2.5} pb={0.5}>
+      <Box display="flex" px={2.5} py={0.5}>
         <Box flexBasis={36} mt={0.5} mr={1}>
           {userOwner && <Avatar src={defaultAvatar} />}
           {!userOwner && isHovering && (
@@ -127,6 +116,8 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
             </Typography>
           )}
         </Box>
+
+        {/* message */}
         <Box flex="1">
           {!isEditing && userOwner && (
             <Box display="flex" alignItems="flex-end">
@@ -139,69 +130,47 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
             </Box>
           )}
 
-          {isEditing ? (
-            <Box py={0.5}>
-              <MessageInput
-                autoFocus
-                isEditMode
-                defaultValue={updateReadonlyLinkField(message.delta, false)}
-                onCancel={() => setEditing(false)}
-                onSend={(delta) => handleEdit(message.id, delta)}
-              />
-            </Box>
-          ) : (
-            <ReactQuill
-              ref={quillRef}
-              className="quill-editor"
-              bounds={"#root"}
-              modules={{ toolbar: false, clipboard: { matchVisual: false } }}
-              readOnly
-            />
+          {message.delta.ops && (
+            <>
+              {isEditing ? (
+                <Box py={0.5}>
+                  <MessageInput
+                    autoFocus
+                    isEditMode
+                    defaultValue={updateReadonlyLinkField(message.delta, false)}
+                    onCancel={() => setEditing(false)}
+                    onSend={(delta) => handleEdit(message.id, delta)}
+                  />
+                </Box>
+              ) : (
+                <ReactQuill
+                  ref={quillRef}
+                  className="quill-editor"
+                  bounds={"#root"}
+                  modules={{ toolbar: false, clipboard: { matchVisual: false } }}
+                  readOnly
+                />
+              )}
+
+              <Typography>
+                {message.isEdited && (
+                  <Typography variant="h5" pl={0.375} component="span" color={color.HIGH_SOLID}>
+                    (edited)
+                  </Typography>
+                )}
+              </Typography>
+            </>
           )}
 
-          <Typography>
-            {message.isEdited && (
-              <Typography variant="h5" pl={0.375} component="span" color={color.HIGH_SOLID}>
-                (edited)
-              </Typography>
-            )}
-          </Typography>
+          {/* MediaFileList */}
+          <MediaFileList message={message} />
         </Box>
       </Box>
 
-      <Box display="flex" py={0.5} pl={8} pr={0.5}>
-        {message.reactions.map((reaction) => (
-          <Box key={reaction.id} mr={0.5}>
-            <Chip
-              clickable
-              size="small"
-              color={reaction.users.includes(user.id) ? "primary" : undefined}
-              label={
-                <Box display="flex">
-                  <EmojiIcon id={reaction.id} />
-                  <Typography variant="h6" sx={{ ml: 0.5 }}>
-                    {reaction.count}
-                  </Typography>
-                </Box>
-              }
-              onClick={() => emitReactionMessage(message.id, reaction.id)}
-            />
-          </Box>
-        ))}
-        {!!message.reactions.length && (
-          <Tooltip title="Add reaction...">
-            <Chip
-              ref={anchorEmojiModalRef}
-              clickable
-              variant="outlined"
-              size="small"
-              label={<SlackIcon icon="add-reaction" fontSize="medium" />}
-              onClick={() => setShowEmojiModal(true)}
-            />
-          </Tooltip>
-        )}
-      </Box>
+      {/* reactions */}
+      <Reactions message={message} />
 
+      {/* action bar */}
       <Box position="absolute" right={12} top={-20}>
         {isShowActions && (
           <MessageActions
@@ -217,18 +186,12 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
         )}
       </Box>
 
+      {/* share message modal */}
       <ShareMessageModal
         isOpen={isShowShareMessageModal}
         message={message}
         onClose={() => setShowShareMessageModal(false)}
         onSubmit={() => {}}
-      />
-
-      <EmojiModal
-        isOpen={isShowEmojiModal}
-        anchorEl={anchorEmojiModalRef.current}
-        onEmojiSelect={(emoji) => emitReactionMessage(message.id, emoji.id)}
-        onClose={() => setShowEmojiModal(false)}
       />
     </Box>
   );

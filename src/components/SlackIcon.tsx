@@ -7,10 +7,11 @@ import { iconName, iconImgName } from "../utils/constants";
 export interface SlackIconProps {
   fontSize?: "inherit" | "small" | "medium" | "large";
   color?: string;
+  cursor?: string;
   icon: typeof iconName[number] | typeof iconImgName[number];
 }
 
-const SlackIcon: FC<SlackIconProps> = ({ icon, color, fontSize }) => {
+const SlackIcon: FC<SlackIconProps> = ({ icon, color, cursor, fontSize }) => {
   if (!iconImgName.includes(icon)) {
     return (
       <i
@@ -19,7 +20,7 @@ const SlackIcon: FC<SlackIconProps> = ({ icon, color, fontSize }) => {
           icon && `c-icon--${icon}`,
           fontSize && `c-icon-fontsize-${fontSize}`
         )}
-        style={{ color }}
+        style={{ color, cursor }}
       />
     );
   }

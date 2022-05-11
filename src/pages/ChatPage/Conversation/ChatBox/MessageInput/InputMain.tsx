@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useContext, FC } from "react";
+import { useState, useEffect, useMemo, useCallback, useContext, FC, useRef } from "react";
 import * as ReactDOMServer from "react-dom/server";
 
 // redux store
@@ -13,13 +13,14 @@ import { UserType } from "store/slices/users.slice";
 
 // components
 import "quill-mention";
-import { Delta, RangeStatic } from "quill";
+import { Delta, RangeStatic, StringMap } from "quill";
 import { Box } from "@mui/material";
 import ReactQuill from "react-quill";
 import InputActions from "./InputActions";
 import InputToolbar from "./InputToolbar";
 import QuillFormatLink from "./QuillFormatLink";
 import MentionItem from "./MentionItem";
+import UploadingFiles from "./UploadingFiles";
 
 // context
 import ChatBoxContext from "./InputContext";
@@ -48,13 +49,16 @@ const InputMain: FC<InputMainProps> = ({
   onCancel,
   onSend,
 }) => {
-  const { appState, quillReact, updateQuillState, setQuillReact, updateAppState, setFocus } =
+  const { appState, quillReact, updateQuillState, setQuillReact, setFocus } =
     useContext(ChatBoxContext);
 
   const user = useSelector(authSelectors.getUser);
   const userList = useSelector(usersSelectors.getUserList);
 
   const [keepRef] = useQuillReact();
+
+  // modules ref will keep the reference of modules, help QuillReact will not be broken
+  const modulesRef = useRef<StringMap>({});
 
   const [toolbarEL, setToolbarEL] = useState<HTMLDivElement | null>(null);
   const [isDisabled, setDisabled] = useState(true);
@@ -105,16 +109,16 @@ const InputMain: FC<InputMainProps> = ({
     };
   }, [keepRef, selectMention, mentionSource, renderUserMentionItem]);
 
+  // modulesRef.current will keep reference of module
+  //   will help QuillReact re-render correctly
   const modules = useMemo(() => {
-    const result = {
-      toolbar: toolbarEL ? { container: toolbarEL } : false,
-      clipboard: { matchVisual: false },
-      // remove handler of enter key
-      keyboard: { bindings: { enter: { key: 13, handler: () => {} } } },
-      mention: mentionModule,
-    };
+    modulesRef.current.toolbar = toolbarEL ? { container: toolbarEL } : false;
+    modulesRef.current.mention = mentionModule;
+    modulesRef.current.clipboard = { matchVisual: false };
+    // remove handler of enter key
+    modulesRef.current.keyboard = { bindings: { enter: { key: 13, handler: () => {} } } };
 
-    return result;
+    return modulesRef.current;
   }, [toolbarEL, mentionModule]);
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -162,13 +166,37 @@ const InputMain: FC<InputMainProps> = ({
 
     updateQuillState({ blot, range, blotRange });
 
-    updateAppState({ isShowEditLinkModal: true, linkValue });
-
     const detail: LinkCustomEventDetailType = { quillReact, linkValue, range, blotRange, setFocus };
     window.dispatchEvent(new CustomEvent("open-link-edit-modal", { detail }));
 
     // blur quill to help EditLink input can auto focus
     quillReact?.getEditor().blur();
+  };
+
+  const handleClickAtSign = () => {
+    if (!appState.isFocus) return;
+
+    let curIndex = quillReact?.getEditor().getSelection()?.index;
+    const charactorBeforeCursor = curIndex ? quillReact?.getEditor().getText(curIndex - 1, 1) : "";
+
+    // insert "@" if charactor before cursor is not a "@"
+    if (charactorBeforeCursor !== "@") {
+      quillReact?.getEditor().insertText(curIndex || 0, "@");
+    }
+
+    curIndex = quillReact?.getEditor().getSelection()?.index;
+    if (curIndex) {
+      // First: set selection before "@"
+      // Next: set selection after "@"
+      // these 2 step will trigger open mention tooltip
+      quillReact?.getEditor().setSelection(curIndex - 1, 0);
+      quillReact?.getEditor().setSelection(curIndex, 0);
+    }
+  };
+
+  const handleAddEmoji = (emojiNative: string) => {
+    let curIndex = keepRef.current.range.index;
+    quillReact?.getEditor().insertText(curIndex || 0, emojiNative);
   };
 
   const handleSend = useCallback(() => {
@@ -225,9 +253,13 @@ const InputMain: FC<InputMainProps> = ({
           />
         )}
 
+        <UploadingFiles />
+
         <InputActions
           isShowToolbar={isShowToolbar}
           isDisabledSend={isDisabled}
+          onSelectEmoji={handleAddEmoji}
+          onClickAtSign={handleClickAtSign}
           onToggleToolbar={(isShow) => setShowToolbar(isShow)}
           onCancel={onCancel}
           onSend={handleSend}

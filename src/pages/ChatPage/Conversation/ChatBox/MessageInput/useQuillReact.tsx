@@ -5,12 +5,12 @@ import ReactQuill from "react-quill";
 import { RangeStatic } from "quill";
 
 // context
-import ChatBoxContext, { ContextAppStateType, initialQuillState } from "./InputContext";
+import ChatBoxContext, { ContextLinkValueType, initialQuillState } from "./InputContext";
 
 export interface LinkCustomEventDetailType {
   quillReact?: ReactQuill;
   anchorEl?: HTMLSpanElement;
-  linkValue?: ContextAppStateType["linkValue"];
+  linkValue?: ContextLinkValueType;
   range?: RangeStatic;
   blotRange?: RangeStatic;
   setFocus?: (isFocus: boolean, index?: number) => void;
@@ -25,7 +25,7 @@ export const useQuillReact = () => {
   useEffect(() => {
     const linkClick = (event: any) => {
       const node = event.node as HTMLAnchorElement;
-      const linkValue = event.value as ContextAppStateType["linkValue"];
+      const linkValue = event.value as ContextLinkValueType;
       const isFocus = quillReact?.getEditor()?.hasFocus();
 
       if (isFocus && !linkValue.isReadOnly) {

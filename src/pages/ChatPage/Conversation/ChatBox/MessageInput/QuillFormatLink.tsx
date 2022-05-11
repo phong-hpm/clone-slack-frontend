@@ -1,12 +1,12 @@
 import Quill from "quill";
 
 // context
-import { ContextAppStateType } from "./InputContext";
+import { ContextLinkValueType } from "./InputContext";
 
 const Link = Quill.import("formats/link");
 
 class ClickableLink extends Link {
-  public static create(value: Omit<ContextAppStateType["linkValue"], "url">): ClickableLink {
+  public static create(value: Omit<ContextLinkValueType, "url">): ClickableLink {
     const node = super.create(value.href) as HTMLElement;
 
     node.setAttribute("href", ClickableLink.sanitize(value.href));
@@ -19,7 +19,7 @@ class ClickableLink extends Link {
     node.dataset["url"] = ClickableLink.sanitize(value.href);
     node.dataset["isReadOnly"] = value.isReadOnly ? "true" : "false";
 
-    const linkValue: ContextAppStateType["linkValue"] = {
+    const linkValue: ContextLinkValueType = {
       text: value.text,
       href: value.href,
       url: ClickableLink.sanitize(value.href),

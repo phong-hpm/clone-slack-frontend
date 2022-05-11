@@ -1,7 +1,7 @@
 import { Theme } from "@mui/material";
 
 // utils
-import { color } from "../../utils/constants";
+import { color, rgba } from "../../utils/constants";
 
 const components: Theme["components"] = {
   MuiIconButton: {
@@ -26,6 +26,12 @@ const components: Theme["components"] = {
         },
       },
       {
+        props: { size: "medium" },
+        style: {
+          padding: "4px",
+        },
+      },
+      {
         props: { color: "secondary" },
         style: {
           backgroundColor: color.PRIMARY,
@@ -33,6 +39,21 @@ const components: Theme["components"] = {
           "&:hover": {
             backgroundColor: color.PRIMARY,
             color: "#19171d",
+          },
+        },
+      },
+      {
+        props: { color: "info" },
+        style: {
+          backgroundColor: color.HIGHLIGHT,
+          color: color.LIGHT,
+          "&:hover": {
+            backgroundColor: color.HIGHLIGHT_HOVER,
+            color: color.LIGHT,
+          },
+          "&.Mui-disabled": {
+            backgroundColor: rgba(color.HIGHLIGHT, 0.5),
+            color: color.LIGHT,
           },
         },
       },

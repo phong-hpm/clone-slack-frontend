@@ -92,7 +92,7 @@ const MoreMenu: FC<MoreMenuProps> = ({
       {!isSystem && (
         <MenuItem onMouseDown={() => {}}>
           <Box display="flex" justifyContent="space-between" width="100%">
-            <Typography>Pin to chanel</Typography>
+            <Typography>Pin to channel</Typography>
             <Typography color={color.HIGH}>P</Typography>
           </Box>
         </MenuItem>

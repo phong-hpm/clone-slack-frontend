@@ -4,7 +4,7 @@ import { FC, useLayoutEffect, useRef, useState } from "react";
 import { Box, Popover, Typography } from "@mui/material";
 
 // context
-import { ContextAppStateType } from "./MessageInput/InputContext";
+import { ContextLinkValueType } from "./MessageInput/InputContext";
 
 // quill-react is using javascript event to trigger action
 // that why this component is working with javascript event only
@@ -14,7 +14,7 @@ const LinkDetailPopover: FC = () => {
   // support for case user is moving mouse too fast
   const keepRef = useRef<{
     anchorEl: HTMLSpanElement | null;
-    linkValue: ContextAppStateType["linkValue"] | null;
+    linkValue: ContextLinkValueType | null;
   }>({
     anchorEl: null,
     linkValue: null,
@@ -28,7 +28,7 @@ const LinkDetailPopover: FC = () => {
     setOpen(false);
   };
 
-  const handleOpen = (linkValue: ContextAppStateType["linkValue"], node: HTMLSpanElement) => {
+  const handleOpen = (linkValue: ContextLinkValueType, node: HTMLSpanElement) => {
     keepRef.current.anchorEl = node;
     keepRef.current.linkValue = linkValue;
     setOpen(true);
@@ -39,7 +39,7 @@ const LinkDetailPopover: FC = () => {
     let node: HTMLSpanElement;
 
     const clinkHover = (e: any) => {
-      const linkValue = e.value as ContextAppStateType["linkValue"];
+      const linkValue = e.value as ContextLinkValueType;
       node = e.node as HTMLAnchorElement;
 
       if (node && linkValue.isReadOnly) {

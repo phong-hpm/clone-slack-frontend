@@ -7,6 +7,14 @@ import ReactQuill from "react-quill";
 // redux slices
 import { UserType } from "../../../../../store/slices/users.slice";
 import { stateDefault } from "../../../../../utils/constants";
+import { MessageFileType } from "store/slices/messages.slice";
+
+export interface ContextLinkValueType {
+  text: string;
+  href: string;
+  url: string;
+  isReadOnly?: boolean;
+}
 
 export interface ContextQuillStateType {
   range: RangeStatic;
@@ -17,14 +25,8 @@ export interface ContextQuillStateType {
 export interface ContextAppStateType {
   isEditMode?: boolean;
   isFocus: boolean;
-  isShowEditLinkModal: boolean;
-  isShowLinkDetailModal: boolean;
-  isShowLinkDetailPopover: boolean;
-  isShowInfoModal: boolean;
   userMention: UserType;
-  anchorMention?: HTMLSpanElement | null;
-  anchorLink?: HTMLAnchorElement | null;
-  linkValue: { text: string; href: string; url: string; isReadOnly?: boolean };
+  inputFiles: MessageFileType[];
 }
 
 export interface ContextType {
@@ -35,6 +37,8 @@ export interface ContextType {
   appState: ContextAppStateType;
   updateAppState: (data: Partial<ContextAppStateType>) => void;
   setFocus: (isFocus: boolean, index?: number) => void;
+  setInputFile: (file: MessageFileType) => void;
+  removeInputFile: (id: string) => void;
 }
 
 export const initialQuillState: ContextQuillStateType = {
@@ -45,12 +49,8 @@ export const initialQuillState: ContextQuillStateType = {
 
 const initialAppState: ContextAppStateType = {
   isFocus: true,
-  isShowEditLinkModal: false,
-  isShowLinkDetailModal: false,
-  isShowLinkDetailPopover: false,
-  isShowInfoModal: false,
   userMention: stateDefault.USER,
-  linkValue: { text: "", href: "", url: "", isReadOnly: true },
+  inputFiles: [],
 };
 
 const initialContext: Partial<ContextType> = {
@@ -104,6 +104,17 @@ export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode
     [updateAppState]
   );
 
+  const setInputFile = useCallback((payload: MessageFileType) => {
+    setAppState((state) => ({ ...state, inputFiles: [...state.inputFiles, payload] }));
+  }, []);
+
+  const removeInputFile = useCallback((payload: string) => {
+    setAppState((state) => ({
+      ...state,
+      inputFiles: state.inputFiles.filter((file) => file.id !== payload),
+    }));
+  }, []);
+
   const value = useMemo(
     () => ({
       quillReact: quillRef.current || undefined,
@@ -113,8 +124,19 @@ export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode
       appState,
       updateAppState,
       setFocus,
+      setInputFile,
+      removeInputFile,
     }),
-    [quillState, appState, setQuillReact, updateQuillState, updateAppState, setFocus]
+    [
+      quillState,
+      appState,
+      setQuillReact,
+      updateQuillState,
+      updateAppState,
+      setFocus,
+      setInputFile,
+      removeInputFile,
+    ]
   );
 
   useEffect(() => updateAppState({ isEditMode }), [isEditMode, updateAppState]);

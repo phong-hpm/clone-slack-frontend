@@ -18,27 +18,72 @@ import ChatBoxContext from "./InputContext";
 
 // utils
 import { color, rgba } from "../../../../../utils/constants";
+import EmojiModal from "../EmojiModal";
+import AudioRecordModal from "./AudioRecordModal";
+
+// redux slices
+import { MessageFileType } from "store/slices/messages.slice";
 
 export interface InputActionsProps {
   isShowToolbar: boolean;
   isDisabledSend: boolean;
+  onSelectEmoji: (emojiNative: string) => void;
+  onClickAtSign: () => void;
   onToggleToolbar: (isShow: boolean) => void;
   onCancel?: () => void;
   onSend: () => void;
+  onSaveAudio?: (file: MessageFileType) => void;
 }
 
 const InputActions: FC<InputActionsProps> = ({
   isShowToolbar,
   isDisabledSend,
+  onSelectEmoji,
+  onClickAtSign,
   onToggleToolbar,
   onCancel,
   onSend,
+  onSaveAudio,
 }) => {
   const { appState, setFocus } = useContext(ChatBoxContext);
 
+  // const audioRef = useRef<HTMLAudioElement>(null);
+  // const videoRef = useRef<HTMLVideoElement>(null);
   const anchorRef = useRef<HTMLDivElement>();
+  const microButtonRef = useRef<HTMLButtonElement>(null);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
 
   const [isShowMenu, setShowMenu] = useState(false);
+  const [isShowEmojiModal, setShowEmojiModal] = useState(false);
+  const [isShowAudioModal, setShowAudioModal] = useState(false);
+
+  // const record = async () => {
+  //   return await navigator.mediaDevices.getUserMedia({
+  //     audio: true,
+  //     // video: true,
+  //   });
+  // };
+
+  // const createRecorder = (stream: MediaStream, mimeType: string, cb: Function) => {
+  //   // the stream data is stored in this array
+  //   let recordedChunks: Blob[] = [];
+
+  //   const mediaRecorder = new MediaRecorder(stream);
+
+  //   mediaRecorder.ondataavailable = (event) => {
+  //     console.log(event.data);
+  //     if (event.data.size > 0) {
+  //       recordedChunks.push(event.data);
+  //     }
+  //   };
+  //   mediaRecorder.onstop = () => {
+  //     cb(new Blob(recordedChunks));
+  //     // saveFile(recordedChunks);
+  //     recordedChunks = [];
+  //   };
+
+  //   return mediaRecorder;
+  // };
 
   const createActionList = useMemo(
     () => [
@@ -49,16 +94,16 @@ const InputActions: FC<InputActionsProps> = ({
       },
       { isDivider: true },
       { icon: "video", action: () => {} },
-      { icon: "microphone", action: () => {} },
+      { icon: "microphone", action: () => setShowAudioModal(true), ref: microButtonRef },
       { isDivider: true },
-      { icon: "emoji", action: () => {} },
-      { icon: "mentions", action: () => {} },
+      { icon: "emoji", action: () => setShowEmojiModal(true), ref: emojiButtonRef },
+      { icon: "mentions", action: onClickAtSign },
     ],
-    []
+    [onClickAtSign]
   );
 
   const editActionList = useMemo(
-    () => [{ icon: "emoji", action: () => {}, isDivider: false, style: {} }],
+    () => [{ icon: "emoji", action: () => {}, isDivider: false, style: {}, ref: undefined }],
     []
   );
 
@@ -68,16 +113,24 @@ const InputActions: FC<InputActionsProps> = ({
 
   return (
     <Box display="flex" p={0.75} onClick={() => setFocus(true)}>
+      {/* <audio ref={audioRef} />
+      <video ref={videoRef} /> */}
+
       {/* actions group */}
       <Box flex="1" display="flex" py={0.5} color={color.HIGH}>
-        {actionList.map(({ isDivider, icon, style, action }, index) => {
+        {actionList.map(({ isDivider, icon, style, action, ref }, index) => {
           return isDivider ? (
             <Box key={index} px={0.5} py={0.25} display="flex">
               <Divider flexItem orientation="vertical" />
             </Box>
           ) : (
             <Box key={index} mx={0.5}>
-              <IconButton size="small" sx={{ borderRadius: 1, ...style }} onClick={action}>
+              <IconButton
+                ref={ref}
+                size="small"
+                sx={{ borderRadius: 1, ...style }}
+                onClick={action}
+              >
                 <SlackIcon icon={icon!} fontSize="large" />
               </IconButton>
             </Box>
@@ -167,6 +220,19 @@ const InputActions: FC<InputActionsProps> = ({
 
         <MenuItem onClick={() => {}}>Custom time</MenuItem>
       </Menu>
+
+      <EmojiModal
+        isOpen={isShowEmojiModal}
+        anchorEl={emojiButtonRef.current}
+        onEmojiSelect={(emoji) => onSelectEmoji(emoji.native)}
+        onClose={() => setShowEmojiModal(false)}
+      />
+
+      <AudioRecordModal
+        isOpen={isShowAudioModal}
+        anchorEl={microButtonRef.current}
+        onClose={() => setShowAudioModal(false)}
+      />
     </Box>
   );
 };

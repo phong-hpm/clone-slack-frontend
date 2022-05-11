@@ -40,6 +40,8 @@ const MessageList: FC = () => {
   // scroll to bottom after messages were loaded
   useEffect(() => {
     if (isLoading || !containerRef.current || !userMessagesDayGroup.length) return;
+    // user scrolled
+    if (containerRef.current.scrollTop) return;
     containerRef.current.scrollTo({ top: containerRef.current.scrollHeight });
   }, [isLoading, userMessagesDayGroup]);
 
