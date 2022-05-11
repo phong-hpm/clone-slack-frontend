@@ -3,9 +3,6 @@ import { FC, useRef, useState } from "react";
 // redux store
 import { useSelector } from "store";
 
-// redux slices
-import { MessageType } from "store/slices/messages.slice";
-
 // redux selectors
 import * as authSelectors from "store/selectors/auth.selector";
 
@@ -17,6 +14,9 @@ import EmojiModal from "../EmojiModal";
 
 // hooks
 import useMessageSocket from "../../../hooks/useMessageSocket";
+
+// types
+import { MessageType } from "store/slices/_types";
 
 export interface ReactionsProps {
   message: MessageType;

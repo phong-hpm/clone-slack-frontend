@@ -1,26 +1,13 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
 
-// redux slices
-import { AuthState } from "../../slices/auth.slice";
-import { TeamType, TeamsState } from "../../slices/teams.slice";
-import { UserType } from "../../slices/users.slice";
-
 // utils
 import axios from "../../../utils/axios";
 import { stateDefault } from "../../../utils/constants";
 
-export interface LoginPostData {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponseData {
-  accessToken: string;
-  refreshToken: string;
-  user: UserType;
-  teams: TeamType[];
-}
+// types
+import { AuthState, TeamsState } from "store/slices/_types";
+import { LoginPostData, LoginResponseData } from "./_types";
 
 export const login = createAsyncThunk<
   AxiosResponse<LoginResponseData>,

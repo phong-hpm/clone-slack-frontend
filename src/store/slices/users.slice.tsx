@@ -1,19 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface UserType {
-  id: string;
-  name: string;
-  realname: string;
-  email: string;
-  timeZone: string;
-  isOnline?: boolean;
-}
-
-export interface UsersState {
-  isLoading: boolean;
-  list: UserType[];
-  selected: string;
-}
+// types
+import { UserType, UsersState } from "./_types";
 
 const initialState: UsersState = {
   isLoading: false,

@@ -9,7 +9,6 @@ import * as channelsSelector from "store/selectors/channels.selector";
 
 // redux slices
 import {
-  MessageType,
   setLoading,
   addMessage,
   updateMessage,
@@ -23,6 +22,9 @@ import useSocket from "hooks/useSocket";
 // utils
 import { SocketEvent, SocketEventDefault } from "utils/constants";
 import { useParams } from "react-router-dom";
+
+// types
+import { MessageType } from "store/slices/_types";
 
 export interface MessageContextType {
   socket?: Socket;

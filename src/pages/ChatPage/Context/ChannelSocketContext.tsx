@@ -10,18 +10,20 @@ import * as teamsSelectors from "../../../store/selectors/teams.selector";
 
 // redux slices
 import {
-  ChannelType,
   setChannelsList,
   setDirectMessagesList,
   addChannelList,
 } from "store/slices/channels.slice";
-import { setUserList, updateUserOnline, UserType } from "store/slices/users.slice";
+import { setUserList, updateUserOnline } from "store/slices/users.slice";
 
 // hooks
 import useSocket from "hooks/useSocket";
 
 // utils
 import { SocketEvent, SocketEventDefault } from "utils/constants";
+
+// types
+import { UserType, ChannelType } from "store/slices/_types";
 
 export interface ChannelContextType {
   socket?: Socket;

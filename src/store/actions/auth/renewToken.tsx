@@ -4,16 +4,12 @@ import { AxiosResponse } from "axios";
 // redux store
 import { RootState } from "../..";
 
-// redux slices
-import { AuthState } from "../../slices/auth.slice";
-
 // utils
 import axios from "../../../utils/axios";
 
-export interface RenewAccessTokenResponseData {
-  refreshToken: string;
-  accessToken: string;
-}
+// types
+import { AuthState } from "store/slices/_types";
+import { RenewAccessTokenResponseData } from "./_types";
 
 export const renewAccessToken = createAsyncThunk<AxiosResponse<RenewAccessTokenResponseData>>(
   "auth/refreshToken",

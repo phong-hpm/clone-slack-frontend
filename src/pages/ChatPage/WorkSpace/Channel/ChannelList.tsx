@@ -3,9 +3,6 @@ import { FC, useState } from "react";
 // redux store
 import { useSelector } from "store";
 
-// redux slices
-import { ChannelType } from "store/slices/channels.slice";
-
 // redux selector
 import * as authSelectors from "store/selectors/auth.selector";
 import * as usersSelectors from "store/selectors/users.selector";
@@ -30,6 +27,9 @@ import defaultAvatar from "assets/images/default_avatar.png";
 
 // utils
 import { color } from "utils/constants";
+
+// types
+import { ChannelType } from "store/slices/_types";
 
 export interface ChannelListProps {
   label: string;

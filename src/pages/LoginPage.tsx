@@ -5,13 +5,16 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "store";
 
 // redux actions
-import { login, LoginPostData } from "store/actions/auth/login";
+import { login } from "store/actions/auth/login";
 
 // redux selectors
 import * as authSelectors from "store/selectors/auth.selector";
 
 // utils
 import { RouterPath } from "utils/constants";
+
+// types
+import { LoginPostData } from "store/actions/auth/_types";
 
 const LoginPage: FC = () => {
   const dispatch = useDispatch();

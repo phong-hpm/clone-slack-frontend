@@ -8,9 +8,6 @@ import { useSelector } from "store";
 import * as authSelectors from "store/selectors/auth.selector";
 import * as usersSelectors from "store/selectors/users.selector";
 
-// redux slices
-import { UserType } from "store/slices/users.slice";
-
 // components
 import "quill-mention";
 import { Delta, RangeStatic, StringMap } from "quill";
@@ -33,6 +30,9 @@ import { removeUnnecessaryFields } from "utils/message";
 
 // hook
 import useQuillReact, { LinkCustomEventDetailType } from "./useQuillReact";
+
+// types
+import { UserType } from "store/slices/_types";
 
 export interface InputMainProps {
   autoFocus?: boolean;

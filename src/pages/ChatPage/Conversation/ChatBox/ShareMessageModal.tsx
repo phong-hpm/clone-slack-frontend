@@ -14,11 +14,13 @@ import * as usersSelectors from "store/selectors/users.selector";
 // components
 import { Box, Button, Popper, Typography, TextField, Avatar } from "@mui/material";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "components/Modal";
-import { MessageType } from "store/slices/messages.slice";
 import Status from "components/Status";
 
 // utils
 import { color } from "utils/constants";
+
+// types
+import { MessageType } from "store/slices/_types";
 
 export interface ShareMessageModalProps {
   isOpen: boolean;

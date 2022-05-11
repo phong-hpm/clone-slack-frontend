@@ -1,5 +1,7 @@
 import { Delta } from "quill";
-import { UserType } from "../store/slices/users.slice";
+
+// types
+import { UserType } from "store/slices/_types";
 
 export const updateReadonlyLinkField = (delta: Delta, isReadOnly: boolean) => {
   const ops = delta.ops?.map((op) => {

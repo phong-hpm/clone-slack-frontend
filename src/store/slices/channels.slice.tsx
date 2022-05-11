@@ -1,22 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface ChannelType {
-  id: string;
-  name: string;
-  type: "direct_message" | "channel";
-  isAllUser: boolean;
-  users: string[];
-  creater: string;
-  latest: number;
-  created: number;
-}
-
-export interface ChannelsState {
-  isLoading: boolean;
-  list: ChannelType[];
-  directMessages: ChannelType[];
-  selectedId: string;
-}
+// types
+import { ChannelsState, ChannelType } from "./_types";
 
 const initialState: ChannelsState = {
   isLoading: false,

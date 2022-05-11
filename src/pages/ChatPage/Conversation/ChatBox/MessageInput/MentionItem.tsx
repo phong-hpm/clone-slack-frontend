@@ -3,12 +3,12 @@ import { FC } from "react";
 // images
 import defaultAvatar from "assets/images/default_avatar.png";
 
-// redux slice
-import { UserType } from "store/slices/users.slice";
-
 // components
 import { Avatar, Box, Typography } from "@mui/material";
 import Status from "components/Status";
+
+// types
+import { UserType } from "store/slices/_types";
 
 export interface MentionItemProps {
   userId: string;

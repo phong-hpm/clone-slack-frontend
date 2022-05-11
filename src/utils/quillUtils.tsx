@@ -1,4 +1,5 @@
-import { UserType } from "../store/slices/users.slice";
+// types
+import { UserType } from "store/slices/_types";
 
 export const searchUserMention = (userList: UserType[], search: string) => {
   const matchedUsers: UserType[] = [];

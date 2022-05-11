@@ -6,10 +6,6 @@ import defaultAvatar from "assets/images/default_avatar.png";
 // redux store
 import { useSelector } from "store";
 
-// redux slices
-import { UserType } from "store/slices/users.slice";
-import { MessageType } from "store/slices/messages.slice";
-
 // redux selectors
 import * as authSelectors from "store/selectors/auth.selector";
 import * as usersSelectors from "store/selectors/users.selector";
@@ -33,6 +29,9 @@ import { color, rgba } from "utils/constants";
 import { addNecessaryFields } from "utils/message";
 import Reactions from "./Reactions";
 import MediaFileList from "./MediaFileList";
+
+// types
+import { UserType, MessageType } from "store/slices/_types";
 
 export interface MessageContentProps {
   userOwner?: UserType;

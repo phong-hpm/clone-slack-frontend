@@ -5,14 +5,14 @@ import { Box, IconButton } from "@mui/material";
 import AudioWaveSurfer from "components/AudioWaveSurfer";
 import SlackIcon from "components/SlackIcon";
 
+// context
+import ChatBoxContext from "./InputContext";
+
 // utils
 import { color, rgba } from "utils/constants";
 
-// redux slices
-import { MessageFileType } from "store/slices/messages.slice";
-
-// context
-import ChatBoxContext from "./InputContext";
+// types
+import { MessageFileType } from "store/slices/_types";
 
 export interface UploadingFileProps {
   inputFile: MessageFileType;

@@ -3,15 +3,14 @@ import { createSelector } from "reselect";
 // redux store
 import { RootState } from "..";
 
-// redux slices
-import { UserType } from "store/slices/users.slice";
-import { MessageType } from "store/slices/messages.slice";
-
 // redux selectors
 import * as usersSelector from "./users.selector";
 
 // utils
 import { dayFormat, isToday, minuteDiff } from "utils/dayjs";
+
+// types
+import { UserType, MessageType } from "store/slices/_types";
 
 export const getMessages = (state: RootState) => state.messages;
 

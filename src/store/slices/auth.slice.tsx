@@ -7,17 +7,11 @@ import { authExtraReducers as renewAccessTokenExtraReducers } from "../actions/a
 import { authExtraReducers as getUserInformationExtraReducers } from "../actions/auth/getUserInformation";
 
 // redux slices
-import { UserType } from "./users.slice";
 import { stateDefault } from "../../utils/constants";
 
-export interface AuthState {
-  accessToken: string;
-  refreshToken: string;
-  isAuth: boolean;
-  isLoading: boolean;
-  isVerified: boolean;
-  user: UserType;
-}
+// types
+import { AuthState, UserType } from "./_types";
+
 const initialState: AuthState = {
   accessToken: localStorage.getItem("accessToken") || "",
   refreshToken: localStorage.getItem("refreshToken") || "",

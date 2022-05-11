@@ -1,14 +1,14 @@
 import { FC } from "react";
 
-// redux slices
-import { MessageType } from "store/slices/messages.slice";
-
 // components
 import { Box, Link, Typography } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 
 // utils
 import { color, rgba } from "utils/constants";
+
+// types
+import { MessageType } from "store/slices/_types";
 
 export interface BookmarkProps {
   message: MessageType;

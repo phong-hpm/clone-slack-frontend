@@ -1,22 +1,13 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
 
-// redux slices
-import { AuthState } from "../../slices/auth.slice";
-import { TeamsState, TeamType } from "../../slices/teams.slice";
-import { UserType } from "../../slices/users.slice";
-
 // utils
 import axios from "../../../utils/axios";
 import { stateDefault } from "../../../utils/constants";
 
-interface UserResponseData extends UserType {
-  teams: TeamType[];
-}
-
-export interface GetUserInformationResponseData {
-  user: UserResponseData;
-}
+// types
+import { AuthState, TeamsState } from "store/slices/_types";
+import { GetUserInformationResponseData } from "./_types";
 
 export const getUserInformation = createAsyncThunk<AxiosResponse<GetUserInformationResponseData>>(
   "auth/getUserInformation",

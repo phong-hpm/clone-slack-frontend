@@ -11,18 +11,18 @@ import {
   Typography,
   Button,
 } from "@mui/material";
-import SlackIcon from "../../../../../components/SlackIcon";
+import SlackIcon from "components/SlackIcon";
 
 // context
 import ChatBoxContext from "./InputContext";
 
 // utils
-import { color, rgba } from "../../../../../utils/constants";
+import { color, rgba } from "utils/constants";
 import EmojiModal from "../EmojiModal";
 import AudioRecordModal from "./AudioRecordModal";
 
-// redux slices
-import { MessageFileType } from "store/slices/messages.slice";
+// types
+import { MessageFileType } from "store/slices/_types";
 
 export interface InputActionsProps {
   isShowToolbar: boolean;

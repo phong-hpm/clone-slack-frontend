@@ -5,19 +5,8 @@ import { teamsExtraReducers as loginExtraReducers } from "../actions/auth/login"
 import { teamsExtraReducers as verifyExtraReducers } from "../actions/auth/verify";
 import { teamsExtraReducers as getUserInformationExtraReducers } from "../actions/auth/getUserInformation";
 
-export interface TeamType {
-  id: string;
-  name: string;
-  created: number;
-  channels: string[];
-  users: string[];
-}
-
-export interface TeamsState {
-  isLoading: boolean;
-  list: TeamType[];
-  selectedId: string;
-}
+// types
+import { TeamsState, TeamType } from "./_types";
 
 const initialState: TeamsState = {
   isLoading: false,

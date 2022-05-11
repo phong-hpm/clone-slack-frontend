@@ -5,9 +5,10 @@ import { RangeStatic } from "quill";
 import ReactQuill from "react-quill";
 
 // redux slices
-import { UserType } from "../../../../../store/slices/users.slice";
-import { stateDefault } from "../../../../../utils/constants";
-import { MessageFileType } from "store/slices/messages.slice";
+import { stateDefault } from "utils/constants";
+
+// types
+import { UserType, MessageFileType } from "store/slices/_types";
 
 export interface ContextLinkValueType {
   text: string;

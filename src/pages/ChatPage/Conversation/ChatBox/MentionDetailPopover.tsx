@@ -6,15 +6,15 @@ import defaultAvatar from "assets/images/default_avatar.png";
 // redux
 import { useSelector } from "store";
 
-// redux slices
-import { UserType } from "store/slices/users.slice";
-
 // redux selectors
 import * as userSelectors from "store/selectors/users.selector";
 
 // components
 import { Avatar, Box, Popover, Typography } from "@mui/material";
 import Status from "components/Status";
+
+// types
+import { UserType } from "store/slices/_types";
 
 // quill-mention is using javascript event to trigger action
 // that why this component is working with javascript event only

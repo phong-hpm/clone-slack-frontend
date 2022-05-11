@@ -1,8 +1,5 @@
 import { FC, useState } from "react";
 
-// redux slices
-import { MessageFileType } from "store/slices/messages.slice";
-
 // components
 import { Box, CircularProgress, IconButton } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
@@ -10,6 +7,9 @@ import SlackIcon from "components/SlackIcon";
 // utils
 import { color, rgba } from "utils/constants";
 import AudioWaveSurfer from "components/AudioWaveSurfer";
+
+// types
+import { MessageFileType } from "store/slices/_types";
 
 export interface MediaFileProps {
   file: MessageFileType;
