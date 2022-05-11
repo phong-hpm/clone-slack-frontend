@@ -1,12 +1,4 @@
-import { useState, useEffect, useMemo, useCallback, useContext, FC, useRef } from "react";
-import * as ReactDOMServer from "react-dom/server";
-
-// redux store
-import { useSelector } from "store";
-
-// redux selectors
-import * as authSelectors from "store/selectors/auth.selector";
-import * as usersSelectors from "store/selectors/users.selector";
+import { useState, useCallback, useContext, FC } from "react";
 
 // components
 import "quill-mention";
@@ -15,7 +7,6 @@ import ReactQuill from "react-quill";
 import InputActions from "./InputActions";
 import InputToolbar from "./InputToolbar";
 import QuillFormatLink from "./QuillFormatLink";
-import MentionItem from "./MentionItem";
 import UploadingFiles from "./UploadingFiles";
 
 // context
@@ -23,16 +14,14 @@ import ChatBoxContext from "./InputContext";
 
 // utils
 import { color } from "utils/constants";
-import { quillFormats, stateDefault } from "utils/constants";
-import { searchUserMention } from "utils/quillUtils";
+import { quillFormats } from "utils/constants";
 import { removeUnnecessaryFields } from "utils/message";
 
 // hook
 import useQuillReact from "./useQuillReact";
 
 // types
-import { Delta, RangeStatic, StringMap } from "quill";
-import { UserType } from "store/slices/_types";
+import { Delta, RangeStatic } from "quill";
 import { LinkCustomEventDetailType } from "./_types";
 
 export interface InputMainProps {
@@ -53,74 +42,10 @@ const InputMain: FC<InputMainProps> = ({
   const { appState, quillReact, updateQuillState, setQuillReact, setFocus } =
     useContext(ChatBoxContext);
 
-  const user = useSelector(authSelectors.getUser);
-  const userList = useSelector(usersSelectors.getUserList);
+  const { keepRef, modules, toolbarEL, setToolbarEL } = useQuillReact({ autoFocus });
 
-  const [keepRef] = useQuillReact();
-
-  // modules ref will keep the reference of modules, help QuillReact will not be broken
-  const modulesRef = useRef<StringMap>({});
-
-  const [toolbarEL, setToolbarEL] = useState<HTMLDivElement | null>(null);
   const [isDisabled, setDisabled] = useState(true);
   const [isShowToolbar, setShowToolbar] = useState(true);
-
-  const mentionSource = useCallback(
-    (search: string, renderList: Function) => {
-      if (search.length === 0) return renderList(userList, search);
-      renderList(searchUserMention(userList, search), search);
-    },
-    [userList]
-  );
-
-  const selectMention = useCallback(
-    (userMention: UserType, insertItem: Function) => {
-      insertItem({
-        ...userMention,
-        id: userMention.id,
-        value: userMention.name,
-        isOwner: userMention.id === user.id,
-        isClickable: false,
-      });
-    },
-    [user.id]
-  );
-
-  const renderUserMentionItem = useCallback(
-    (userMention: UserType) =>
-      ReactDOMServer.renderToString(<MentionItem userId={user.id} userMention={userMention} />),
-    [user.id]
-  );
-
-  const mentionModule = useMemo(() => {
-    return {
-      dataAttributes: [...Object.keys(stateDefault.USER), "isOwner", "isReadOnly"],
-      allowedChars: /^[A-Za-z\s]*$/,
-      mentionDenotationChars: ["@"],
-      spaceAfterInsert: true,
-      defaultMenuOrientation: "top",
-      source: mentionSource,
-      renderItem: renderUserMentionItem,
-      onOpen: () => (keepRef.current.isMentioning = true),
-      onClose: () => {
-        // setTimeout will keep isMentioning is true when reactquill onKeydown is calling
-        setTimeout(() => (keepRef.current.isMentioning = false), 1);
-      },
-      onSelect: selectMention,
-    };
-  }, [keepRef, selectMention, mentionSource, renderUserMentionItem]);
-
-  // modulesRef.current will keep reference of module
-  //   will help QuillReact re-render correctly
-  const modules = useMemo(() => {
-    modulesRef.current.toolbar = toolbarEL ? { container: toolbarEL } : false;
-    modulesRef.current.mention = mentionModule;
-    modulesRef.current.clipboard = { matchVisual: false };
-    // remove handler of enter key
-    modulesRef.current.keyboard = { bindings: { enter: { key: 13, handler: () => {} } } };
-
-    return modulesRef.current;
-  }, [toolbarEL, mentionModule]);
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter") {
@@ -205,20 +130,6 @@ const InputMain: FC<InputMainProps> = ({
     delta && onSend && onSend(removeUnnecessaryFields(delta));
     quillReact?.getEditor()?.setContents({ ops: [{ insert: "\n" }] } as Delta);
   }, [quillReact, onSend]);
-
-  // blur quill after render
-  useEffect(() => setFocus(false), [setFocus]);
-
-  // by default, react-quill will be focused after render
-  // set autofocus after quill blured
-  useEffect(() => {
-    if (!autoFocus) return;
-
-    // using setTimeout to wait for quill-react finish rendering
-    setTimeout(() => {
-      setFocus(true, quillReact?.getEditor()?.scroll.length());
-    }, 1);
-  }, [autoFocus, quillReact, setFocus]);
 
   return (
     <Box color={color.PRIMARY}>
