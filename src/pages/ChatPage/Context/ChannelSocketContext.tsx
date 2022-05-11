@@ -1,12 +1,11 @@
 import { createContext, FC, useCallback, useEffect, useMemo, useState } from "react";
-import { Socket } from "socket.io-client";
 
 // redux store
 import { useDispatch, useSelector } from "store";
 
 // redux selectors
 import * as authSelectors from "store/selectors/auth.selector";
-import * as teamsSelectors from "../../../store/selectors/teams.selector";
+import * as teamsSelectors from "store/selectors/teams.selector";
 
 // redux slices
 import {
@@ -24,12 +23,7 @@ import { SocketEvent, SocketEventDefault } from "utils/constants";
 
 // types
 import { UserType, ChannelType } from "store/slices/_types";
-
-export interface ChannelContextType {
-  socket?: Socket;
-  isConnected: boolean;
-  updateNamespace: (name: string) => void;
-}
+import { ChannelContextType } from "./_types";
 
 const initialContext: ChannelContextType = {
   isConnected: false,

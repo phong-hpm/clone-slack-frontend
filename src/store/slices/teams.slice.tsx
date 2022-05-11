@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // redux actions
-import { teamsExtraReducers as loginExtraReducers } from "../actions/auth/login";
-import { teamsExtraReducers as verifyExtraReducers } from "../actions/auth/verify";
-import { teamsExtraReducers as getUserInformationExtraReducers } from "../actions/auth/getUserInformation";
+import { teamsExtraReducers as loginExtraReducers } from "store/actions/auth/login";
+import { teamsExtraReducers as verifyExtraReducers } from "store/actions/auth/verify";
+import { teamsExtraReducers as getUserInformationExtraReducers } from "store/actions/auth/getUserInformation";
 
 // types
-import { TeamsState, TeamType } from "./_types";
+import { TeamsState, TeamType } from "store/slices/_types";
 
 const initialState: TeamsState = {
   isLoading: false,

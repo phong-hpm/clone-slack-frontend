@@ -1,7 +1,7 @@
 import { Theme } from "@mui/material";
 
 // utils
-import { color, css } from "../../utils/constants";
+import { color, css } from "utils/constants";
 
 const components: Theme["components"] = {
   MuiTooltip: {

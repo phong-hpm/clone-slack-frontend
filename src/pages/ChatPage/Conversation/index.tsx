@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 // context
-import MessageSocketProvider from "../Context/MessageSocketContext";
+import MessageSocketProvider from "pages/ChatPage/Context/MessageSocketContext";
 
 // components
 import { Box } from "@mui/system";

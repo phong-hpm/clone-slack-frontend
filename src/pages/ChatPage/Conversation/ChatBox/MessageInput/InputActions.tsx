@@ -18,7 +18,7 @@ import ChatBoxContext from "./InputContext";
 
 // utils
 import { color, rgba } from "utils/constants";
-import EmojiModal from "../EmojiModal";
+import EmojiModal from "pages/ChatPage/Conversation/ChatBox/EmojiModal";
 import AudioRecordModal from "./AudioRecordModal";
 
 // types

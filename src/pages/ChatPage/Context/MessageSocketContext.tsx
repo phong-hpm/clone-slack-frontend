@@ -1,5 +1,4 @@
 import { createContext, FC, useCallback, useEffect, useMemo, useState } from "react";
-import { Socket } from "socket.io-client";
 
 // redux store
 import { useDispatch, useSelector } from "store";
@@ -25,12 +24,7 @@ import { useParams } from "react-router-dom";
 
 // types
 import { MessageType } from "store/slices/_types";
-
-export interface MessageContextType {
-  socket?: Socket;
-  isConnected: boolean;
-  updateNamespace: (name: string) => void;
-}
+import { MessageContextType } from "./_types";
 
 const initialContext: MessageContextType = {
   isConnected: false,

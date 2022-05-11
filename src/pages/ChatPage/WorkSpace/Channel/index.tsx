@@ -12,9 +12,9 @@ import { setSelectedChannelId } from "store/slices/channels.slice";
 
 // components
 import { Box, List, ListItemButton, ListItemIcon, Typography } from "@mui/material";
-import CreateChannelModal from "./CreateChannelModal";
-import ChannelList from "./ChannelList";
 import SlackIcon from "components/SlackIcon";
+import ChannelList from "./ChannelList";
+import CreateChannelModal from "./CreateChannelModal";
 
 export interface ChannelProps {
   onAddChannel: (channelName: string, desc: string) => void;

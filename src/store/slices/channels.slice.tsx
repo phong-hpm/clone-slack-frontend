@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // types
-import { ChannelsState, ChannelType } from "./_types";
+import { ChannelsState, ChannelType } from "store/slices/_types";
 
 const initialState: ChannelsState = {
   isLoading: false,

@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 // utils
-import { color } from "../utils/constants";
+import { color } from "utils/constants";
 
 // components
 import SlackIcon, { SlackIconProps } from "./SlackIcon";

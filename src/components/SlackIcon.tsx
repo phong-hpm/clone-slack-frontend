@@ -2,7 +2,7 @@ import { FC } from "react";
 import classnames from "classnames";
 
 // utils
-import { iconName, iconImgName } from "../utils/constants";
+import { iconName, iconImgName } from "utils/constants";
 
 export interface SlackIconProps {
   fontSize?: "inherit" | "small" | "medium" | "large";

@@ -1,23 +1,23 @@
 import { FC } from "react";
 
 // redux store
-import { useSelector } from "../../../store";
+import { useSelector } from "store";
 
 // redux selector
-import * as channelsSelectors from "../../../store/selectors/channels.selector";
+import * as channelsSelectors from "store/selectors/channels.selector";
 
 // components
 import { Box } from "@mui/system";
 
 // components
 import { Avatar, Button, Typography } from "@mui/material";
-import SlackIcon from "../../../components/SlackIcon";
+import SlackIcon from "components/SlackIcon";
 
 // images
-import defaultAvatar from "../../../assets/images/default_avatar.png";
+import defaultAvatar from "assets/images/default_avatar.png";
 
 // utils
-import { color } from "../../../utils/constants";
+import { color } from "utils/constants";
 
 const ConversationHeader: FC = () => {
   const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);

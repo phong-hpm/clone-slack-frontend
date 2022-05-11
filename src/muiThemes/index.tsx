@@ -25,7 +25,7 @@ import MuiTooltip from "./options/tooltip";
 import MuiChip from "./options/chip";
 
 // utils
-import { color } from "../utils/constants";
+import { color } from "utils/constants";
 
 const mainOptions: ThemeOptions = {
   palette: {

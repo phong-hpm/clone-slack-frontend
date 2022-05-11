@@ -2,10 +2,10 @@ import { FC, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 
 // redux store
-import { useSelector } from "../../../../store";
+import { useSelector } from "store";
 
 // redux selector
-import * as authSelectors from "../../../../store/selectors/auth.selector";
+import * as authSelectors from "store/selectors/auth.selector";
 
 // components
 import {
@@ -20,8 +20,8 @@ import {
   Typography,
   TextField,
 } from "@mui/material";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../components/Modal";
-import SlackIcon from "../../../../components/SlackIcon";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "components/Modal";
+import SlackIcon from "components/SlackIcon";
 
 export interface CreateChannelModalProps {
   isOpen: boolean;

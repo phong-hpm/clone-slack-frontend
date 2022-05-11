@@ -1,16 +1,16 @@
 import { FC } from "react";
 
 // redux store
-import { useSelector } from "../store";
+import { useSelector } from "store";
 
 // redux selectors
-import * as authSelectors from "../store/selectors/auth.selector";
+import * as authSelectors from "store/selectors/auth.selector";
 
 // hooks
-import useAuthenication from "../hooks/useAuthenication";
+import useAuthenication from "hooks/useAuthenication";
 
 // pages
-import LoadingPage from "../pages/LoadingPage";
+import LoadingPage from "pages/LoadingPage";
 
 export interface RouteAuthProps {
   children: JSX.Element;

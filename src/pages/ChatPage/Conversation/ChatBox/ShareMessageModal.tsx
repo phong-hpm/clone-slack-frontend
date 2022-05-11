@@ -34,10 +34,9 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onSubm
   const userList = useSelector(usersSelectors.getUserList);
 
   const [channelName, setChannelName] = useState("");
-  const [desc, setDesc] = useState("");
 
   const handleSubmit = () => {
-    onSubmit(channelName, desc);
+    onSubmit(channelName, "");
   };
 
   return (

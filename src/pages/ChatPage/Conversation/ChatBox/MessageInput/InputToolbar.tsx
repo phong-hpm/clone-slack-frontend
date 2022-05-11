@@ -5,7 +5,7 @@ import classnames from "classnames";
 // components
 import { Quill } from "react-quill";
 import { Divider, Box, IconButton } from "@mui/material";
-import SlackIcon, { SlackIconProps } from "../../../../../components/SlackIcon";
+import SlackIcon, { SlackIconProps } from "components/SlackIcon";
 
 // context
 import ChatBoxContext from "./InputContext";

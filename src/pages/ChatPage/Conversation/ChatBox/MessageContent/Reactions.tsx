@@ -10,10 +10,10 @@ import * as authSelectors from "store/selectors/auth.selector";
 import { Box, Chip, Tooltip, Typography } from "@mui/material";
 import EmojiIcon from "components/EmojiIcon";
 import SlackIcon from "components/SlackIcon";
-import EmojiModal from "../EmojiModal";
+import EmojiModal from "pages/ChatPage/Conversation/ChatBox/EmojiModal";
 
 // hooks
-import useMessageSocket from "../../../hooks/useMessageSocket";
+import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 
 // types
 import { MessageType } from "store/slices/_types";

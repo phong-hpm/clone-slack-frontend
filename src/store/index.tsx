@@ -6,16 +6,17 @@ import {
 } from "react-redux";
 
 // middleware
-// import logger from "redux-logger";
 import thunk from "redux-thunk";
 
 // reducer
-import authReducer from "./slices/auth.slice";
-import teamsReducer from "./slices/teams.slice";
-import channelsReducer from "./slices/channels.slice";
-import messagesReducer from "./slices/messages.slice";
-import usersReducer from "./slices/users.slice";
-import { setupAxios } from "../utils/axios";
+import authReducer from "store/slices/auth.slice";
+import teamsReducer from "store/slices/teams.slice";
+import channelsReducer from "store/slices/channels.slice";
+import messagesReducer from "store/slices/messages.slice";
+import usersReducer from "store/slices/users.slice";
+
+// utils
+import { setupAxios } from "utils/axios";
 
 export const store = configureStore({
   reducer: {

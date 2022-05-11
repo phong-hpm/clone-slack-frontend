@@ -2,14 +2,14 @@ import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
 
 // redux store
-import { RootState } from "../..";
+import { RootState } from "store";
 
 // utils
-import axios from "../../../utils/axios";
+import axios from "utils/axios";
 
 // types
 import { AuthState } from "store/slices/_types";
-import { RenewAccessTokenResponseData } from "./_types";
+import { RenewAccessTokenResponseData } from "store/actions/auth/_types";
 
 export const renewAccessToken = createAsyncThunk<AxiosResponse<RenewAccessTokenResponseData>>(
   "auth/refreshToken",

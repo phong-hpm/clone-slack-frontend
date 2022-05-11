@@ -14,21 +14,21 @@ import * as usersSelectors from "store/selectors/users.selector";
 import ReactQuill from "react-quill";
 import { Delta } from "quill";
 import { Avatar, Box, Typography } from "@mui/material";
-import MessageInput from "../MessageInput";
-import { updateReadonlyLinkField } from "utils/message";
-import MessageActions from "../MessageActions";
-import ShareMessageModal from "../ShareMessageModal";
+import MessageInput from "pages/ChatPage/Conversation/ChatBox/MessageInput";
+import MessageActions from "pages/ChatPage/Conversation/ChatBox/MessageActions";
+import ShareMessageModal from "pages/ChatPage/Conversation/ChatBox/ShareMessageModal";
 import Bookmark from "./Bookmark";
+import Reactions from "./Reactions";
+import MediaFileList from "./MediaFileList";
 
 // hooks
-import useMessageSocket from "../../../hooks/useMessageSocket";
+import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 
 // utils
 import { dayFormat } from "utils/dayjs";
 import { color, rgba } from "utils/constants";
 import { addNecessaryFields } from "utils/message";
-import Reactions from "./Reactions";
-import MediaFileList from "./MediaFileList";
+import { updateReadonlyLinkField } from "utils/message";
 
 // types
 import { UserType, MessageType } from "store/slices/_types";

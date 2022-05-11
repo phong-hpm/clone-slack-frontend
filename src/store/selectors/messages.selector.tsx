@@ -1,10 +1,10 @@
 import { createSelector } from "reselect";
 
 // redux store
-import { RootState } from "..";
+import { RootState } from "store";
 
 // redux selectors
-import * as usersSelector from "./users.selector";
+import * as usersSelector from "store/selectors/users.selector";
 
 // utils
 import { dayFormat, isToday, minuteDiff } from "utils/dayjs";

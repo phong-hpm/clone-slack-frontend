@@ -2,16 +2,16 @@ import { FC } from "react";
 import { BrowserRouter, Routes as RoutesBase, Route } from "react-router-dom";
 
 // pages
-import Login from "../pages/LoginPage";
-import Home from "../pages/HomePage";
-import ChatPage from "../pages/ChatPage";
-import TeamPage from "../pages/TeamPage";
+import Login from "pages/LoginPage";
+import Home from "pages/HomePage";
+import ChatPage from "pages/ChatPage";
+import TeamPage from "pages/TeamPage";
 
 // components
-import RouteAuth from "../components/RouteAuth";
+import RouteAuth from "components/RouteAuth";
 
 // utils
-import { RouterPath } from "../utils/constants";
+import { RouterPath } from "utils/constants";
 
 const Routes: FC = () => {
   return (

@@ -1,7 +1,7 @@
 import { Theme } from "@mui/material";
 
 // utils
-import { color, rgba } from "../../utils/constants";
+import { color, rgba } from "utils/constants";
 
 const components: Theme["components"] = {
   MuiButtonGroup: {

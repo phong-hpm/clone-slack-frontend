@@ -2,10 +2,10 @@ import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
 // redux store
-import { useSelector } from "../store";
+import { useSelector } from "store";
 
 // redux selectors
-import * as teamsSelectors from "../store/selectors/teams.selector";
+import * as teamsSelectors from "store/selectors/teams.selector";
 
 const TeamPage: FC = () => {
   const navigate = useNavigate();

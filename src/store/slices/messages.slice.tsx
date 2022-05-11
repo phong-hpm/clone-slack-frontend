@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // types
-import { MessagesState, MessageType } from "./_types";
+import { MessagesState, MessageType } from "store/slices/_types";
 
 const initialState: MessagesState = {
   isLoading: true,

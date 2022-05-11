@@ -6,13 +6,13 @@ import { IconButton, Tooltip } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 import EmojiIcon from "components/EmojiIcon";
 import MoreMenu, { MoreMenuProps } from "./MoreMenu";
+import EmojiModal from "pages/ChatPage/Conversation/ChatBox/EmojiModal";
 
 // utils
 import { color, css } from "utils/constants";
 
 // hooks
 import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
-import EmojiModal from "../EmojiModal";
 
 export interface MessageActionsProps extends Omit<MoreMenuProps, "open" | "anchorEl"> {
   isStared?: boolean;

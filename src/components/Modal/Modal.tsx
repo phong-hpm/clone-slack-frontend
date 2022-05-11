@@ -4,7 +4,7 @@ import classnames from "classnames";
 
 // components
 import { Box, IconButton, PopoverOrigin } from "@mui/material";
-import SlackIcon from "../../components/SlackIcon";
+import SlackIcon from "components/SlackIcon";
 
 type Position = { top: number; left: number };
 

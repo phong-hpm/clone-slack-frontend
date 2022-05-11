@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // redux actions
-import { authExtraReducers as loginExtraReducers } from "../actions/auth/login";
-import { authExtraReducers as verifyExtraReducers } from "../actions/auth/verify";
-import { authExtraReducers as renewAccessTokenExtraReducers } from "../actions/auth/renewToken";
-import { authExtraReducers as getUserInformationExtraReducers } from "../actions/auth/getUserInformation";
+import { authExtraReducers as loginExtraReducers } from "store/actions/auth/login";
+import { authExtraReducers as verifyExtraReducers } from "store/actions/auth/verify";
+import { authExtraReducers as renewAccessTokenExtraReducers } from "store/actions/auth/renewToken";
+import { authExtraReducers as getUserInformationExtraReducers } from "store/actions/auth/getUserInformation";
 
 // redux slices
-import { stateDefault } from "../../utils/constants";
+import { stateDefault } from "utils/constants";
 
 // types
-import { AuthState, UserType } from "./_types";
+import { AuthState, UserType } from "store/slices/_types";
 
 const initialState: AuthState = {
   accessToken: localStorage.getItem("accessToken") || "",

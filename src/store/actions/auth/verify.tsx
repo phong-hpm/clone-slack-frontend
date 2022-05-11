@@ -2,12 +2,12 @@ import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
 
 // utils
-import axios from "../../../utils/axios";
-import { stateDefault } from "../../../utils/constants";
+import axios from "utils/axios";
+import { stateDefault } from "utils/constants";
 
 // types
 import { AuthState, TeamsState } from "store/slices/_types";
-import { VerifyResponseData } from "./_types";
+import { VerifyResponseData } from "store/actions/auth/_types";
 
 export const verify = createAsyncThunk<AxiosResponse<VerifyResponseData>>(
   "auth/verify",

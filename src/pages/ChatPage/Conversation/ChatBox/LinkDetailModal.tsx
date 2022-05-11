@@ -4,7 +4,7 @@ import { FC, useLayoutEffect, useRef, useState } from "react";
 import { Box, Button, Link, Typography } from "@mui/material";
 
 // utils
-import { Modal, ModalBody, ModalFooter } from "../../../../components/Modal";
+import { Modal, ModalBody, ModalFooter } from "components/Modal";
 import { LinkCustomEventDetailType } from "./MessageInput/useQuillReact";
 
 const LinkDetailModal: FC = () => {

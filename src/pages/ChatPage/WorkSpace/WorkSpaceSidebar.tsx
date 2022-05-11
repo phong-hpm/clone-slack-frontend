@@ -1,18 +1,17 @@
 import React, { FC, useRef, useState } from "react";
 
 // redux store
-import { useSelector } from "../../../store";
+import { useSelector } from "store";
 
 // redux selectors
-import * as authSelectors from "../../../store/selectors/auth.selector";
+import * as authSelectors from "store/selectors/auth.selector";
 
 // components
-import { Box } from "@mui/system";
-import { IconButton, Menu, MenuItem, Typography } from "@mui/material";
-import SlackIcon from "../../../components/SlackIcon";
+import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import SlackIcon from "components/SlackIcon";
 
 // utils
-import { color } from "../../../utils/constants";
+import { color } from "utils/constants";
 
 const WorkSpaceSidebar: FC = () => {
   const user = useSelector(authSelectors.getUser);

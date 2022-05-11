@@ -14,15 +14,15 @@ import { setSelectedChannelId } from "store/slices/channels.slice";
 import { color } from "utils/constants";
 
 // hooks
-import useChannelSocket from "../hooks/useChannelSocket";
+import useChannelSocket from "pages/ChatPage/hooks/useChannelSocket";
 
 // components
 import Channels from "./Channel";
 import { Box } from "@mui/system";
-import WorkSpaceSidebar from "./WorkSpaceSidebar";
+import WorkSpaceSidebar from "pages/ChatPage/WorkSpace/WorkSpaceSidebar";
 
 // contexts
-import ChannelSocketProvider from "../Context/ChannelSocketContext";
+import ChannelSocketProvider from "pages/ChatPage/Context/ChannelSocketContext";
 
 const WorkSpace: FC = () => {
   const dispatch = useDispatch();

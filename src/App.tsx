@@ -3,13 +3,13 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from "@mui/material/styles";
 
 // redux store
-import { store } from "./store";
+import { store } from "store";
 
 // features
-import Routes from "./features/Routes";
+import Routes from "features/Routes";
 
 // mui
-import theme from "./muiThemes";
+import theme from "muiThemes";
 
 const App: FC = () => {
   return (

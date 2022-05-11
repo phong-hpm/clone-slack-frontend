@@ -2,10 +2,10 @@ import { FC } from "react";
 
 // components
 import { Box, Button, Typography } from "@mui/material";
-import SlackIcon from "../../../components/SlackIcon";
+import SlackIcon from "components/SlackIcon";
 
 // utils
-import { color } from "../../../utils/constants";
+import { color } from "utils/constants";
 
 const ConversationToolBar: FC = () => {
   return (
