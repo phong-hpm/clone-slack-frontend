@@ -4,7 +4,7 @@ import { FC, useLayoutEffect, useRef, useState } from "react";
 import { Box, Popover, Typography } from "@mui/material";
 
 // types
-import { ContextLinkValueType } from "./MessageInput/_types";
+import { ContextLinkValueType } from "pages/ChatPage/Conversation/ChatBox/MessageInput/_types";
 
 // quill-react is using javascript event to trigger action
 // that why this component is working with javascript event only

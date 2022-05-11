@@ -16,11 +16,11 @@ import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 import { Box, Link, Typography } from "@mui/material";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import MentionDetailPopover from "./MentionDetailPopover";
-import MentionDetailModal from "./MentionDetailModal";
-import LinkDetailModal from "./LinkDetailModal";
-import LinkDetailPopover from "./LinkDetailPopover";
-import LinkEditModal from "./LinkEditModal";
+import MentionDetailPopover from "./MessageMention/MentionDetailPopover";
+import MentionDetailModal from "./MessageMention/MentionDetailModal";
+import LinkDetailModal from "./MessageLink/LinkDetailModal";
+import LinkDetailPopover from "./MessageLink/LinkDetailPopover";
+import LinkEditModal from "./MessageLink/LinkEditModal";
 
 const ChatBox: FC = () => {
   const selectedChannel = useSelector(channelsSelector.getSelectedChannel);

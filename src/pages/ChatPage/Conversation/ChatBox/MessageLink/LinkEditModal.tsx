@@ -7,7 +7,7 @@ import { Box, Button, Typography, TextField } from "@mui/material";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "components/Modal";
 
 // types
-import { LinkCustomEventDetailType } from "./MessageInput/_types";
+import { LinkCustomEventDetailType } from "pages/ChatPage/Conversation/ChatBox/MessageInput/_types";
 
 const EditLinkModal: FC = () => {
   // using ref, we can update anchorEl and user before component's rendering

@@ -7,9 +7,9 @@ import UploadingFile, { UploadingFileProps } from "./UploadingFile";
 // context
 import ChatBoxContext from "./InputContext";
 
-export interface UploadingFilesProps extends Omit<UploadingFileProps, "inputFile"> {}
+export interface UploadingFileListProps extends Omit<UploadingFileProps, "inputFile"> {}
 
-const UploadingFiles: FC<UploadingFilesProps> = (props) => {
+const UploadingFileList: FC<UploadingFileListProps> = (props) => {
   const { appState } = useContext(ChatBoxContext);
 
   return (
@@ -21,4 +21,4 @@ const UploadingFiles: FC<UploadingFilesProps> = (props) => {
   );
 };
 
-export default UploadingFiles;
+export default UploadingFileList;

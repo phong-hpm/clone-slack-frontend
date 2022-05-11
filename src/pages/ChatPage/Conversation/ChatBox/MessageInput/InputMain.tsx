@@ -7,7 +7,7 @@ import ReactQuill from "react-quill";
 import InputActions from "./InputActions";
 import InputToolbar from "./InputToolbar";
 import QuillFormatLink from "./QuillFormatLink";
-import UploadingFiles from "./UploadingFiles";
+import UploadingFileList from "./UploadingFileList";
 
 // context
 import ChatBoxContext from "./InputContext";
@@ -165,7 +165,7 @@ const InputMain: FC<InputMainProps> = ({
           />
         )}
 
-        <UploadingFiles />
+        <UploadingFileList />
 
         <InputActions
           isShowToolbar={isShowToolbar}
