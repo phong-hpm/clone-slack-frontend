@@ -4,14 +4,8 @@ import { FC, useEffect, useRef } from "react";
 import { Picker, EmojiProps } from "emoji-mart";
 import { Box } from "@mui/material";
 
-export interface EmojiIconType {
-  id: string;
-  name: string;
-  native: string;
-  shortcodes: string;
-  unified: string;
-  keywords: string[];
-}
+// types
+import { EmojiIconType } from "./_types";
 
 export interface EmojiPickerProps extends Omit<EmojiProps, "size" | "emoji"> {
   onEmojiSelect: (emoji: EmojiIconType) => void;

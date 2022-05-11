@@ -5,7 +5,9 @@ import { Box, Button, Link, Typography } from "@mui/material";
 
 // utils
 import { Modal, ModalBody, ModalFooter } from "components/Modal";
-import { LinkCustomEventDetailType } from "./MessageInput/useQuillReact";
+
+// types
+import { LinkCustomEventDetailType } from "./MessageInput/_types";
 
 const LinkDetailModal: FC = () => {
   // using ref, we can update anchorEl and user before component's rendering

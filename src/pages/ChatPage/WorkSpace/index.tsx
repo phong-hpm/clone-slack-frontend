@@ -17,8 +17,8 @@ import { color } from "utils/constants";
 import useChannelSocket from "pages/ChatPage/hooks/useChannelSocket";
 
 // components
+import { Box } from "@mui/material";
 import Channels from "./Channel";
-import { Box } from "@mui/system";
 import WorkSpaceSidebar from "pages/ChatPage/WorkSpace/WorkSpaceSidebar";
 
 // contexts

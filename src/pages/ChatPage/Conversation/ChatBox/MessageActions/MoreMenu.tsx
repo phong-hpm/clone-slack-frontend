@@ -1,8 +1,7 @@
 import { FC, useState } from "react";
 
 // components
-import { Box } from "@mui/system";
-import { Divider, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import { Box, Divider, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 import MoreRemindList, { MoreRemindListProps } from "./MoreRemindList";
 

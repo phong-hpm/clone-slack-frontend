@@ -3,8 +3,8 @@ import { FC, useLayoutEffect, useRef, useState } from "react";
 // components
 import { Box, Popover, Typography } from "@mui/material";
 
-// context
-import { ContextLinkValueType } from "./MessageInput/InputContext";
+// types
+import { ContextLinkValueType } from "./MessageInput/_types";
 
 // quill-react is using javascript event to trigger action
 // that why this component is working with javascript event only

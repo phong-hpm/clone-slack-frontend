@@ -23,17 +23,17 @@ import {
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "components/Modal";
 import SlackIcon from "components/SlackIcon";
 
-export interface CreateChannelModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmit: (name: string, desc: string) => void;
-}
-
 const nameSuggestions = [
   { label: "help", desc: "For questions, assistance, and resources on a topic" },
   { label: "proj", desc: "For collaboration on and discussion about a project" },
   { label: "team", desc: "For updates and work from a department or team" },
 ];
+
+export interface CreateChannelModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (name: string, desc: string) => void;
+}
 
 const CreateChannelModal: FC<CreateChannelModalProps> = ({ isOpen, onSubmit, onClose }) => {
   const user = useSelector(authSelectors.getUser);

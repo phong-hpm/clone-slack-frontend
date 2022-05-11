@@ -2,13 +2,13 @@ import { FC } from "react";
 import classnames from "classnames";
 
 // utils
-import { iconName, iconImgName } from "utils/constants";
+import { iconImgName } from "utils/constants";
 
 export interface SlackIconProps {
   fontSize?: "inherit" | "small" | "medium" | "large";
   color?: string;
   cursor?: string;
-  icon: typeof iconName[number] | typeof iconImgName[number];
+  icon: string;
 }
 
 const SlackIcon: FC<SlackIconProps> = ({ icon, color, cursor, fontSize }) => {

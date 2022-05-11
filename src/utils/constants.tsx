@@ -101,25 +101,6 @@ export const css = {
   )} 0px 0px 0px 5px`,
 };
 
-export const iconName = [
-  "caret-right",
-  "caret-down",
-  "plus",
-  "plus-small",
-  "channel-pane-hash",
-  "mentions",
-  "more-vert",
-  "buildings",
-  "mentions",
-  "hash-medium-bold",
-  "chevron-down",
-  "lock",
-  "channel",
-  "form-checkbox-check",
-  "presence-online",
-  "presence-offline",
-];
-
 export const iconImgName = [
   "ellipsis-vertical-filled",
   "close",

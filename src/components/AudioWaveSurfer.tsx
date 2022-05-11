@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
-import WaveSurfer from "wavesurfer.js";
 
 // components
+import WaveSurfer from "wavesurfer.js";
 import { Box, Typography } from "@mui/material";
 
 // utils

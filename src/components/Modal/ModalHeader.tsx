@@ -1,5 +1,7 @@
-import { Box } from "@mui/material";
 import { FC } from "react";
+
+// components
+import { Box } from "@mui/material";
 
 export interface ModalHeaderProps {
   children: string | JSX.Element | JSX.Element[];

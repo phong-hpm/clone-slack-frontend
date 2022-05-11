@@ -6,8 +6,8 @@ import { DeltaStatic } from "quill";
 import { Box, Button, Typography, TextField } from "@mui/material";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "components/Modal";
 
-// context
-import { LinkCustomEventDetailType } from "./MessageInput/useQuillReact";
+// types
+import { LinkCustomEventDetailType } from "./MessageInput/_types";
 
 const EditLinkModal: FC = () => {
   // using ref, we can update anchorEl and user before component's rendering

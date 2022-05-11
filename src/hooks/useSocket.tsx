@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "store";
 import { renewAccessToken } from "store/actions/auth/renewToken";
 
 // redux selector
-import * as authSelectors from "store/selectors/auth.selector";
 import { setIsAuth } from "store/slices/auth.slice";
+import * as authSelectors from "store/selectors/auth.selector";
 
 // utils
 import { SocketEvent, SocketEventDefault } from "utils/constants";

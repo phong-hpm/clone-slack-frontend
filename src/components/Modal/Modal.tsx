@@ -1,26 +1,24 @@
 import { FC, useMemo, useLayoutEffect, useState, useCallback, useRef } from "react";
-import ReactModal, { Props } from "react-modal";
 import classnames from "classnames";
 
 // components
+import ReactModal from "react-modal";
 import { Box, IconButton, PopoverOrigin } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 
-type Position = { top: number; left: number };
+// utils
+import {
+  computeAnchorPosition,
+  computeTransformPosition,
+  computeOverViewportPosition,
+} from "utils/modal";
 
-export interface ModalProps
-  extends Pick<
-    Props,
-    | "style"
-    | "portalClassName"
-    | "className"
-    | "overlayClassName"
-    | "onAfterOpen"
-    | "onAfterClose"
-    | "overlayRef"
-    | "contentRef"
-    | "id"
-  > {
+// types
+import { Position, ReactModalProps } from "./_types";
+
+ReactModal.setAppElement("#root");
+
+export interface ModalProps extends ReactModalProps {
   isOpen: boolean;
   isCloseBtn?: boolean;
   isCloseBtnCorner?: boolean;
@@ -37,89 +35,6 @@ export interface ModalProps
   transformExtra?: { horizontal?: number; vertical?: number };
   children?: JSX.Element | JSX.Element[];
 }
-
-ReactModal.setAppElement("#root");
-
-const minSpacing = 16;
-
-const computeAnchorPosition = (
-  oldPosition: { left: number; top: number },
-  anchorElement: Element,
-  origin?: PopoverOrigin
-) => {
-  const position = { ...oldPosition };
-
-  const { width: anchorWidth, height: anchorHeight } = anchorElement.getBoundingClientRect();
-  const { horizontal = "center", vertical = "top" } = origin || {};
-
-  // anchor X
-  if (horizontal === "center") position.left += anchorWidth / 2;
-  else if (horizontal === "right") position.left += anchorWidth;
-  else if (horizontal === "left") position.left += 0;
-
-  // anchor Y
-  if (vertical === "center") position.top += anchorHeight / 2;
-  else if (vertical === "top") position.top += 0;
-  else if (vertical === "bottom") position.top += anchorHeight;
-
-  return position;
-};
-
-const computeTransformPosition = (
-  oldPosition: { left: number; top: number },
-  contentElement: Element,
-  origin?: PopoverOrigin,
-  extraOrigin?: { horizontal?: number; vertical?: number }
-) => {
-  const position = { ...oldPosition };
-
-  const { width: contentWidth, height: contentHeight } = contentElement.getBoundingClientRect();
-  const { horizontal = "center", vertical = "top" } = origin || {};
-  const { horizontal: horizontalExtra = 0, vertical: verticalExtra = 0 } = extraOrigin || {};
-
-  // transform X
-  if (horizontal === "center") position.left -= contentWidth / 2;
-  else if (horizontal === "right") position.left -= contentWidth + horizontalExtra;
-  else if (horizontal === "left") position.left += horizontalExtra;
-
-  // transform Y
-  if (vertical === "center") position.top -= contentHeight / 2;
-  else if (vertical === "top") position.top += verticalExtra;
-  else if (vertical === "bottom") position.top -= contentHeight + verticalExtra;
-
-  return position;
-};
-
-const computeOverViewportPosition = (
-  oldPosition: { left: number; top: number },
-  contentElement: HTMLDivElement
-) => {
-  const position = { ...oldPosition };
-  const { width: contentWidth, height: contentHeight } = contentElement.getBoundingClientRect();
-
-  // check modal is over viewport
-  // over left postion of viewport
-  if (position.left < minSpacing) {
-    position.left = 16;
-  }
-
-  // over top postion of viewport
-  if (position.top < minSpacing) {
-    position.top = 16;
-  }
-
-  // over right postion of viewport
-  if (position.left + contentWidth > window.innerWidth - minSpacing) {
-    position.left = window.innerWidth - minSpacing - contentWidth;
-  }
-
-  // over bottom postion of viewport
-  if (position.top + contentHeight > window.innerHeight - minSpacing) {
-    position.top = window.innerHeight - minSpacing - contentHeight;
-  }
-
-  return position;
-};
 
 const Modal: FC<ModalProps> = ({
   isCloseBtn,

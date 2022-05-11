@@ -4,7 +4,7 @@ import { FC } from "react";
 import MessageSocketProvider from "pages/ChatPage/Context/MessageSocketContext";
 
 // components
-import { Box } from "@mui/system";
+import { Box } from "@mui/material";
 import ChatBox from "./ChatBox";
 import ConversationHeader from "./ConversationHeader";
 import ConversationToolBar from "./ConversationToolBar";

@@ -1,7 +1,7 @@
 import Quill from "quill";
 
-// context
-import { ContextLinkValueType } from "./InputContext";
+// types
+import { ContextLinkValueType } from "./_types";
 
 const Link = Quill.import("formats/link");
 

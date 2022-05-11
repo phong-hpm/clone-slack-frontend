@@ -7,10 +7,7 @@ import { useSelector } from "store";
 import * as channelsSelectors from "store/selectors/channels.selector";
 
 // components
-import { Box } from "@mui/system";
-
-// components
-import { Avatar, Button, Typography } from "@mui/material";
+import { Box, Avatar, Button, Typography } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 
 // images

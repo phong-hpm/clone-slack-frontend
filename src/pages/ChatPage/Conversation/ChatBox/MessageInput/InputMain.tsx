@@ -10,7 +10,6 @@ import * as usersSelectors from "store/selectors/users.selector";
 
 // components
 import "quill-mention";
-import { Delta, RangeStatic, StringMap } from "quill";
 import { Box } from "@mui/material";
 import ReactQuill from "react-quill";
 import InputActions from "./InputActions";
@@ -29,10 +28,12 @@ import { searchUserMention } from "utils/quillUtils";
 import { removeUnnecessaryFields } from "utils/message";
 
 // hook
-import useQuillReact, { LinkCustomEventDetailType } from "./useQuillReact";
+import useQuillReact from "./useQuillReact";
 
 // types
+import { Delta, RangeStatic, StringMap } from "quill";
 import { UserType } from "store/slices/_types";
+import { LinkCustomEventDetailType } from "./_types";
 
 export interface InputMainProps {
   autoFocus?: boolean;

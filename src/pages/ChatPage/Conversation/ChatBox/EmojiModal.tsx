@@ -1,11 +1,12 @@
 import { FC } from "react";
 
 // components
-import EmojiPicker, { EmojiIconType } from "components/EmojiPicker";
+import EmojiPicker from "components/EmojiPicker";
 import { Modal, ModalProps } from "components/Modal";
 import { Box, CircularProgress, Typography } from "@mui/material";
 
-// components
+// types
+import { EmojiIconType } from "components/EmojiPicker/_types";
 
 export interface EmojiModalProps extends ModalProps {
   onEmojiSelect: (emoji: EmojiIconType) => void;

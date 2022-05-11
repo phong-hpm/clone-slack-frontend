@@ -1,46 +1,14 @@
 import React, { FC, useRef, useCallback, createContext, useState, useMemo, useEffect } from "react";
 
 // components
-import { RangeStatic } from "quill";
 import ReactQuill from "react-quill";
 
 // redux slices
 import { stateDefault } from "utils/constants";
 
 // types
-import { UserType, MessageFileType } from "store/slices/_types";
-
-export interface ContextLinkValueType {
-  text: string;
-  href: string;
-  url: string;
-  isReadOnly?: boolean;
-}
-
-export interface ContextQuillStateType {
-  range: RangeStatic;
-  blotRange: RangeStatic;
-  blot: any;
-}
-
-export interface ContextAppStateType {
-  isEditMode?: boolean;
-  isFocus: boolean;
-  userMention: UserType;
-  inputFiles: MessageFileType[];
-}
-
-export interface ContextType {
-  quillReact?: ReactQuill;
-  setQuillReact: (quillReact: ReactQuill) => void;
-  quillState: ContextQuillStateType;
-  updateQuillState: (data: Partial<ContextQuillStateType>) => void;
-  appState: ContextAppStateType;
-  updateAppState: (data: Partial<ContextAppStateType>) => void;
-  setFocus: (isFocus: boolean, index?: number) => void;
-  setInputFile: (file: MessageFileType) => void;
-  removeInputFile: (id: string) => void;
-}
+import { MessageFileType } from "store/slices/_types";
+import { ContextAppStateType, ContextQuillStateType, InputContextType } from "./_types";
 
 export const initialQuillState: ContextQuillStateType = {
   range: { index: 0, length: 0 },
@@ -54,12 +22,14 @@ const initialAppState: ContextAppStateType = {
   inputFiles: [],
 };
 
-const initialContext: Partial<ContextType> = {
+const initialContext: Partial<InputContextType> = {
   quillState: initialQuillState,
   appState: initialAppState,
 };
 
-const ChatBoxContext = createContext<ContextType>(initialContext as unknown as ContextType);
+const ChatBoxContext = createContext<InputContextType>(
+  initialContext as unknown as InputContextType
+);
 
 export interface MessageInputProviderProps {
   isEditMode?: boolean;

@@ -1,8 +1,7 @@
 import { FC, useRef, useState } from "react";
 
 // components
-import { Box } from "@mui/system";
-import { IconButton, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 import EmojiIcon from "components/EmojiIcon";
 import MoreMenu, { MoreMenuProps } from "./MoreMenu";

@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "store";
 
 // redux actions
-import { getUserInformation } from "store/actions/auth/getUserInformation";
 import { renewAccessToken } from "store/actions/auth/renewToken";
+import { getUserInformation } from "store/actions/auth/getUserInformation";
 
 // redux selectors
 import * as authSelectors from "store/selectors/auth.selector";

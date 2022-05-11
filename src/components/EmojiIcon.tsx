@@ -1,6 +1,5 @@
 import { FC, useEffect, useState } from "react";
 import classnames from "classnames";
-
 import lodashGet from "lodash.get";
 
 // emoji data

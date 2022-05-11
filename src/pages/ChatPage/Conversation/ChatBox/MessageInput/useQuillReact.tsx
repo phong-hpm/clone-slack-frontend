@@ -1,20 +1,10 @@
 import { useContext, useEffect, useRef } from "react";
 
-// component
-import ReactQuill from "react-quill";
-import { RangeStatic } from "quill";
-
 // context
-import ChatBoxContext, { ContextLinkValueType, initialQuillState } from "./InputContext";
+import ChatBoxContext, { initialQuillState } from "./InputContext";
 
-export interface LinkCustomEventDetailType {
-  quillReact?: ReactQuill;
-  anchorEl?: HTMLSpanElement;
-  linkValue?: ContextLinkValueType;
-  range?: RangeStatic;
-  blotRange?: RangeStatic;
-  setFocus?: (isFocus: boolean, index?: number) => void;
-}
+// types
+import { ContextLinkValueType, LinkCustomEventDetailType } from "./_types";
 
 export const useQuillReact = () => {
   const { quillReact, updateQuillState, updateAppState, setFocus } = useContext(ChatBoxContext);
