@@ -9,10 +9,10 @@ import * as authSelectors from "store/selectors/auth.selector";
 import * as usersSelectors from "store/selectors/users.selector";
 
 // context
-import ChatBoxContext, { initialQuillState } from "./InputContext";
+import InputContext, { initialQuillState } from "./InputContext";
 
 // components
-import MentionItem from "./MentionItem";
+import MentionItem from "./InputMentionItem";
 
 // types
 import { StringMap } from "quill";
@@ -29,7 +29,7 @@ export interface UseQuillReactProps {
 
 // this hook will help InutMain store some logics, which are related to react-quill
 export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
-  const { quillReact, updateQuillState, updateAppState, setFocus } = useContext(ChatBoxContext);
+  const { quillReact, updateQuillState, updateAppState, setFocus } = useContext(InputContext);
 
   const user = useSelector(authSelectors.getUser);
   const userList = useSelector(usersSelectors.getUserList);

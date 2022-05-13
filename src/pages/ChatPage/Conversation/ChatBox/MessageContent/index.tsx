@@ -26,7 +26,7 @@ import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 
 // utils
 import { dayFormat } from "utils/dayjs";
-import { color, rgba } from "utils/constants";
+import { color } from "utils/constants";
 import { addNecessaryFields } from "utils/message";
 import { updateReadonlyLinkField } from "utils/message";
 
@@ -91,7 +91,7 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
     : message.isStared
     ? "rgba(242, 199, 68, 0.1)"
     : isHovering
-    ? rgba(color.LIGHT, 0.1)
+    ? "rgb(39, 36, 44)"
     : "";
 
   return (

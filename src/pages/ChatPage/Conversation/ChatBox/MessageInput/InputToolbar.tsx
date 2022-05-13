@@ -8,7 +8,7 @@ import { Divider, Box, IconButton } from "@mui/material";
 import SlackIcon, { SlackIconProps } from "components/SlackIcon";
 
 // context
-import ChatBoxContext from "./InputContext";
+import InputContext from "./InputContext";
 
 const renderIconString = (icon: SlackIconProps["icon"]) =>
   ReactDOMServer.renderToString(<SlackIcon icon={icon} fontSize="medium" />);
@@ -31,7 +31,7 @@ export interface InputToolbarProps {
 }
 
 const InputToolbar: FC<InputToolbarProps> = ({ isFocus, onClickLink }, ref) => {
-  const { setFocus } = useContext(ChatBoxContext);
+  const { setFocus } = useContext(InputContext);
 
   const containerRef = useRef<HTMLDivElement>(null);
 

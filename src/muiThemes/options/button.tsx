@@ -79,15 +79,22 @@ const components: Theme["components"] = {
       {
         props: { size: "small" },
         style: {
-          fontSize: "13px",
-          height: "28px",
+          paddingLeft: 4,
+          paddingRight: 4,
+        },
+      },
+      {
+        props: { size: "medium" },
+        style: {
+          paddingLeft: 10,
+          paddingRight: 10,
         },
       },
       {
         props: { size: "large" },
         style: {
-          paddingLeft: 12,
-          paddingRight: 12,
+          paddingLeft: 16,
+          paddingRight: 16,
         },
       },
     ],

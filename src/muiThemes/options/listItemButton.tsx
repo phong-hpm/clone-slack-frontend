@@ -16,6 +16,10 @@ const components: Theme["components"] = {
         color: "inherit",
         transitionDuration: "0ms",
 
+        "&:hover": {
+          backgroundColor: "rgb(39, 36, 44)",
+        },
+
         "&.Mui-selected": {
           backgroundColor: color.HOVER_ITEM,
           "&:hover": {

@@ -57,7 +57,6 @@ const EditLinkModal: FC = () => {
 
     keepRef.current.quillReact?.getEditor().updateContents(linkDelta as unknown as DeltaStatic);
     keepRef.current.range = { index: index + text.length, length: 0 };
-    console.log(keepRef.current.range);
     handleClose();
   };
 

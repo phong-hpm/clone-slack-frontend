@@ -14,7 +14,7 @@ import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 
 // components
 import { Box, Link, Typography } from "@mui/material";
-import MessageList from "./MessageList";
+import MessageContentList from "./MessageContentList";
 import MessageInput from "./MessageInput";
 import MentionDetailPopover from "./MessageMention/MentionDetailPopover";
 import MentionDetailModal from "./MessageMention/MentionDetailModal";
@@ -38,7 +38,7 @@ const ChatBox: FC = () => {
       display="flex"
       flexDirection="column"
     >
-      <MessageList />
+      <MessageContentList />
 
       <Box px={2.5}>
         <MessageInput

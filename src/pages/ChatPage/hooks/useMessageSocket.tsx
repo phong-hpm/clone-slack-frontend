@@ -2,17 +2,20 @@ import { useContext } from "react";
 
 // context
 import { MessageSocketContext } from "pages/ChatPage/Context/MessageSocketContext";
+
+// utils
 import { SocketEvent } from "utils/constants";
 
-// components
+// types
 import { Delta } from "quill";
+import { MessageFileType } from "store/slices/_types";
 
 const useMessageSocket = () => {
   // if socket is connected, socket will not null
   const { socket } = useContext(MessageSocketContext);
 
-  const emitAddMessage = (delta: Delta) => {
-    socket?.emit(SocketEvent.EMIT_ADD_MESSAGE, { data: { delta } });
+  const emitAddMessage = (delta: Delta, files: MessageFileType[]) => {
+    socket?.emit(SocketEvent.EMIT_ADD_MESSAGE, { data: { delta, files } });
   };
 
   const emitEditMessage = (id: string, delta: Delta) => {

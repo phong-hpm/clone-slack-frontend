@@ -14,15 +14,16 @@ import {
 import SlackIcon from "components/SlackIcon";
 
 // context
-import ChatBoxContext from "./InputContext";
+import InputContext from "./InputContext";
 
 // utils
 import { color, rgba } from "utils/constants";
-import EmojiModal from "pages/ChatPage/Conversation/ChatBox/EmojiModal";
-import AudioRecordModal from "./AudioRecordModal";
+import EmojiModal from "features/EmojiModal";
+import RecordAudioModal from "./RecordAudio";
 
 // types
 import { MessageFileType } from "store/slices/_types";
+import RecordVideo from "./RecordVideo";
 
 export interface InputActionsProps {
   isShowToolbar: boolean;
@@ -45,10 +46,8 @@ const InputActions: FC<InputActionsProps> = ({
   onSend,
   onSaveAudio,
 }) => {
-  const { appState, setFocus } = useContext(ChatBoxContext);
+  const { appState, setFocus } = useContext(InputContext);
 
-  // const audioRef = useRef<HTMLAudioElement>(null);
-  // const videoRef = useRef<HTMLVideoElement>(null);
   const anchorRef = useRef<HTMLDivElement>();
   const microButtonRef = useRef<HTMLButtonElement>(null);
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
@@ -56,34 +55,7 @@ const InputActions: FC<InputActionsProps> = ({
   const [isShowMenu, setShowMenu] = useState(false);
   const [isShowEmojiModal, setShowEmojiModal] = useState(false);
   const [isShowAudioModal, setShowAudioModal] = useState(false);
-
-  // const record = async () => {
-  //   return await navigator.mediaDevices.getUserMedia({
-  //     audio: true,
-  //     // video: true,
-  //   });
-  // };
-
-  // const createRecorder = (stream: MediaStream, mimeType: string, cb: Function) => {
-  //   // the stream data is stored in this array
-  //   let recordedChunks: Blob[] = [];
-
-  //   const mediaRecorder = new MediaRecorder(stream);
-
-  //   mediaRecorder.ondataavailable = (event) => {
-  //     console.log(event.data);
-  //     if (event.data.size > 0) {
-  //       recordedChunks.push(event.data);
-  //     }
-  //   };
-  //   mediaRecorder.onstop = () => {
-  //     cb(new Blob(recordedChunks));
-  //     // saveFile(recordedChunks);
-  //     recordedChunks = [];
-  //   };
-
-  //   return mediaRecorder;
-  // };
+  const [isShowVideoModal, setShowVideoModal] = useState(false);
 
   const createActionList = useMemo(
     () => [
@@ -93,7 +65,7 @@ const InputActions: FC<InputActionsProps> = ({
         action: () => {},
       },
       { isDivider: true },
-      { icon: "video", action: () => {} },
+      { icon: "video", action: () => setShowVideoModal(true) },
       { icon: "microphone", action: () => setShowAudioModal(true), ref: microButtonRef },
       { isDivider: true },
       { icon: "emoji", action: () => setShowEmojiModal(true), ref: emojiButtonRef },
@@ -113,9 +85,6 @@ const InputActions: FC<InputActionsProps> = ({
 
   return (
     <Box display="flex" p={0.75} onClick={() => setFocus(true)}>
-      {/* <audio ref={audioRef} />
-      <video ref={videoRef} /> */}
-
       {/* actions group */}
       <Box flex="1" display="flex" py={0.5} color={color.HIGH}>
         {actionList.map(({ isDivider, icon, style, action, ref }, index) => {
@@ -164,10 +133,10 @@ const InputActions: FC<InputActionsProps> = ({
         {appState.isEditMode ? (
           <>
             <Button variant="outlined" size="small" sx={{ mr: 1 }} onClick={onCancel}>
-              cancel
+              <Typography variant="h5">cancel</Typography>
             </Button>
             <Button variant="contained" size="small" onClick={onSend}>
-              Save
+              <Typography variant="h5">Save</Typography>
             </Button>
           </>
         ) : (
@@ -228,10 +197,16 @@ const InputActions: FC<InputActionsProps> = ({
         onClose={() => setShowEmojiModal(false)}
       />
 
-      <AudioRecordModal
+      <RecordAudioModal
         isOpen={isShowAudioModal}
         anchorEl={microButtonRef.current}
         onClose={() => setShowAudioModal(false)}
+      />
+
+      <RecordVideo
+        isStart={isShowVideoModal}
+        onDone={() => {}}
+        onClose={() => setShowVideoModal(false)}
       />
     </Box>
   );

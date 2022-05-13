@@ -1,16 +1,15 @@
 import { FC } from "react";
 
 // components
-import { Box } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
 
-export interface ModalBodyProps {
+export interface ModalBodyProps extends BoxProps {
   children: string | JSX.Element | JSX.Element[];
-  p?: number;
 }
 
-const ModalBody: FC<ModalBodyProps> = ({ p, children }) => {
+const ModalBody: FC<ModalBodyProps> = ({ children, ...props }) => {
   return (
-    <Box flex="1" px={3} pb={2.5} p={p}>
+    <Box flex="1" px={3} pb={2.5} {...props}>
       {children}
     </Box>
   );

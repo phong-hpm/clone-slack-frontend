@@ -1,5 +1,6 @@
 // types
 import { UserType } from "store/slices/_types";
+import { ResolutionType } from "./_types";
 
 export const SocketEventDefault = {
   CONNECT: "connect",
@@ -136,3 +137,10 @@ export const quillFormats = [
   "code-block",
   "mention",
 ];
+
+export enum deviceKind {
+  MICROPHONE = "audioinput",
+  SPEAKER = "audiooutput",
+  CAMERA = "videoinput",
+}
+export const resolutions: ResolutionType[] = [{ width: 1280, height: 720 }];

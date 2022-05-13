@@ -4,8 +4,10 @@ const components: Theme["components"] = {
   MuiList: {
     styleOverrides: {
       root: {
-        color: "inherit",
-        fontSize: "inherit",
+        "&.MuiMenu-list": {
+          color: "inherit",
+          fontSize: "inherit",
+        },
       },
     },
   },

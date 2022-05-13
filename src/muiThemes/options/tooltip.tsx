@@ -31,13 +31,19 @@ const components: Theme["components"] = {
         // support for remind menu in more menu
         "&.tooltip-menu": {
           zIndex: 2100,
-          marginTop: "-9px !important",
-
           ".MuiTooltip-tooltip": {
             width: 200,
-            margin: "1px !important",
             padding: "8px 0",
             backgroundColor: color.MIN_SOLID,
+
+            margin: "0 !important",
+            marginTop: "-8px !important",
+          },
+        },
+
+        "&.auto-width": {
+          ".MuiTooltip-tooltip": {
+            width: "auto",
           },
         },
       },

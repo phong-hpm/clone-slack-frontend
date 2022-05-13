@@ -6,7 +6,7 @@ import { Box, Typography } from "@mui/material";
 
 // utils
 import { color, rgba } from "utils/constants";
-import { updateBarHeight, buildProgressTime } from "utils/waveSurver";
+import { buildProgressTime, updateBarHeight, drawBars } from "utils/waveSurver";
 
 export interface AudioWaveSurferProps {
   height?: number;
@@ -88,11 +88,14 @@ const AudioWaveSurfer: FC<AudioWaveSurferProps> = ({
   useEffect(() => {
     waveSurfer?.on("ready", () => {
       if (!waveSurfer) return;
-      // only update bar height if we don't have peaks before
-      !peaks && updateBarHeight(waveSurfer, barMinHeight);
+      if (peaks) {
+        drawBars(waveSurfer, peaks);
+      } else {
+        updateBarHeight(waveSurfer, barMinHeight);
+      }
       onReady && onReady(waveSurfer);
     });
-  }, [waveSurfer, peaks, barMinHeight, onReady]);
+  }, [waveSurfer, peaks, width, barMinHeight, onReady]);
 
   // add audioprocess event, which will be call when audio is running, value is seconds
   useEffect(() => {
@@ -117,7 +120,7 @@ const AudioWaveSurfer: FC<AudioWaveSurferProps> = ({
       <Box>
         <Box ref={setContainerEl} height={height} width={width} sx={{ cursor: "pointer" }} />
       </Box>
-      <Box ml={1.5}>
+      <Box ml={2}>
         <Typography variant="h5" fontWeight={700}>
           {progressTimeProp || progressTime}
         </Typography>

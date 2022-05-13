@@ -32,6 +32,7 @@ export interface InputContextType {
   updateAppState: (data: Partial<ContextAppStateType>) => void;
   setFocus: (isFocus: boolean, index?: number) => void;
   setInputFile: (file: MessageFileType) => void;
+  updateInputFile: (file: Partial<MessageFileType>) => void;
   removeInputFile: (id: string) => void;
 }
 
@@ -43,4 +44,12 @@ export interface LinkCustomEventDetailType {
   range?: RangeStatic;
   blotRange?: RangeStatic;
   setFocus?: (isFocus: boolean, index?: number) => void;
+}
+
+// VideoRecordModal.tsx -----------------
+export interface MediaDeviceInfoType {
+  deviceId: string;
+  groupId: string;
+  kind: string;
+  label: string;
 }

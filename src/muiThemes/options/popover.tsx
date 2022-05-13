@@ -14,7 +14,7 @@ const components: Theme["components"] = {
     styleOverrides: {
       root: {
         "& .MuiPopover-paper": {
-          color: color.LIGHT,
+          color: color.PRIMARY,
           background: color.DARK,
           boxShadow: css.BOX_SHADOW,
           borderRadius: "8px",

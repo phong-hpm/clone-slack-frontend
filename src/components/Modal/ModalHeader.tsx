@@ -1,15 +1,25 @@
 import { FC } from "react";
 
 // components
-import { Box } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
 
-export interface ModalHeaderProps {
-  children: string | JSX.Element | JSX.Element[];
+export interface ModalHeaderProps extends BoxProps {
+  isBorder?: boolean;
+  children?: string | JSX.Element | JSX.Element[];
 }
 
-const ModalHeader: FC<ModalHeaderProps> = ({ children }) => {
+const ModalHeader: FC<ModalHeaderProps> = ({ isBorder, children, ...props }) => {
   return (
-    <Box py={2.5} pl={3} pr={9}>
+    <Box
+      display="flex"
+      alignItems="center"
+      minHeight={32}
+      py={2.5}
+      pl={3}
+      pr={6}
+      sx={{ borderBottom: isBorder ? "1px solid rgba(232, 232, 232, 0.13)" : "" }}
+      {...props}
+    >
       {children}
     </Box>
   );

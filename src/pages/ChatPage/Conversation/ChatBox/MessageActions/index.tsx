@@ -3,9 +3,9 @@ import { FC, useRef, useState } from "react";
 // components
 import { Box, IconButton, Tooltip } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
-import EmojiIcon from "components/EmojiIcon";
+import EmojiIcon from "components/Emoji/EmojiIcon";
 import MoreMenu, { MoreMenuProps } from "./MoreMenu";
-import EmojiModal from "pages/ChatPage/Conversation/ChatBox/EmojiModal";
+import EmojiModal from "features/EmojiModal";
 
 // utils
 import { color, css } from "utils/constants";
@@ -47,6 +47,52 @@ const MessageActions: FC<MessageActionsProps> = ({
     onClose();
   };
 
+  const actions = [
+    {
+      tooltip: "Completed",
+      emojiIcon: "white_check_mark",
+      onClick: () => handleReactionMessage("white_check_mark"),
+    },
+    {
+      tooltip: "Take a look...",
+      emojiIcon: "eyes",
+      onClick: () => handleReactionMessage("eyes"),
+    },
+    {
+      tooltip: "Nicely done",
+      emojiIcon: "raised_hands",
+      onClick: () => handleReactionMessage("raised_hands"),
+    },
+    {
+      tooltip: "Find another reaction",
+      slackIcon: "add-reaction",
+      onClick: () => setShowEmojiModal(true),
+    },
+    {
+      isHide: isSystem,
+      tooltip: "Realy in thread",
+      slackIcon: "comment-alt",
+      onClick: () => {},
+    },
+    {
+      tooltip: "Share message",
+      slackIcon: "forward",
+      onClick: onClickShare,
+    },
+    {
+      tooltip: "Add to saved item",
+      slackIcon: isStared ? "bookmark-filled" : "bookmark",
+      iconColor: isStared ? color.DANGER : undefined,
+      onClick: handleStarMessage,
+    },
+    {
+      ref: moreButtonRef,
+      tooltip: "More actions",
+      slackIcon: "ellipsis-vertical-filled",
+      onClick: () => setShowMoreMenu(true),
+    },
+  ];
+
   return (
     <Box
       color={color.HIGH}
@@ -55,63 +101,25 @@ const MessageActions: FC<MessageActionsProps> = ({
       p={0.25}
       borderRadius={1}
     >
-      <Tooltip title="Completed">
-        <IconButton
-          sx={{ borderRadius: 0.5 }}
-          onClick={() => handleReactionMessage("white_check_mark")}
-        >
-          <EmojiIcon id="white_check_mark" fontSize="large" />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Take a look...">
-        <IconButton sx={{ borderRadius: 0.5 }} onClick={() => handleReactionMessage("eyes")}>
-          <EmojiIcon id="eyes" fontSize="large" />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Nicely done" onClick={() => handleReactionMessage("raised_hands")}>
-        <IconButton sx={{ borderRadius: 0.5 }}>
-          <EmojiIcon id="raised_hands" fontSize="large" />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Find another reaction">
-        <IconButton
-          ref={moreReactionButtonRef}
-          sx={{ borderRadius: 0.5 }}
-          onClick={() => setShowEmojiModal(true)}
-        >
-          <SlackIcon icon="add-reaction" fontSize="large" />
-        </IconButton>
-      </Tooltip>
-      {!isSystem && (
-        <Tooltip title="Realy in thread">
-          <IconButton sx={{ borderRadius: 0.5 }}>
-            <SlackIcon icon="comment-alt" fontSize="large" />
-          </IconButton>
-        </Tooltip>
-      )}
-      <Tooltip title="Share message">
-        <IconButton sx={{ borderRadius: 0.5 }} onClick={onClickShare}>
-          <SlackIcon icon="forward" fontSize="large" />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="Add to saved item">
-        <IconButton sx={{ borderRadius: 0.5 }} onClick={handleStarMessage}>
-          {isStared ? (
-            <SlackIcon color={color.DANGER} icon="bookmark-filled" fontSize="large" />
-          ) : (
-            <SlackIcon icon="bookmark" fontSize="large" />
-          )}
-        </IconButton>
-      </Tooltip>
-      <Tooltip title="More actions">
-        <IconButton
-          ref={moreButtonRef}
-          sx={{ borderRadius: 0.5 }}
-          onClick={() => setShowMoreMenu(true)}
-        >
-          <SlackIcon icon="ellipsis-vertical-filled" fontSize="large" />
-        </IconButton>
-      </Tooltip>
+      {actions.map((action) => {
+        if (action.isHide) return <></>;
+
+        return (
+          <Tooltip key={action.tooltip} title={action.tooltip}>
+            <IconButton
+              ref={action.ref}
+              size="large"
+              sx={{ borderRadius: 0.5 }}
+              onClick={action.onClick}
+            >
+              {action.emojiIcon && <EmojiIcon id={action.emojiIcon} fontSize="large" />}
+              {action.slackIcon && (
+                <SlackIcon color={action.iconColor} icon={action.slackIcon} fontSize="large" />
+              )}
+            </IconButton>
+          </Tooltip>
+        );
+      })}
 
       <MoreMenu
         open={isShowMoreMenu}

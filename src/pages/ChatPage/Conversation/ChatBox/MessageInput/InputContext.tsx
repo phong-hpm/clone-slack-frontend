@@ -1,5 +1,8 @@
 import React, { FC, useRef, useCallback, createContext, useState, useMemo, useEffect } from "react";
 
+import thumbDefault from "assets/images/default_thumb.jpeg";
+import sharescreenDefault from "assets/media/demo_sharescreen.mp4";
+
 // components
 import ReactQuill from "react-quill";
 
@@ -27,9 +30,7 @@ const initialContext: Partial<InputContextType> = {
   appState: initialAppState,
 };
 
-const ChatBoxContext = createContext<InputContextType>(
-  initialContext as unknown as InputContextType
-);
+const InputContext = createContext<InputContextType>(initialContext as unknown as InputContextType);
 
 export interface MessageInputProviderProps {
   isEditMode?: boolean;
@@ -79,11 +80,26 @@ export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode
     setAppState((state) => ({ ...state, inputFiles: [...state.inputFiles, payload] }));
   }, []);
 
+  const updateInputFile = useCallback((payload: Partial<MessageFileType>) => {
+    setAppState((state) => {
+      const index = state.inputFiles.findIndex(({ id }) => id === payload.id);
+      if (index < 0) return state;
+      state.inputFiles[index] = { ...state.inputFiles[index], ...payload };
+      return { ...state };
+    });
+  }, []);
+
   const removeInputFile = useCallback((payload: string) => {
-    setAppState((state) => ({
-      ...state,
-      inputFiles: state.inputFiles.filter((file) => file.id !== payload),
-    }));
+    setAppState((state) => {
+      const file = state.inputFiles.find((f) => f.id === payload);
+      if (!file) return state;
+
+      // revoke blob:url
+      URL.revokeObjectURL(file.url);
+      if (file.thumb) URL.revokeObjectURL(file.thumb);
+
+      return { ...state, inputFiles: state.inputFiles.filter((file) => file.id !== payload) };
+    });
   }, []);
 
   const value = useMemo(
@@ -96,6 +112,7 @@ export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode
       updateAppState,
       setFocus,
       setInputFile,
+      updateInputFile,
       removeInputFile,
     }),
     [
@@ -106,13 +123,35 @@ export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode
       updateAppState,
       setFocus,
       setInputFile,
+      updateInputFile,
       removeInputFile,
     ]
   );
 
+  useEffect(() => {
+    const setInput = async () => {
+      const thumbBlob = await fetch(thumbDefault).then((data) => data.blob());
+      const sharescreenBlob = await fetch(sharescreenDefault).then((data) => data.blob());
+
+      setInputFile({
+        id: "F-5af588d5-f321-41d5-a4a4-83caab0a98cf",
+        url: URL.createObjectURL(sharescreenBlob),
+        created: 1652409677233,
+        fileType: "webm",
+        type: "video",
+        size: 714153,
+        mineType: "video/webm",
+        duration: 13,
+        thumb: URL.createObjectURL(thumbBlob),
+      });
+    };
+
+    setInput();
+  }, [setInputFile]);
+
   useEffect(() => updateAppState({ isEditMode }), [isEditMode, updateAppState]);
 
-  return <ChatBoxContext.Provider value={value}>{children}</ChatBoxContext.Provider>;
+  return <InputContext.Provider value={value}>{children}</InputContext.Provider>;
 };
 
-export default ChatBoxContext;
+export default InputContext;

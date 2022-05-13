@@ -23,6 +23,8 @@ import MuiDivider from "./options/divider";
 import MuiLink from "./options/link";
 import MuiTooltip from "./options/tooltip";
 import MuiChip from "./options/chip";
+import MuiSelect from "./options/select";
+import MuiSlider from "./options/slider";
 
 // utils
 import { color } from "utils/constants";
@@ -67,6 +69,8 @@ const mainOptions: ThemeOptions = {
     MuiLink,
     MuiTooltip,
     MuiChip,
+    MuiSelect,
+    MuiSlider,
   },
 };
 

@@ -26,6 +26,11 @@
   box-shadow: rgba(232, 232, 232, 0.13) 0px 0px 0px 1px, rgba(0, 0, 0, 0.35) 0px 18px 48px 0px;
   background: #1a1d21;
   border-radius: 8px;
+  outline: none;
+
+  &.modal-record {
+    max-width: 600px;
+  }
 
   &.modal-anchor {
     position: absolute;

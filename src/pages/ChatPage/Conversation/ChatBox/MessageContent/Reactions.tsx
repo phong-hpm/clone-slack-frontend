@@ -8,9 +8,9 @@ import * as authSelectors from "store/selectors/auth.selector";
 
 // components
 import { Box, Chip, Tooltip, Typography } from "@mui/material";
-import EmojiIcon from "components/EmojiIcon";
+import EmojiIcon from "components/Emoji/EmojiIcon";
 import SlackIcon from "components/SlackIcon";
-import EmojiModal from "pages/ChatPage/Conversation/ChatBox/EmojiModal";
+import EmojiModal from "features/EmojiModal";
 
 // hooks
 import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";

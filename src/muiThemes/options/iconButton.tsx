@@ -57,6 +57,14 @@ const components: Theme["components"] = {
           },
         },
       },
+      {
+        props: { className: "bg-gray" },
+        style: {
+          "&:hover": {
+            backgroundColor: "rgba(29, 28, 29, 0.85)",
+          },
+        },
+      },
     ],
   },
 };

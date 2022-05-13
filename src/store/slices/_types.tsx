@@ -49,9 +49,11 @@ export interface MessageFileType {
   fileType: "webm";
   size: number;
   type: "audio" | "video";
-  wavePeaks: number[];
-  mineType: "audio/webm";
+  mineType: "audio/webm" | "video/webm";
   duration: number;
+  wavePeaks?: number[];
+  status?: "uploading" | "done";
+  thumb?: string;
 }
 
 export interface MessageType {

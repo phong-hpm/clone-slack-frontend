@@ -6,11 +6,11 @@ import { Box } from "@mui/material";
 import ReactQuill from "react-quill";
 import InputActions from "./InputActions";
 import InputToolbar from "./InputToolbar";
-import QuillFormatLink from "./QuillFormatLink";
-import UploadingFileList from "./UploadingFileList";
+import QuillFormatLink from "../MessageLink/QuillFormatLink";
+import ReviewFileList from "./ReviewFileList";
 
 // context
-import ChatBoxContext from "./InputContext";
+import InputContext from "./InputContext";
 
 // utils
 import { color } from "utils/constants";
@@ -23,13 +23,14 @@ import useQuillReact from "./useQuillReact";
 // types
 import { Delta, RangeStatic } from "quill";
 import { LinkCustomEventDetailType } from "./_types";
+import { MessageFileType } from "store/slices/_types";
 
 export interface InputMainProps {
   autoFocus?: boolean;
   defaultValue?: Delta;
   placeHolder?: string;
   onCancel?: () => void;
-  onSend?: (delta: Delta) => void;
+  onSend: (delta: Delta, files: MessageFileType[]) => void;
 }
 
 const InputMain: FC<InputMainProps> = ({
@@ -39,13 +40,26 @@ const InputMain: FC<InputMainProps> = ({
   onCancel,
   onSend,
 }) => {
-  const { appState, quillReact, updateQuillState, setQuillReact, setFocus } =
-    useContext(ChatBoxContext);
+  const { appState, quillReact, updateQuillState, updateAppState, setQuillReact, setFocus } =
+    useContext(InputContext);
 
   const { keepRef, modules, toolbarEL, setToolbarEL } = useQuillReact({ autoFocus });
 
   const [isDisabled, setDisabled] = useState(true);
   const [isShowToolbar, setShowToolbar] = useState(true);
+
+  const handleSend = useCallback(() => {
+    const textLength = quillReact?.getEditor().getText()?.trim()?.length;
+    const inputDelta = quillReact?.getEditor()?.getContents();
+
+    if (inputDelta) {
+      const delta = textLength ? removeUnnecessaryFields(inputDelta) : ({} as Delta);
+      onSend(delta, appState.inputFiles);
+
+      quillReact?.getEditor()?.setContents({ ops: [{ insert: "\n" }] } as Delta);
+      updateAppState({ inputFiles: [] });
+    }
+  }, [appState.inputFiles, quillReact, onSend, updateAppState]);
 
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter") {
@@ -125,12 +139,6 @@ const InputMain: FC<InputMainProps> = ({
     quillReact?.getEditor().insertText(curIndex || 0, emojiNative);
   };
 
-  const handleSend = useCallback(() => {
-    const delta = quillReact?.getEditor()?.getContents();
-    delta && onSend && onSend(removeUnnecessaryFields(delta));
-    quillReact?.getEditor()?.setContents({ ops: [{ insert: "\n" }] } as Delta);
-  }, [quillReact, onSend]);
-
   return (
     <Box color={color.PRIMARY}>
       <Box
@@ -165,7 +173,7 @@ const InputMain: FC<InputMainProps> = ({
           />
         )}
 
-        <UploadingFileList />
+        <ReviewFileList />
 
         <InputActions
           isShowToolbar={isShowToolbar}

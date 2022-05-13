@@ -134,6 +134,7 @@ const Modal: FC<ModalProps> = ({
         overlayClassName="modal-overlay"
         className={classnames(
           "modal-content",
+          className,
           position && "modal-anchor",
           isArrow && "modal-arrow"
         )}
