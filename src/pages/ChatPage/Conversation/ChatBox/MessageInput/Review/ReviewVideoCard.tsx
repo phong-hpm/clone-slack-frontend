@@ -3,6 +3,7 @@ import { FC, useState } from "react";
 // components
 import { Box, IconButton } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
+import Image from "components/Image";
 import ReviewVideo from "./ReviewVideo";
 
 // types
@@ -36,7 +37,7 @@ const ReviewVideoCard: FC<ReviewVideoCardProps> = ({ file, onRemove }) => {
         bgcolor={rgba(color.DARK, 0.2)}
       >
         {/* thumbnail can be updated after this file existed */}
-        {file.thumb && <img src={file.thumb} alt="" style={{ height: "100%", width: "auto" }} />}
+        {file.thumb && <Image src={file.thumb} alt="" style={{ height: "100%", width: "auto" }} />}
       </Box>
       <Box
         position="absolute"

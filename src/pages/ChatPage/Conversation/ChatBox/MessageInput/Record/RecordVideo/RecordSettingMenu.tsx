@@ -14,7 +14,7 @@ const settingOptions = [
 ];
 
 export interface RecordSettingMenuProps extends MenuProps {
-  devices: MediaDeviceInfoType[];
+  devices?: MediaDeviceInfoType[];
   selectedAudioId: string;
   selectedVideoId: string;
   onSelectAudioDevice: (deviceId: string) => void;
@@ -32,7 +32,7 @@ const RecordSettingMenu: FC<RecordSettingMenuProps> = ({
   const [selectedSetting, setSelectedSeting] = useState("");
 
   const renderDevicesList = (kind: string) => {
-    const devicesList = devices.filter((device) => device.kind === kind);
+    const devicesList = (devices || []).filter((device) => device.kind === kind);
 
     return (
       <List component="div" disablePadding>

@@ -1,10 +1,7 @@
-import { FC, useContext, useState } from "react";
+import { FC, useState } from "react";
 
 // components
 import ReviewVideoModal, { ReviewVideoModalProps } from "./ReviewVideoModal";
-
-// context
-import InputContext from "../../InputContext";
 
 // types
 import { MessageFileType } from "store/slices/_types";

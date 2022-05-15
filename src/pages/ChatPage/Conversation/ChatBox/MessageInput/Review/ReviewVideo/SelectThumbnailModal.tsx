@@ -23,19 +23,17 @@ const SelectThumnailModal: FC<SelectThumnailModalProps> = ({
 }) => {
   const keepRef = useRef({ isOpen: false });
 
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState<string>();
   const [thumbnails, setThumbnails] = useState<string[]>([]);
 
   const handleSelect = () => {
-    onSelect && onSelect(selected);
+    onSelect && onSelect(selected || "");
     onClose();
   };
 
   useEffect(() => {
-    console.log(isOpen, src);
     if (!src || !isOpen) return;
     createThumbnails({ src }).then((thumbs) => {
-      console.log("thumbnauk", thumbs);
       // this callback can be fired after component was unmounted
       // check isOpen in keepRef will prevent updating state
       if (!keepRef.current.isOpen || !thumbs?.length) return;

@@ -22,7 +22,6 @@ import EmojiModal from "features/EmojiModal";
 import RecordAudioModal from "./Record/RecordAudio";
 
 // types
-import { MessageFileType } from "store/slices/_types";
 import RecordVideo from "./Record/RecordVideo";
 
 export interface InputActionsProps {
@@ -33,7 +32,6 @@ export interface InputActionsProps {
   onToggleToolbar: (isShow: boolean) => void;
   onCancel?: () => void;
   onSend: () => void;
-  onSaveAudio?: (file: MessageFileType) => void;
 }
 
 const InputActions: FC<InputActionsProps> = ({
@@ -44,7 +42,6 @@ const InputActions: FC<InputActionsProps> = ({
   onToggleToolbar,
   onCancel,
   onSend,
-  onSaveAudio,
 }) => {
   const { appState, setFocus } = useContext(InputContext);
 
@@ -203,11 +200,7 @@ const InputActions: FC<InputActionsProps> = ({
         onClose={() => setShowAudioModal(false)}
       />
 
-      <RecordVideo
-        isStart={isShowVideoModal}
-        onDone={() => {}}
-        onClose={() => setShowVideoModal(false)}
-      />
+      <RecordVideo isStart={isShowVideoModal} onClose={() => setShowVideoModal(false)} />
     </Box>
   );
 };

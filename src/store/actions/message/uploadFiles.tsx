@@ -31,8 +31,6 @@ export const uploadFiles = createAsyncThunk<
   formData.append("filesInfo", filesInfo.toString());
   files.forEach((file) => formData.append("file", file.blob, file.id));
 
-  console.log(files);
-
   const response = await axios.post("message/files");
   return response;
 });

@@ -1,4 +1,5 @@
 import { FC, useContext, useEffect, useState } from "react";
+import { v4 as uuid } from "uuid";
 
 // components
 import RecordModal from "./RecordVideoModal";
@@ -16,18 +17,27 @@ import { createThumbnails } from "utils/videoRecorder";
 
 export interface VideoRecordProps {
   isStart?: boolean;
-  onDone: (url: string) => void;
   onClose: () => void;
 }
 
-const VideoRecord: FC<VideoRecordProps> = ({ isStart, onDone, onClose }) => {
+const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
   const { setInputFile, updateInputFile } = useContext(InputContext);
 
   const [status, setStatus] = useState<RecordStatusType>("ready");
   const [file, setFile] = useState<MessageFileType | null>(null);
 
-  const handleNext = (newFile: MessageFileType) => {
-    setFile(newFile);
+  const handleNext = (chunks: Blob[], duration: number) => {
+    const blob = new Blob(chunks);
+    setFile({
+      id: `F-${uuid()}`,
+      url: URL.createObjectURL(blob),
+      created: Date.now(),
+      fileType: "webm",
+      type: "video",
+      size: blob.size,
+      mineType: "video/webm",
+      duration,
+    });
     setStatus("review");
   };
 
@@ -41,7 +51,7 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onDone, onClose }) => {
   };
 
   const handleDoneReview = () => {
-    setStatus("ready");
+    handleClose();
     if (file) {
       // we have to set input file to context before update thumbnail,
       //    it will make sure that ReviewVideoCardwill get new input file
