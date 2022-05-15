@@ -3,8 +3,8 @@ import { FC, useState } from "react";
 // components
 import { Box, Collapse, Typography } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
-import ReviewAudioCard from "../MessageInput/ReviewAudioCard";
-import ReviewVideoCard from "../MessageInput/ReviewVideoCard";
+import ReviewAudioCard from "../MessageInput/Review/ReviewAudioCard";
+import ReviewVideoCard from "../MessageInput/Review/ReviewVideoCard";
 
 // utils
 import { color } from "utils/constants";

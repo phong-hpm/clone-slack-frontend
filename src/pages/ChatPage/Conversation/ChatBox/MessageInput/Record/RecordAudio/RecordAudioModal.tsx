@@ -17,7 +17,7 @@ import { buildProgressTime, buildPeaks, createWaveSurfer } from "utils/waveSurve
 import popSound from "assets/media/effect/pop_sound.mp3";
 
 // context
-import InputContext from "../InputContext";
+import InputContext from "../../InputContext";
 
 export interface AudioRecordModalProps extends ModalProps {}
 

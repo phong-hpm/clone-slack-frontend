@@ -1,18 +1,18 @@
 import { FC, useContext, useEffect, useState } from "react";
 
 // components
-import { Box } from "@mui/material";
 import RecordModal from "./RecordVideoModal";
 
 // types
 import { RecordStatusType } from "./_types";
-import ReviewVideo from "../ReviewVideo";
+import ReviewVideo from "../../Review/ReviewVideo";
 
 // context
-import InputContext from "../InputContext";
+import InputContext from "../../InputContext";
 
 // types
 import { MessageFileType } from "store/slices/_types";
+import { createThumbnails } from "utils/videoRecorder";
 
 export interface VideoRecordProps {
   isStart?: boolean;
@@ -21,7 +21,7 @@ export interface VideoRecordProps {
 }
 
 const VideoRecord: FC<VideoRecordProps> = ({ isStart, onDone, onClose }) => {
-  const { setInputFile } = useContext(InputContext);
+  const { setInputFile, updateInputFile } = useContext(InputContext);
 
   const [status, setStatus] = useState<RecordStatusType>("ready");
   const [file, setFile] = useState<MessageFileType | null>(null);
@@ -31,14 +31,32 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onDone, onClose }) => {
     setStatus("review");
   };
 
-  const handleDoneReview = () => {
-    setStatus("ready");
-    if (file) setInputFile(file);
-  };
-
   const handleRepeat = () => {
     setStatus("recording");
     setFile(null);
+  };
+
+  const handleSelectThumbnail = (thumb: string) => {
+    if (file) setFile({ ...file, thumb });
+  };
+
+  const handleDoneReview = () => {
+    setStatus("ready");
+    if (file) {
+      // we have to set input file to context before update thumbnail,
+      //    it will make sure that ReviewVideoCardwill get new input file
+      setInputFile(file);
+
+      // after set input file to context, we will update thumb for it
+      // if user selected a thumb before, file.thumb will have value
+      if (!file.thumb) {
+        // create default thumbnail for record
+        createThumbnails({ src: file.url }).then((thumbs) => {
+          if (!thumbs?.length) return;
+          updateInputFile({ id: file.id, thumb: thumbs[0] });
+        });
+      }
+    }
   };
 
   const handleClose = () => {
@@ -52,7 +70,7 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onDone, onClose }) => {
   }, [isStart]);
 
   return (
-    <Box>
+    <>
       <RecordModal isOpen={status === "recording"} onClose={handleClose} onNext={handleNext} />
 
       {file && (
@@ -61,12 +79,12 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onDone, onClose }) => {
           file={file}
           downloadable
           onRepeat={handleRepeat}
-          onThumbnail={() => {}}
+          onSelectThumbnail={handleSelectThumbnail}
           onDone={handleDoneReview}
           onClose={handleClose}
         />
       )}
-    </Box>
+    </>
   );
 };
 

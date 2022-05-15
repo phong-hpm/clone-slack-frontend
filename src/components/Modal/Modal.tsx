@@ -23,7 +23,6 @@ export interface ModalProps extends ReactModalProps {
   isCloseBtn?: boolean;
   isCloseBtnCorner?: boolean;
   isArrow?: boolean;
-  onAfterOpen?: () => void;
   shouldCloseOnEsc?: boolean;
   shouldCloseOnOverlayClick?: boolean;
   onClose: () => void;
@@ -48,7 +47,6 @@ const Modal: FC<ModalProps> = ({
   anchorEl,
   style: styleProp,
   className,
-  onAfterOpen,
   onClose,
   anchorOrigin,
   transformOrigin,
@@ -128,7 +126,6 @@ const Modal: FC<ModalProps> = ({
         isOpen={isOpen}
         shouldCloseOnEsc={shouldCloseOnEsc}
         shouldCloseOnOverlayClick={shouldCloseOnOverlayClick}
-        onAfterOpen={onAfterOpen}
         onRequestClose={onClose}
         portalClassName="modal-portal"
         overlayClassName="modal-overlay"

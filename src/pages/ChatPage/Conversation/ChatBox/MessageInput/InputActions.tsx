@@ -19,11 +19,11 @@ import InputContext from "./InputContext";
 // utils
 import { color, rgba } from "utils/constants";
 import EmojiModal from "features/EmojiModal";
-import RecordAudioModal from "./RecordAudio";
+import RecordAudioModal from "./Record/RecordAudio";
 
 // types
 import { MessageFileType } from "store/slices/_types";
-import RecordVideo from "./RecordVideo";
+import RecordVideo from "./Record/RecordVideo";
 
 export interface InputActionsProps {
   isShowToolbar: boolean;

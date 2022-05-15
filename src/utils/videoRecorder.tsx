@@ -4,15 +4,30 @@ import { v4 as uuid } from "uuid";
 import { MessageFileType } from "store/slices/_types";
 import { ResolutionType } from "./_types";
 
-const createRecoder = (stream: MediaStream, callback: (file: MessageFileType) => void) => {
+export const createRecoder = (
+  stream: MediaStream,
+  onDuraionChange: (duration: number) => void,
+  callback: (file: MessageFileType) => void
+) => {
   let currentDuration = 0; // milisecond
+  let durationSeconds = 0;
   let intervalId: NodeJS.Timer;
   const recordedChunks: Blob[] = [];
   const mediaRecoder = new MediaRecorder(stream);
 
-  mediaRecoder.onstart = () => {
-    intervalId = setInterval(() => (currentDuration += 100), 100);
+  const startCountDuration = () => {
+    intervalId = setInterval(() => {
+      currentDuration += 10;
+      if (Math.floor(currentDuration / 1000) !== durationSeconds) {
+        durationSeconds = Math.floor(currentDuration / 1000);
+        onDuraionChange(durationSeconds);
+      }
+    }, 10);
   };
+
+  mediaRecoder.onstart = () => startCountDuration();
+  mediaRecoder.onpause = () => clearInterval(intervalId);
+  mediaRecoder.onresume = () => startCountDuration();
 
   // ondata recorder listener
   mediaRecoder.ondataavailable = (event) => {
@@ -31,7 +46,7 @@ const createRecoder = (stream: MediaStream, callback: (file: MessageFileType) =>
       type: "video",
       size: blob.size,
       mineType: "video/webm",
-      duration: Math.floor(currentDuration / 1000),
+      duration: durationSeconds,
     });
   };
 
@@ -42,6 +57,7 @@ export const createCameraRecorder = async (
   audioDeviceId: string,
   videoDeviceId: string,
   resolution: ResolutionType,
+  onDuraionChange: (duration: number) => void,
   callback: (file: MessageFileType) => void
 ) => {
   // get media stream
@@ -50,7 +66,7 @@ export const createCameraRecorder = async (
     video: { ...resolution, deviceId: videoDeviceId },
   });
 
-  const mediaRecoder = createRecoder(stream, callback);
+  const mediaRecoder = createRecoder(stream, onDuraionChange, callback);
 
   return { stream, mediaRecoder };
 };
@@ -59,6 +75,7 @@ export const createShareScreenRecorder = async (
   audioDeviceId: string,
   videoDeviceId: string,
   resolution: ResolutionType,
+  onDuraionChange: (duration: number) => void,
   callback: (file: MessageFileType) => void
 ) => {
   // get media stream
@@ -67,14 +84,13 @@ export const createShareScreenRecorder = async (
     video: { ...resolution, deviceId: videoDeviceId },
   });
 
-  const mediaRecoder = createRecoder(stream, callback);
+  const mediaRecoder = createRecoder(stream, onDuraionChange, callback);
 
   return { stream, mediaRecoder };
 };
 
 // we should take thumbnails from blob:url
 // if we pass a network url, it will take so much time to finish
-
 export const createThumbnails = ({
   src,
   limit = 5,
@@ -104,6 +120,7 @@ export const createThumbnails = ({
           // if video.currentTime is 0, thumbnail will be a empty picture, so ignore it
           if (video.currentTime && blob) thumbnailUrls.push(URL.createObjectURL(blob));
 
+          console.log("thumbs", thumbnailUrls);
           // finish function
           if (currentThumbnail >= limit) resolve(thumbnailUrls);
           // set next currentTime, minimum is 1

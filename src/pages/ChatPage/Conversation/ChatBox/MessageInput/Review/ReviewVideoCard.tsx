@@ -7,6 +7,7 @@ import ReviewVideo from "./ReviewVideo";
 
 // types
 import { MessageFileType } from "store/slices/_types";
+import { color, rgba } from "utils/constants";
 
 export interface ReviewVideoCardProps {
   file: MessageFileType;
@@ -15,9 +16,16 @@ export interface ReviewVideoCardProps {
 
 const ReviewVideoCard: FC<ReviewVideoCardProps> = ({ file, onRemove }) => {
   const [isShowReviewModal, setShowReviewModal] = useState(false);
+  const [isHovering, setHovering] = useState(false);
 
   return (
-    <Box position="relative" mb={1} mr={1}>
+    <Box
+      position="relative"
+      mb={1}
+      mr={1}
+      onMouseOver={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+    >
       <Box
         display="flex"
         justifyContent="center"
@@ -25,8 +33,10 @@ const ReviewVideoCard: FC<ReviewVideoCardProps> = ({ file, onRemove }) => {
         width={60}
         height={60}
         borderRadius={2.5}
+        bgcolor={rgba(color.DARK, 0.2)}
       >
-        <img src={file.thumb} alt="" style={{ height: "100%", borderRadius: 8 }} />
+        {/* thumbnail can be updated after this file existed */}
+        {file.thumb && <img src={file.thumb} alt="" style={{ height: "100%", width: "auto" }} />}
       </Box>
       <Box
         position="absolute"
@@ -44,16 +54,17 @@ const ReviewVideoCard: FC<ReviewVideoCardProps> = ({ file, onRemove }) => {
       </Box>
 
       {/* remove button */}
-      <Box position="absolute" top={-8} right={-8}>
-        <IconButton color="secondary" size="medium" onClick={onRemove}>
-          <SlackIcon fontSize="small" icon="close" />
-        </IconButton>
-      </Box>
+      {isHovering && (
+        <Box position="absolute" top={-8} right={-8}>
+          <IconButton color="secondary" size="medium" onClick={onRemove}>
+            <SlackIcon fontSize="small" icon="close" />
+          </IconButton>
+        </Box>
+      )}
 
       <ReviewVideo
         isOpen={isShowReviewModal}
         file={file}
-        onThumbnail={() => {}}
         onClose={() => setShowReviewModal(false)}
       />
     </Box>

@@ -7,7 +7,7 @@ import ReactQuill from "react-quill";
 import InputActions from "./InputActions";
 import InputToolbar from "./InputToolbar";
 import QuillFormatLink from "../MessageLink/QuillFormatLink";
-import ReviewFileList from "./ReviewFileList";
+import ReviewFileList from "./Review/ReviewFileList";
 
 // context
 import InputContext from "./InputContext";

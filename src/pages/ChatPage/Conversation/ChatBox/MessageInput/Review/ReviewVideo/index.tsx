@@ -4,7 +4,7 @@ import { FC, useContext, useState } from "react";
 import ReviewVideoModal, { ReviewVideoModalProps } from "./ReviewVideoModal";
 
 // context
-import InputContext from "../InputContext";
+import InputContext from "../../InputContext";
 
 // types
 import { MessageFileType } from "store/slices/_types";
@@ -15,16 +15,11 @@ export interface ReviewVideoProps extends Omit<ReviewVideoModalProps, "onDownloa
   downloadable?: boolean;
   onRepeat?: () => void;
   onDone?: () => void;
+  onSelectThumbnail?: (thumb: string) => void;
 }
 
-const ReviewVideo: FC<ReviewVideoProps> = ({ file, downloadable, ...props }) => {
-  const { updateInputFile } = useContext(InputContext);
-
+const ReviewVideo: FC<ReviewVideoProps> = ({ file, downloadable, onSelectThumbnail, ...props }) => {
   const [isShowThumbnailModal, setShowThumbnailModal] = useState(false);
-
-  const handleSelectThumbnail = (thumb: string) => {
-    if (file.id) updateInputFile({ id: file.id, thumb });
-  };
 
   const handleDownload = () => {
     console.log("url");
@@ -43,7 +38,7 @@ const ReviewVideo: FC<ReviewVideoProps> = ({ file, downloadable, ...props }) => 
         <SelectThumnailModal
           isOpen={isShowThumbnailModal}
           src={file.url}
-          onSelect={handleSelectThumbnail}
+          onSelect={onSelectThumbnail}
           onClose={() => setShowThumbnailModal(false)}
         />
       )}

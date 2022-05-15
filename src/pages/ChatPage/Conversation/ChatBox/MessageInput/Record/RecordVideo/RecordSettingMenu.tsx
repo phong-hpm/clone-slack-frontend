@@ -6,7 +6,7 @@ import SlackIcon from "components/SlackIcon";
 
 // utils
 import { color, deviceKind } from "utils/constants";
-import { MediaDeviceInfoType } from "../_types";
+import { MediaDeviceInfoType } from "../../_types";
 
 const settingOptions = [
   { label: "Camera", kind: deviceKind.CAMERA },

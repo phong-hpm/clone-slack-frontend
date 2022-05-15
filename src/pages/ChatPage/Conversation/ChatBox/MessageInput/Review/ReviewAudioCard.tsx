@@ -42,6 +42,7 @@ const ReviewAudioCard: FC<ReviewAudioCardProps> = ({
 }) => {
   const [waveSurfer, setWaveSurfer] = useState<WaveSurfer>();
   const [loadPercent, setLoadPercent] = useState(startLoadPercent);
+  const [isHovering, setHovering] = useState(false);
   const [isPlaying, setPlaying] = useState(false);
   const [speed, setSpeed] = useState("1");
 
@@ -87,6 +88,8 @@ const ReviewAudioCard: FC<ReviewAudioCardProps> = ({
       border="1px solid"
       borderColor={rgba(color.PRIMARY, 0.1)}
       bgcolor={color.PRIMARY_BACKGROUND}
+      onMouseOver={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
     >
       {/* start button */}
       <Box position="relative">
@@ -115,15 +118,6 @@ const ReviewAudioCard: FC<ReviewAudioCardProps> = ({
           onFinish={() => setPlaying(false)}
           {...props}
         />
-
-        {/* remove button */}
-        {isRemove && (
-          <Box position="absolute" top={-8} right={-8}>
-            <IconButton color="secondary" size="medium" onClick={onRemove}>
-              <SlackIcon fontSize="small" icon="close" />
-            </IconButton>
-          </Box>
-        )}
       </Box>
 
       {/* transcript button */}
@@ -158,6 +152,15 @@ const ReviewAudioCard: FC<ReviewAudioCardProps> = ({
         <Box ml={0.5}>
           <IconButton sx={{ borderRadius: 0.5 }} size="large">
             <SlackIcon icon="ellipsis-vertical-filled" />
+          </IconButton>
+        </Box>
+      )}
+
+      {/* remove button */}
+      {isRemove && isHovering && (
+        <Box position="absolute" top={-8} right={-8}>
+          <IconButton color="secondary" size="medium" onClick={onRemove}>
+            <SlackIcon fontSize="small" icon="close" />
           </IconButton>
         </Box>
       )}

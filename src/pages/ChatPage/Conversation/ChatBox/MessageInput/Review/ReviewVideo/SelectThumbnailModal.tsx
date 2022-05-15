@@ -11,7 +11,7 @@ import { css } from "utils/constants";
 
 export interface SelectThumnailModalProps extends ModalProps {
   src: string;
-  onSelect: (url: string) => void;
+  onSelect?: (url: string) => void;
 }
 
 const SelectThumnailModal: FC<SelectThumnailModalProps> = ({
@@ -27,13 +27,15 @@ const SelectThumnailModal: FC<SelectThumnailModalProps> = ({
   const [thumbnails, setThumbnails] = useState<string[]>([]);
 
   const handleSelect = () => {
-    onSelect(selected);
+    onSelect && onSelect(selected);
     onClose();
   };
 
   useEffect(() => {
+    console.log(isOpen, src);
     if (!src || !isOpen) return;
     createThumbnails({ src }).then((thumbs) => {
+      console.log("thumbnauk", thumbs);
       // this callback can be fired after component was unmounted
       // check isOpen in keepRef will prevent updating state
       if (!keepRef.current.isOpen || !thumbs?.length) return;
