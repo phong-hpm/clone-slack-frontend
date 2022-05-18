@@ -9,6 +9,7 @@ const components: Theme["components"] = {
       root: {
         color: color.HIGHLIGHT,
         fontSize: "inherit",
+        cursor: "pointer",
       },
     },
   },

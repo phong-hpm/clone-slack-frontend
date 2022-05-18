@@ -18,8 +18,8 @@ const Bookmark: FC<BookmarkProps> = ({ message }) => {
   if (!message.isStared) return <></>;
 
   return (
-    <Box display="flex" px={2.5} py={0.5}>
-      <Box flexBasis={36} display="flex" justifyContent="end" mt={0.5} mr={1}>
+    <Box display="flex">
+      <Box flexBasis={36} mr={1} display="flex" justifyContent="end">
         <SlackIcon color={color.DANGER} fontSize="small" icon="bookmark-filled" />
       </Box>
 

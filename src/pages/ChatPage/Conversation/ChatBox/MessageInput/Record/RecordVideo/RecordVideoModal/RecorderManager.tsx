@@ -1,17 +1,23 @@
 // utils
 import { deviceKind, resolutions } from "utils/constants";
-import { createRecorder } from "utils/videoRecorder";
+import { createRecorder, createThumbnails } from "utils/videoRecorder";
 
 // types
 import { ResolutionType } from "utils/_types";
 
 class RecorderManager {
   frame = 48;
-  renderId: number = 0;
+  timeFrame = 1000 / this.frame;
+  renderId = 0;
+  duration = 0;
+  startDuration = 0;
+
   timeoutId?: NodeJS.Timeout;
+  dutaionTimeoutId?: NodeJS.Timeout;
   enableCamera = true;
   resolution: ResolutionType = resolutions[0];
   devices: MediaDeviceInfo[] = [];
+  thumbnailUrl?: string;
   chunks: Blob[] = [];
 
   recorder: MediaRecorder | undefined;
@@ -61,32 +67,91 @@ class RecorderManager {
   }
 
   async createCameraStream(audio: { deviceId: string }, video: { deviceId: string }) {
-    if (!this.cameraStream?.active) {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio, video });
-      this.cameraStream = stream;
-    }
+    try {
+      if (!this.cameraStream?.active) {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio, video });
+        this.cameraStream = stream;
+      }
 
-    this.cameraRef.current!.volume = 0;
-    this.cameraRef.current!.srcObject = new MediaStream(this.cameraStream);
-    this.createRecorder(this.cameraStream);
-    this.forceRender();
+      this.cameraRef.current!.volume = 0;
+      this.cameraRef.current!.srcObject = new MediaStream(this.cameraStream);
+      this.createRecorder(this.cameraStream);
+      this.forceRender();
+    } catch {
+      // throw error to outside
+      throw new Error("user cancelled");
+    }
   }
 
   async createScreenStream(audio: { deviceId: string }, video: { deviceId: string }) {
-    if (!this.screenStream?.active) {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ audio, video });
-      this.screenStream = stream;
-      this.screenRef.current!.oncanplay = () => this.mergeStreams();
-    }
+    try {
+      if (!this.screenStream?.active) {
+        const stream = await navigator.mediaDevices.getDisplayMedia({ audio, video });
+        this.screenStream = stream;
+        this.screenRef.current!.oncanplay = () => this.mergeStreams();
+      }
 
-    this.screenRef.current!.volume = 0;
-    this.screenRef.current!.srcObject = new MediaStream(this.screenStream);
-    this.forceRender();
+      this.screenRef.current!.volume = 0;
+      this.screenRef.current!.srcObject = new MediaStream(this.screenStream);
+      this.forceRender();
+    } catch {
+      // throw error to outside
+      throw new Error("user cancelled");
+    }
+  }
+
+  countDuration() {
+    const now = Date.now();
+    this.duration += now - this.startDuration;
+    this.startDuration = now;
+    this.onDuration(Math.floor(this.duration / 1000));
+    this.dutaionTimeoutId = setTimeout(() => this.countDuration(), 100);
+  }
+
+  startCountDuration() {
+    if (!this.dutaionTimeoutId) {
+      this.startDuration = Date.now();
+      this.countDuration();
+    }
+  }
+
+  stopCountDuration() {
+    clearTimeout(this.dutaionTimeoutId!);
+    this.dutaionTimeoutId = undefined;
+  }
+
+  takeThumbnail(blob: Blob) {
+    if (this.thumbnailUrl !== undefined) return;
+    // we only want to take 1 thumbnail, setting [thumbnailUrl = ""]
+    //    to prevent recall multiple times
+    this.thumbnailUrl = "";
+    createThumbnails({ blob, limit: 1 }).then((thumbs) => {
+      this.thumbnailUrl = thumbs[0];
+      if (this.thumbnailUrl) this.forceRender();
+    });
   }
 
   createRecorder(stream: MediaStream) {
     const onData = (chunk: Blob) => this.chunks.push(chunk);
-    this.recorder = createRecorder({ stream, onDuration: this.onDuration, onData });
+    this.recorder = createRecorder({ stream, onData });
+
+    this.recorder.ondataavailable = ({ data }) => {
+      if (data.size > 0) this.chunks.push(data);
+
+      // this function will take 1 thumbnail only
+      // in start time, data is too small (maybe data.size = 1)
+      if (data.size > 1000) this.takeThumbnail(new Blob(this.chunks, { type: "video/webm" }));
+    };
+    this.recorder.onstart = () => this.startCountDuration();
+    this.recorder.onresume = () => this.startCountDuration();
+    this.recorder.onpause = () => this.stopCountDuration();
+    this.recorder.onstop = () => {
+      this.duration += Date.now() - this.startDuration;
+      this.stopCountDuration();
+      // when use stop video too fast, [ondataavailable] was not fired
+      // re take thumnail again
+      this.takeThumbnail(this.chunks[this.chunks.length]);
+    };
   }
 
   getCameraStream() {
@@ -107,7 +172,10 @@ class RecorderManager {
   }
 
   start() {
-    this.recorder!.start(1000 / this.frame);
+    this.duration = 0;
+    this.onDuration(0);
+
+    this.recorder!.start(this.timeFrame);
   }
 
   stopCamera() {
@@ -125,13 +193,13 @@ class RecorderManager {
     this.recorder?.state === "recording" && this.recorder.stop();
   }
 
-  makeComposite() {
+  async makeComposite() {
     const cameraEl = this.cameraRef.current;
     const screenEl = this.screenRef.current;
 
-    if (screenEl && cameraEl) {
-      const { videoWidth, videoHeight } = screenEl;
-      if (!videoWidth || videoHeight) return;
+    if (cameraEl && screenEl) {
+      const videoWidth = screenEl.videoWidth || 1;
+      const videoHeight = screenEl.videoHeight || 1;
 
       // prepair canvas
       this.canvasCtx.save();
@@ -144,14 +212,19 @@ class RecorderManager {
       this.canvasCtx.drawImage(screenEl, 0, 0, videoWidth, videoHeight);
       // draw camera onto canvas
       if (this.enableCamera) {
+        const { width: cameraWidth, height: cameraHeight } = cameraEl.getBoundingClientRect();
+        const { width: screenWidth, height: screenHeight } = screenEl.getBoundingClientRect();
+        const ratioWidthCanvas = videoWidth / screenWidth;
+        const ratioHeightCanvas = videoHeight / screenHeight;
+
         // mirror camera
         this.canvasCtx.scale(-1, 1);
         this.canvasCtx.drawImage(
           cameraEl,
-          -Math.floor(videoWidth - videoWidth / 5),
-          Math.floor(videoHeight - videoHeight / 5),
-          -Math.floor(videoWidth / 5.5),
-          Math.floor(videoHeight / 6)
+          -Math.floor(videoWidth - ratioWidthCanvas * cameraWidth - ratioWidthCanvas * 10),
+          Math.floor(videoHeight - ratioHeightCanvas * cameraHeight - ratioHeightCanvas * 10),
+          -ratioWidthCanvas * cameraWidth,
+          ratioHeightCanvas * cameraHeight
         );
       }
 
@@ -162,12 +235,12 @@ class RecorderManager {
       this.canvasCtx.putImageData(imageData, 0, 0);
 
       this.canvasCtx.restore();
-      this.timeoutId = setTimeout(() => this.makeComposite(), 1000 / this.frame);
+      this.timeoutId = setTimeout(() => this.makeComposite(), this.timeFrame);
     }
   }
 
-  mergeStreams() {
-    this.makeComposite();
+  async mergeStreams() {
+    await this.makeComposite();
 
     const audioCTX = new AudioContext();
     const audioDES = audioCTX.createMediaStreamDestination();
@@ -187,11 +260,10 @@ class RecorderManager {
       ...audioDES.stream.getTracks(),
     ]);
 
-    this.mergedRef.current!.volume = 0;
-    this.mergedRef.current!.srcObject = mergedStream;
-
     this.cameraRef.current!.volume = 0;
     this.screenRef.current!.volume = 0;
+    this.mergedRef.current!.volume = 0;
+    this.mergedRef.current!.srcObject = mergedStream;
 
     this.createRecorder(mergedStream);
   }

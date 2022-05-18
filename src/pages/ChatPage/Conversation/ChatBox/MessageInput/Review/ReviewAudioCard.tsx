@@ -115,6 +115,7 @@ const ReviewAudioCard: FC<ReviewAudioCardProps> = ({
           peaks={file.wavePeaks}
           onCreated={handleCreated}
           onLoading={setLoadPercent}
+          duration={file.duration || 0}
           onFinish={() => setPlaying(false)}
           {...props}
         />
@@ -132,7 +133,13 @@ const ReviewAudioCard: FC<ReviewAudioCardProps> = ({
       {/* speed selection */}
       {isSpeedSelection && (
         <Box ml={0.5}>
-          <Select variant="standard" size="small" value={speed} onChange={handleChangeSpeed}>
+          <Select
+            // className="hide-arrow"
+            variant="standard"
+            size="small"
+            value={speed}
+            onChange={handleChangeSpeed}
+          >
             <MenuItem disabled>
               <Typography color={color.HIGH}>Playback Speed</Typography>
             </MenuItem>

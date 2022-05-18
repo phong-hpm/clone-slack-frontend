@@ -34,7 +34,9 @@ const Reactions: FC<ReactionsProps> = ({ message }) => {
   if (!message.reactions.length) return <></>;
 
   return (
-    <Box display="flex" py={0.5} pl={8} pr={0.5}>
+    <Box display="flex">
+      <Box flexBasis={36} mr={1} />
+
       {message.reactions.map((reaction) => (
         <Box key={reaction.id} mr={0.5}>
           <Chip

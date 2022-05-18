@@ -19,6 +19,8 @@ export const dayDiff = (time1: number, time2: number) => {
 const dayFormat = (time: number, format: string) => dayjs(time).format(format);
 dayFormat.time = (time: number) => dayjs(time).format("h:mm");
 dayFormat.timeA = (time: number) => dayjs(time).format("h:mm A");
+dayFormat.fullTimeA = (time: number) => dayjs(time).format("h:mm:ss A");
 dayFormat.day = (time: number) => dayjs(time).format("MMM DD");
+dayFormat.dayO = (time: number) => dayjs(time).format("MMM Do");
 
 export { dayFormat };

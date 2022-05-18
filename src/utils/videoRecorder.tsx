@@ -1,32 +1,14 @@
 export const createRecorder = ({
   stream,
-  onDuration,
   onData,
   onStop,
 }: {
   stream: MediaStream;
-  onDuration?: (duration: number) => void;
   onData?: (chunk: Blob) => void;
   onStop?: (chunk: Blob) => void;
 }) => {
-  let currentDuration = 0; // milisecond
-  let durationSeconds = 0;
-  let intervalId: NodeJS.Timer;
   const recordedChunks: Blob[] = [];
   const mediaRecoder = new MediaRecorder(stream);
-
-  const startCountDuration = () => {
-    currentDuration += 100;
-    if (Math.floor(currentDuration / 1000) !== durationSeconds) {
-      durationSeconds = Math.floor(currentDuration / 1000);
-      onDuration && onDuration(durationSeconds);
-    }
-    intervalId = setTimeout(() => startCountDuration(), 100);
-  };
-
-  mediaRecoder.onstart = () => startCountDuration();
-  mediaRecoder.onpause = () => clearInterval(intervalId);
-  mediaRecoder.onresume = () => startCountDuration();
 
   // ondata recorder listener
   mediaRecoder.ondataavailable = (event) => {
@@ -38,7 +20,6 @@ export const createRecorder = ({
 
   // onstop recorder listener
   mediaRecoder.onstop = () => {
-    clearTimeout(intervalId);
     const blob = new Blob(recordedChunks);
     onStop && onStop(blob);
   };
@@ -50,25 +31,46 @@ export const createRecorder = ({
 // if we pass a network url, it will take so much time to finish
 export const createThumbnails = ({
   src,
+  blob,
   limit = 5,
 }: {
-  src: string;
+  src?: string;
+  blob?: Blob;
   limit?: number;
 }): Promise<string[]> => {
   const video = document.createElement("video");
   const c = document.createElement("canvas");
   const ctx = c.getContext("2d")!;
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     try {
-      video.src = src;
+      if (blob) video.src = URL.createObjectURL(new Blob([blob], { type: "video/webm" }));
+      else if (src) video.src = src;
+      else return resolve([]);
+
       let currentThumbnail = 0;
       const thumbnailUrls: string[] = [];
+
+      // this handler will fix bug video.duration === Infinity
+      video.onloadedmetadata = () => {
+        if (video.duration === Infinity) {
+          video.currentTime = 1e101;
+          video.ontimeupdate = function () {
+            this.ontimeupdate = () => {
+              return;
+            };
+            video.currentTime = 0;
+            return;
+          };
+        }
+      };
+
+      video.onerror = () => resolve([]);
 
       // will be fire after video loaded url with new currentTime
       video.oncanplay = () => {
         // the metadata is loaded after the Video. So the duration is not available
-        if (video.duration === Infinity) return (video.currentTime = 1);
+        if (video.duration === Infinity) return;
 
         c.width = video.videoWidth;
         c.height = video.videoHeight;

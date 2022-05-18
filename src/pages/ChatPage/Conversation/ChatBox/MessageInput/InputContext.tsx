@@ -1,12 +1,9 @@
 import React, { FC, useRef, useCallback, createContext, useState, useMemo, useEffect } from "react";
 
-import thumbDefault from "assets/images/default_thumb.jpeg";
-import sharescreenDefault from "assets/media/demo_sharescreen.mp4";
-
 // components
 import ReactQuill from "react-quill";
 
-// redux slices
+// utils
 import { stateDefault } from "utils/constants";
 
 // types
@@ -127,27 +124,6 @@ export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode
       removeInputFile,
     ]
   );
-
-  useEffect(() => {
-    const setInput = async () => {
-      const thumbBlob = await fetch(thumbDefault).then((data) => data.blob());
-      const sharescreenBlob = await fetch(sharescreenDefault).then((data) => data.blob());
-
-      setInputFile({
-        id: "F-5af588d5-f321-41d5-a4a4-83caab0a98cf",
-        url: URL.createObjectURL(sharescreenBlob),
-        created: 1652409677233,
-        fileType: "webm",
-        type: "video",
-        size: 714153,
-        mineType: "video/webm",
-        duration: 13,
-        thumb: URL.createObjectURL(thumbBlob),
-      });
-    };
-
-    setInput();
-  }, [setInputFile]);
 
   useEffect(() => updateAppState({ isEditMode }), [isEditMode, updateAppState]);
 

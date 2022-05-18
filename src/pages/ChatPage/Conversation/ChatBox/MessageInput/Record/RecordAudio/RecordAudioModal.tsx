@@ -27,7 +27,7 @@ const AudioRecordModal: FC<AudioRecordModalProps> = ({ isOpen, onClose, ...props
   const keepRef = useRef({
     isSave: false,
     duration: 0,
-    intervalIds: [] as NodeJS.Timer[],
+    timeoutId: null as NodeJS.Timer | null,
     peaks: [] as number[],
   });
 
@@ -35,8 +35,7 @@ const AudioRecordModal: FC<AudioRecordModalProps> = ({ isOpen, onClose, ...props
   const [time, setTime] = useState("0:00");
 
   const handleStopMicrophone = () => {
-    keepRef.current.intervalIds.forEach((id) => clearInterval(id));
-    keepRef.current.intervalIds = [];
+    clearTimeout(keepRef.current.timeoutId!);
 
     if (waveSurfer?.microphone?.active) {
       waveSurfer?.microphone.stop();
@@ -72,7 +71,6 @@ const AudioRecordModal: FC<AudioRecordModalProps> = ({ isOpen, onClose, ...props
           id,
           url: URL.createObjectURL(blob),
           created: Date.now(),
-          fileType: "webm",
           type: "audio",
           size: blob.size,
           wavePeaks: buildPeaks(wavePeaks),
@@ -106,18 +104,17 @@ const AudioRecordModal: FC<AudioRecordModalProps> = ({ isOpen, onClose, ...props
         keepRef.current.duration = 0;
 
         // count time each 100ms
-        const intervalId = setInterval(() => {
+        const countDuration = () => {
           setTime(buildProgressTime(Math.ceil(++keepRef.current.duration / 10)));
-        }, 100);
-
-        // keep intervalId for clearing
-        keepRef.current.intervalIds.push(intervalId);
+          keepRef.current.timeoutId = setTimeout(() => countDuration(), 100);
+        };
+        countDuration();
       };
 
       // recorder stop listener
       mediaRecorder.onstop = () => {
         if (keepRef.current.isSave) {
-          updateInputFile(new Blob(audioChunks));
+          updateInputFile(new Blob(audioChunks, { type: "audio/webm" }));
         }
       };
 

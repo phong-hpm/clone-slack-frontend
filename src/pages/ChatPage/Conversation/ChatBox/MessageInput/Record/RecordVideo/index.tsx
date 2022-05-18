@@ -13,7 +13,6 @@ import InputContext from "../../InputContext";
 
 // types
 import { MessageFileType } from "store/slices/_types";
-import { createThumbnails } from "utils/videoRecorder";
 
 export interface VideoRecordProps {
   isStart?: boolean;
@@ -21,22 +20,22 @@ export interface VideoRecordProps {
 }
 
 const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
-  const { setInputFile, updateInputFile } = useContext(InputContext);
+  const { setInputFile } = useContext(InputContext);
 
   const [status, setStatus] = useState<RecordStatusType>("ready");
   const [file, setFile] = useState<MessageFileType | null>(null);
 
-  const handleNext = (chunks: Blob[], duration: number) => {
-    const blob = new Blob(chunks);
+  const handleNext = (chunks: Blob[], thumb: string, duration: number) => {
+    const blob = new Blob(chunks, { type: "video/webm" });
     setFile({
       id: `F-${uuid()}`,
       url: URL.createObjectURL(blob),
       created: Date.now(),
-      fileType: "webm",
       type: "video",
-      size: blob.size,
       mineType: "video/webm",
+      size: blob.size,
       duration,
+      thumb,
     });
     setStatus("review");
   };
@@ -52,21 +51,7 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
 
   const handleDoneReview = () => {
     handleClose();
-    if (file) {
-      // we have to set input file to context before update thumbnail,
-      //    it will make sure that ReviewVideoCardwill get new input file
-      setInputFile(file);
-
-      // after set input file to context, we will update thumb for it
-      // if user selected a thumb before, file.thumb will have value
-      if (!file.thumb) {
-        // create default thumbnail for record
-        createThumbnails({ src: file.url }).then((thumbs) => {
-          if (!thumbs?.length) return;
-          updateInputFile({ id: file.id, thumb: thumbs[0] });
-        });
-      }
-    }
+    if (file) setInputFile(file);
   };
 
   const handleClose = () => {

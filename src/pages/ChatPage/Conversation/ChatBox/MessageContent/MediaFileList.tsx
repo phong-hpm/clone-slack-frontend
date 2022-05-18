@@ -1,22 +1,28 @@
 import { FC, useState } from "react";
 
+// redux selectors
+import * as usersSelector from "store/selectors/users.selector";
+
 // components
 import { Box, Collapse, Typography } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 import ReviewAudioCard from "../MessageInput/Review/ReviewAudioCard";
-import ReviewVideoCard from "../MessageInput/Review/ReviewVideoCard";
 
 // utils
 import { color } from "utils/constants";
 
 // types
 import { MessageType } from "store/slices/_types";
+import VideoPlayer from "components/VideoPlayer";
+import { useSelector } from "store";
 
 export interface MediaFileListProps {
   message: MessageType;
 }
 
 const MediaFileList: FC<MediaFileListProps> = ({ message }) => {
+  const userOwner = useSelector(usersSelector.getUserById(message.user));
+
   const [isCollapsed, setCollapsed] = useState(false);
 
   if (!message.files?.length) return <></>;
@@ -51,7 +57,17 @@ const MediaFileList: FC<MediaFileListProps> = ({ message }) => {
                 file={file}
               />
             ) : (
-              <ReviewVideoCard key={file.id} file={file} />
+              <VideoPlayer
+                key={file.id}
+                src={file.url}
+                created={file.created}
+                thumbnail={file.thumb}
+                duration={file.duration}
+                scripts={file.scripts}
+                ratio={file.ratio}
+                userOwner={userOwner}
+                style={{ maxWidth: 480, borderRadius: 8, overflow: "hidden" }}
+              />
             );
           })}
         </Box>

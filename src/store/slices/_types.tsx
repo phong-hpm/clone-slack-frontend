@@ -1,3 +1,4 @@
+import { TranScriptType } from "components/VideoPlayer/_types";
 import { Delta } from "quill";
 
 // users.slice.tsx -----------------
@@ -46,7 +47,6 @@ export interface MessageFileType {
   id: string;
   url: string;
   created: number;
-  fileType: "webm";
   size: number;
   type: "audio" | "video";
   mineType: "audio/webm" | "video/webm";
@@ -54,6 +54,8 @@ export interface MessageFileType {
   wavePeaks?: number[];
   status?: "uploading" | "done";
   thumb?: string;
+  scripts?: TranScriptType[];
+  ratio?: number;
 }
 
 export interface MessageType {

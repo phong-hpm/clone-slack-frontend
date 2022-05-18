@@ -5,13 +5,14 @@ import classnames from "classnames";
 import { iconImgName } from "utils/constants";
 
 export interface SlackIconProps {
+  icon: string;
   fontSize?: "inherit" | "small" | "medium" | "large";
   color?: string;
   cursor?: string;
-  icon: string;
+  style?: React.CSSProperties;
 }
 
-const SlackIcon: FC<SlackIconProps> = ({ icon, color, cursor, fontSize }) => {
+const SlackIcon: FC<SlackIconProps> = ({ icon, color, cursor, fontSize, style }) => {
   if (!iconImgName.includes(icon)) {
     return (
       <i
@@ -20,7 +21,7 @@ const SlackIcon: FC<SlackIconProps> = ({ icon, color, cursor, fontSize }) => {
           icon && `c-icon--${icon}`,
           fontSize && `c-icon-fontsize-${fontSize}`
         )}
-        style={{ color, cursor }}
+        style={{ ...style, color, cursor }}
       />
     );
   }
@@ -30,7 +31,7 @@ const SlackIcon: FC<SlackIconProps> = ({ icon, color, cursor, fontSize }) => {
       role="img"
       className={classnames("c-icon-img", fontSize && `c-icon-fontsize-${fontSize}`)}
       data-ndw={icon}
-      style={{ color }}
+      style={{ ...style, color }}
     />
   );
 };

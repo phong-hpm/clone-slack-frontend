@@ -39,7 +39,7 @@ const mainOptions: ThemeOptions = {
   typography: {
     fontFamily: "Lato, sans-serif",
 
-    allVariants: { fontSize: "15px", lineHeight: "22px", color: "inherit" },
+    allVariants: { fontSize: "15px", lineHeight: "20px", color: "inherit" },
     h1: { fontSize: "32px" },
     h2: { fontSize: "28px", lineHeight: "34px", fontWeight: 900 },
     h3: { fontSize: "22px", lineHeight: "30px", fontWeight: 900 },

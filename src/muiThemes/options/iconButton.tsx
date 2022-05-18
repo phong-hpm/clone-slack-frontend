@@ -3,13 +3,22 @@ import { Theme } from "@mui/material";
 // utils
 import { color, rgba } from "utils/constants";
 
+declare module "@mui/material/IconButton" {
+  interface IconButtonPropsSizeOverrides {
+    inherit: true;
+  }
+}
+
 const components: Theme["components"] = {
   MuiIconButton: {
+    defaultProps: {
+      size: "inherit",
+    },
     styleOverrides: {
       root: {
         fontSize: "inherit",
         color: "inherit",
-        padding: "7px",
+        padding: "5px",
         opacity: 1,
 
         "&.Mui-disabled": {
@@ -29,6 +38,12 @@ const components: Theme["components"] = {
         props: { size: "medium" },
         style: {
           padding: "4px",
+        },
+      },
+      {
+        props: { size: "large" },
+        style: {
+          padding: "8px",
         },
       },
       {
@@ -61,7 +76,7 @@ const components: Theme["components"] = {
         props: { className: "bg-gray" },
         style: {
           "&:hover": {
-            backgroundColor: "rgba(29, 28, 29, 0.85)",
+            backgroundColor: rgba(color.PRIMARY_BACKGROUND, 0.8),
           },
         },
       },

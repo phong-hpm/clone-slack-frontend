@@ -28,6 +28,12 @@
   border-radius: 8px;
   outline: none;
 
+  &.modal-full {
+    width: calc(100% - 48px);
+    max-width: calc(100% - 48px);
+    height: calc(100% - 48px);
+  }
+
   &.modal-record {
     max-width: 600px;
   }

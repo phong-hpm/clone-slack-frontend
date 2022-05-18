@@ -14,13 +14,12 @@ import { color, resolutions, rgba } from "utils/constants";
 
 // types
 import { StatusType } from "./_types";
-import { MediaDeviceInfoType } from "pages/ChatPage/Conversation/ChatBox/MessageInput/_types";
 
 // sounds
 import popSound from "assets/media/effect/pop_sound.mp3";
 
 export interface RecordModalProps extends ModalProps {
-  onNext: (chunks: Blob[], duration: number) => void;
+  onNext: (chunks: Blob[], thumb: string, duration: number) => void;
 }
 
 const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
@@ -31,21 +30,29 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
   const keepRef = useRef({
     canvasEl: null as HTMLCanvasElement | null,
     canvasCtx: null as CanvasRenderingContext2D | null,
-    intervalIds: [] as NodeJS.Timer[],
-    devices: [] as MediaDeviceInfoType[],
-    chunks: [] as Blob[],
+    timeoutId: null as NodeJS.Timer | null,
     recorderManager: null as RecorderManager | null,
   });
 
-  const [selectedDevice, setSelectedDevice] = useState({ audio: "", video: "" });
+  const [, setForUpdate] = useState(0);
+  const [status, setStatus] = useState<StatusType>("inactive");
 
+  const [isPlaying, setPlaying] = useState(false);
   const [isShareScreen, setShareScreen] = useState(false);
-  const [enabledDevice, setEnabledDevice] = useState({ audio: true, video: true });
   const [duration, setDuration] = useState(0);
   const [countDown, setCountDown] = useState(0);
-  const [isPlaying, setPlaying] = useState(false);
-  const [status, setStatus] = useState<StatusType>("inactive");
-  const [, setForUpdate] = useState(0);
+  const [selectedDevice, setSelectedDevice] = useState({ audio: "", video: "" });
+  const [enabledDevice, setEnabledDevice] = useState({ audio: true, video: true });
+
+  const handleDone = () => {
+    const { recorderManager } = keepRef.current;
+    if (!recorderManager) return;
+    onNext(
+      recorderManager.chunks,
+      recorderManager.thumbnailUrl || "",
+      Math.floor(recorderManager.duration / 1000)
+    );
+  };
 
   const setupStream = useCallback(async () => {
     const { recorderManager } = keepRef.current;
@@ -56,10 +63,12 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
 
     try {
       if (!isShareScreen) {
-        recorderManager.createCameraStream(audio, video);
+        // wait for catching error if it has
+        await recorderManager.createCameraStream(audio, video);
         recorderManager.stopScreen();
       } else {
-        recorderManager.createScreenStream(audio, video);
+        // wait for catching error if it has
+        await recorderManager.createScreenStream(audio, video);
       }
     } catch {
       // if user cancel sharescreen or video, reset [isShareScreen] state
@@ -73,9 +82,9 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
   // status === "inactive" -> reset all states
   useEffect(() => {
     if (status === "inactive") {
-      keepRef.current.chunks = [];
       keepRef.current.recorderManager?.stop();
       setShareScreen(false);
+      setDuration(0);
     }
   }, [status]);
 
@@ -87,20 +96,16 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
   // status === "counting" -> start counting
   useEffect(() => {
     if (status === "counting") {
-      setCountDown(3);
+      const startCountDown = (count: number) => {
+        setCountDown(count);
+        if (count === 0) return setStatus("recording");
+        keepRef.current.timeoutId = setTimeout(() => startCountDown(count - 1), 1000);
+      };
 
-      const intervalId = setInterval(() => {
-        setCountDown((oldState) => {
-          if (oldState === 1) setStatus("recording");
-          return oldState - 1;
-        });
-      }, 1000);
-
-      keepRef.current.intervalIds.push(intervalId);
+      startCountDown(3);
     } else {
       setCountDown(0);
-      keepRef.current.intervalIds.forEach((id) => clearInterval(id));
-      keepRef.current.intervalIds = [];
+      clearTimeout(keepRef.current.timeoutId!);
     }
   }, [status]);
 
@@ -160,6 +165,12 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
     if (duration >= 300) keepRef.current.recorderManager?.stop();
   }, [duration]);
 
+  const isDisabledRecord =
+    !keepRef.current.recorderManager?.recorder ||
+    (status === "recording" &&
+      (!keepRef.current.recorderManager?.chunks.length ||
+        !keepRef.current.recorderManager?.thumbnailUrl));
+
   return (
     <Modal
       isCloseBtn
@@ -216,7 +227,7 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
               display="flex"
               justifyContent="center"
               alignItems="center"
-              bgcolor="rgba(29, 28, 29, 0.7)"
+              bgcolor={rgba(color.PRIMARY_BACKGROUND, 0.8)}
             >
               <Typography variant="h3">Recording begins in {countDown}...</Typography>
             </Box>
@@ -236,7 +247,7 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
       </ModalBody>
 
       <RecordModalFooter
-        isDisabledRecord={!keepRef.current.recorderManager?.recorder}
+        isDisabledRecord={isDisabledRecord}
         isShareScreen={isShareScreen}
         isPlaying={isPlaying}
         duration={duration}
@@ -244,7 +255,7 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
         setStatus={setStatus}
         togglePlaying={() => setPlaying(!isPlaying)}
         toggleShareScreen={() => setShareScreen(!isShareScreen)}
-        onDone={() => onNext(keepRef.current.recorderManager?.chunks || [], duration)}
+        onDone={handleDone}
       />
     </Modal>
   );

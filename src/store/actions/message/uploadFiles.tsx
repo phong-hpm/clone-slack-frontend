@@ -3,10 +3,9 @@ import { AxiosResponse } from "axios";
 
 // utils
 import axios from "utils/axios";
-import { stateDefault } from "utils/constants";
 
 // types
-import { AuthState, TeamsState } from "store/slices/_types";
+import { TeamsState } from "store/slices/_types";
 import { GetUserInformationResponseData } from "store/actions/auth/_types";
 import { MessageFilesPostData } from "./_types";
 
@@ -17,21 +16,26 @@ export const uploadFiles = createAsyncThunk<
 >("message/uploadFiles", async (postData, thunkAPI) => {
   const formData = new FormData();
 
-  const filesInfo = postData.files.map((file) => ({ ...file, url: undefined }));
   const files: { id: string; blob: Blob }[] = [];
 
   for (const file of postData.files) {
     // get blob from blob:url
     const res = await fetch(file.url);
-    const blob = await res.blob();
-    files.push({ id: file.id, blob });
+    const fileBlob = await res.blob();
+    if (fileBlob.size) files.push({ id: file.id, blob: fileBlob });
+
+    if (file.thumb) {
+      const res = await fetch(file.thumb);
+      const thumbBlob = await res.blob();
+      if (thumbBlob.size) files.push({ id: file.id, blob: thumbBlob });
+    }
   }
 
-  formData.append("id", postData.id);
-  formData.append("filesInfo", filesInfo.toString());
   files.forEach((file) => formData.append("file", file.blob, file.id));
 
-  const response = await axios.post("message/files");
+  const response = await axios.post("message/upload-files", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response;
 });
 

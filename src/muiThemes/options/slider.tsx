@@ -20,6 +20,22 @@ const components: Theme["components"] = {
         },
       },
     },
+    variants: [
+      {
+        props: { size: "small" },
+        style: {
+          height: 4,
+        },
+      },
+      {
+        props: { className: "hide-thumb" },
+        style: {
+          ".MuiSlider-thumb": {
+            display: "none",
+          },
+        },
+      },
+    ],
   },
 };
 

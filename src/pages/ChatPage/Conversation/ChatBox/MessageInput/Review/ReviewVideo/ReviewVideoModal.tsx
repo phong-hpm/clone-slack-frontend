@@ -75,6 +75,7 @@ const ReviewVideoModal: FC<ReviewVideoModalProps> = ({
         <Video
           ref={setVideoElement}
           src={file.url}
+          poster={file.thumb}
           ratio={9 / 16}
           style={{ borderRadius: 8 }}
           onPause={() => setPlaying(false)}

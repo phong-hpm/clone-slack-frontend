@@ -5,6 +5,9 @@ import { color, rgba } from "utils/constants";
 
 const components: Theme["components"] = {
   MuiButton: {
+    defaultProps: {
+      color: "inherit",
+    },
     styleOverrides: {
       root: {
         color: "inherit",
@@ -14,32 +17,10 @@ const components: Theme["components"] = {
         transitionDuration: "0ms",
         boxShadow: " none",
         minWidth: "auto",
+        padding: "5px 10px",
       },
     },
     variants: [
-      {
-        props: { color: "primary" },
-        style: {
-          backgroundColor: color.SUCCESS,
-          color: color.LIGHT,
-
-          "&:hover": {
-            backgroundColor: "#148567",
-          },
-
-          "&:disabled": {
-            backgroundColor: color.LOW_SOLID,
-            color: rgba(color.PRIMARY, 0.75),
-          },
-        },
-      },
-      {
-        props: { color: "error" },
-        style: {
-          color: color.PRIMARY,
-          backgroundColor: color.DANGER,
-        },
-      },
       {
         props: { variant: "text" },
         style: {
@@ -95,6 +76,29 @@ const components: Theme["components"] = {
         style: {
           paddingLeft: 16,
           paddingRight: 16,
+        },
+      },
+      {
+        props: { color: "primary" },
+        style: {
+          backgroundColor: color.SUCCESS,
+          color: color.LIGHT,
+
+          "&:hover": {
+            backgroundColor: "#148567",
+          },
+
+          "&:disabled": {
+            backgroundColor: color.LOW_SOLID,
+            color: rgba(color.PRIMARY, 0.75),
+          },
+        },
+      },
+      {
+        props: { color: "error" },
+        style: {
+          color: color.PRIMARY,
+          backgroundColor: color.DANGER,
         },
       },
     ],

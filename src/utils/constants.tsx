@@ -62,6 +62,7 @@ export const color = {
   // main
   PRIMARY: "rgb(209, 210, 211)", // #D1D2D3
   PRIMARY_BACKGROUND: "rgb(26, 29, 33)", // #1A1D21
+  SECONDARY_BACKGROUND: "rgb(29, 28, 29)",
   INVERTED: "rgb(26, 29, 33)",
   INVERTED_BACKGROUND: "rgb(209, 210, 211)",
   MAX: "rgb(232, 232, 232)",
