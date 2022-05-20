@@ -60,22 +60,19 @@ const components: Theme["components"] = {
       {
         props: { size: "small" },
         style: {
-          paddingLeft: 4,
-          paddingRight: 4,
+          padding: "2px 4px",
         },
       },
       {
         props: { size: "medium" },
         style: {
-          paddingLeft: 10,
-          paddingRight: 10,
+          padding: "5px 10px",
         },
       },
       {
         props: { size: "large" },
         style: {
-          paddingLeft: 16,
-          paddingRight: 16,
+          padding: "8px 16px",
         },
       },
       {

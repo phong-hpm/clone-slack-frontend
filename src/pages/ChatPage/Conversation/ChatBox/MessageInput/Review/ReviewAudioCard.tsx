@@ -82,7 +82,7 @@ const ReviewAudioCard: FC<ReviewAudioCardProps> = ({
       display="flex"
       alignItems="center"
       p={1.5}
-      mb={1}
+      mt={1}
       mr={1}
       borderRadius={2.5}
       border="1px solid"
@@ -124,7 +124,7 @@ const ReviewAudioCard: FC<ReviewAudioCardProps> = ({
       {/* transcript button */}
       {isTranscript && (
         <Box ml={1}>
-          <IconButton sx={{ borderRadius: 0.5 }} size="large" disabled>
+          <IconButton sx={{ borderRadius: 1 }} size="large" disabled>
             <SlackIcon icon="list" />
           </IconButton>
         </Box>
@@ -134,10 +134,10 @@ const ReviewAudioCard: FC<ReviewAudioCardProps> = ({
       {isSpeedSelection && (
         <Box ml={0.5}>
           <Select
-            // className="hide-arrow"
             variant="standard"
             size="small"
             value={speed}
+            IconComponent={() => <></>}
             onChange={handleChangeSpeed}
           >
             <MenuItem disabled>
@@ -157,7 +157,7 @@ const ReviewAudioCard: FC<ReviewAudioCardProps> = ({
       {/* control dropdown */}
       {isControls && (
         <Box ml={0.5}>
-          <IconButton sx={{ borderRadius: 0.5 }} size="large">
+          <IconButton sx={{ borderRadius: 1 }} size="large">
             <SlackIcon icon="ellipsis-vertical-filled" />
           </IconButton>
         </Box>

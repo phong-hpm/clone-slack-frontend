@@ -8,8 +8,8 @@ import { useDispatch, useSelector } from "store";
 import * as teamsSelectors from "store/selectors/teams.selector";
 
 // redux slices
-import { setSelectedChannelId } from "store/slices/channels.slice";
 import { setSelectedTeamId } from "store/slices/teams.slice";
+import { setSelectedChannelId } from "store/slices/channels.slice";
 
 // utils
 import { RouterPath, teamIdRegExp, channelIdRegExp } from "utils/constants";

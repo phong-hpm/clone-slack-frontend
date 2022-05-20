@@ -9,6 +9,8 @@ const components: Theme["components"] = {
       placement: "top",
       arrow: true,
       TransitionProps: { timeout: 0 },
+      componentsProps: { tooltip: { style: { marginBottom: 8 } } },
+      disableInteractive: true,
     },
     styleOverrides: {
       tooltip: {

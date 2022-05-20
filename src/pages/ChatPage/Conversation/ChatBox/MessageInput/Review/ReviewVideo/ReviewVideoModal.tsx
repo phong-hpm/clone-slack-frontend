@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useRef, useState } from "react";
 
 // components
 import { Modal, ModalHeader, ModalBody, ModalFooter, ModalProps } from "components/Modal";
@@ -12,6 +12,7 @@ import { buildProgressTime } from "utils/waveSurver";
 
 // types
 import { MessageFileType } from "store/slices/_types";
+import { VideoInstance } from "components/Video/_types";
 
 export interface ReviewVideoModalProps extends ModalProps {
   file: MessageFileType;
@@ -29,22 +30,22 @@ const ReviewVideoModal: FC<ReviewVideoModalProps> = ({
   onDone,
   ...props
 }) => {
-  const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null);
+  const videoInstanceRef = useRef<VideoInstance>({ videoEl: null, containerEl: null });
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setPlaying] = useState(false);
 
   const handleChangeSlider = (value: number) => {
-    if (value !== currentTime && videoElement) {
+    if (value !== currentTime && videoInstanceRef.current.videoEl) {
       setCurrentTime(value);
-      videoElement.currentTime = value;
+      videoInstanceRef.current.videoEl.currentTime = value;
     }
   };
 
   const handlePlayPause = () => {
     if (isPlaying) {
-      videoElement?.pause();
+      videoInstanceRef.current.videoEl?.pause();
     } else {
-      videoElement?.play();
+      videoInstanceRef.current.videoEl?.play();
     }
   };
 
@@ -73,7 +74,7 @@ const ReviewVideoModal: FC<ReviewVideoModalProps> = ({
 
       <ModalBody py={6}>
         <Video
-          ref={setVideoElement}
+          ref={videoInstanceRef}
           src={file.url}
           poster={file.thumb}
           ratio={9 / 16}

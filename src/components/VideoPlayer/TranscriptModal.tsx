@@ -1,12 +1,12 @@
 import { FC } from "react";
 
 // components
-import { Box, Tooltip, Typography, Link } from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
 import { Modal, ModalBody, ModalProps } from "components/Modal";
+import TimeCard from "components/TimeCard";
 
 // utils
 import { color } from "utils/constants";
-import { dayFormat } from "utils/dayjs";
 import { buildProgressTime } from "utils/waveSurver";
 
 // types
@@ -37,29 +37,18 @@ const TranscriptModal: FC<TranscriptModalProps> = ({
         <Box mt={1} color={color.PRIMARY}>
           <Typography variant="h4">Transcript</Typography>
           <Box display="flex" mb={2}>
-            <Typography variant="h5">{`${user.name} at`}</Typography>
-            <Tooltip title={`${dayFormat.dayO(created)} at ${dayFormat.fullTimeA(created)}`}>
-              <Typography variant="h5" sx={{ ml: 0.5 }}>
-                {dayFormat.time(created)}
-              </Typography>
-            </Tooltip>
+            <Typography variant="h5" mr={0.5}>{`${user.name} at`}</Typography>
+            <TimeCard time={created} typographyProps={{ variant: "h5" }} />
           </Box>
 
           <Box>
             {scripts.map((script) => {
               return (
-                <Box key={script.currentTime} my={1}>
+                <Box key={script.currentTime} display="flex" my={1}>
                   <Link underline="hover" onClick={() => handleClickScript(script.currentTime)}>
                     {buildProgressTime(script.currentTime)}
                   </Link>
-                  <Link
-                    color={color.PRIMARY}
-                    underline="hover"
-                    sx={{ ml: 1 }}
-                    onClick={() => handleClickScript(script.currentTime)}
-                  >
-                    {script.label}
-                  </Link>
+                  <Typography ml={1}>{script.label}</Typography>
                 </Box>
               );
             })}

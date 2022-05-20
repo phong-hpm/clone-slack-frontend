@@ -25,6 +25,8 @@ import MuiTooltip from "./options/tooltip";
 import MuiChip from "./options/chip";
 import MuiSelect from "./options/select";
 import MuiSlider from "./options/slider";
+import MuiTabs from "./options/tabs";
+import MuiTab from "./options/tab";
 
 // utils
 import { color } from "utils/constants";
@@ -71,6 +73,8 @@ const mainOptions: ThemeOptions = {
     MuiChip,
     MuiSelect,
     MuiSlider,
+    MuiTabs,
+    MuiTab,
   },
 };
 

@@ -13,7 +13,7 @@ import * as usersSelectors from "store/selectors/users.selector";
 // components
 import ReactQuill from "react-quill";
 import { Delta } from "quill";
-import { Avatar, Box, Typography } from "@mui/material";
+import { Avatar, Box, Link, Typography } from "@mui/material";
 import MessageInput from "pages/ChatPage/Conversation/ChatBox/MessageInput";
 import MessageActions from "pages/ChatPage/Conversation/ChatBox/MessageActions";
 import ShareMessageModal from "pages/ChatPage/Conversation/ChatBox/ShareMessageModal";
@@ -32,6 +32,8 @@ import { updateReadonlyLinkField } from "utils/message";
 
 // types
 import { UserType, MessageType } from "store/slices/_types";
+import TimeCard from "components/TimeCard";
+import UserNameCard from "components/UserNameCard";
 
 export interface MessageContentProps {
   userOwner?: UserType;
@@ -130,12 +132,13 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
           <Box flex="1">
             {!isEditing && userOwner && (
               <Box display="flex" alignItems="flex-end">
-                <Typography fontWeight={900} mr={1}>
-                  {userOwner?.name || "unknow"}
-                </Typography>
-                <Typography variant="h6" lineHeight="20px" color={color.MAX_SOLID}>
-                  {dayFormat.timeA(message.created)}
-                </Typography>
+                <Link underline="hover" color="inherit">
+                  <UserNameCard user={userOwner} />
+                </Link>
+
+                <Link underline="hover" color={color.MAX_SOLID}>
+                  <TimeCard time={message.created} formatFn={dayFormat.timeA} />
+                </Link>
               </Box>
             )}
 

@@ -4,6 +4,7 @@ import { createRecorder, createThumbnails } from "utils/videoRecorder";
 
 // types
 import { ResolutionType } from "utils/_types";
+import { VideoInstance } from "components/Video/_types";
 
 class RecorderManager {
   frame = 48;
@@ -26,24 +27,24 @@ class RecorderManager {
 
   canvasEl = document.createElement("canvas");
   canvasCtx = this.canvasEl.getContext("2d")!;
-  cameraRef: React.RefObject<HTMLVideoElement>;
-  screenRef: React.RefObject<HTMLVideoElement>;
-  mergedRef: React.RefObject<HTMLVideoElement>;
+  cameraInstanceRef: React.MutableRefObject<VideoInstance>;
+  screenInstanceRef: React.MutableRefObject<VideoInstance>;
+  mergedInstanceRef: React.MutableRefObject<VideoInstance>;
 
   render = (id: number) => {};
   onDuration: (sec: number) => void;
   selectedDevice = { audio: "", video: "" };
 
   constructor(
-    cameraRef: React.RefObject<HTMLVideoElement>,
-    screenRef: React.RefObject<HTMLVideoElement>,
-    mergedRef: React.RefObject<HTMLVideoElement>,
+    cameraInstanceRef: React.MutableRefObject<VideoInstance>,
+    screenInstanceRef: React.MutableRefObject<VideoInstance>,
+    mergedInstanceRef: React.MutableRefObject<VideoInstance>,
     render: (id: number) => void,
     onDuration: (sec: number) => void
   ) {
-    this.cameraRef = cameraRef;
-    this.screenRef = screenRef;
-    this.mergedRef = mergedRef;
+    this.cameraInstanceRef = cameraInstanceRef;
+    this.screenInstanceRef = screenInstanceRef;
+    this.mergedInstanceRef = mergedInstanceRef;
     this.render = render;
     this.onDuration = onDuration;
     this.getDevices();
@@ -73,8 +74,10 @@ class RecorderManager {
         this.cameraStream = stream;
       }
 
-      this.cameraRef.current!.volume = 0;
-      this.cameraRef.current!.srcObject = new MediaStream(this.cameraStream);
+      console.log(this.cameraInstanceRef.current.videoEl);
+
+      this.cameraInstanceRef.current.videoEl!.volume = 0;
+      this.cameraInstanceRef.current.videoEl!.srcObject = new MediaStream(this.cameraStream);
       this.createRecorder(this.cameraStream);
       this.forceRender();
     } catch {
@@ -88,11 +91,11 @@ class RecorderManager {
       if (!this.screenStream?.active) {
         const stream = await navigator.mediaDevices.getDisplayMedia({ audio, video });
         this.screenStream = stream;
-        this.screenRef.current!.oncanplay = () => this.mergeStreams();
+        this.screenInstanceRef.current.videoEl!.oncanplay = () => this.mergeStreams();
       }
 
-      this.screenRef.current!.volume = 0;
-      this.screenRef.current!.srcObject = new MediaStream(this.screenStream);
+      this.screenInstanceRef.current.videoEl!.volume = 0;
+      this.screenInstanceRef.current.videoEl!.srcObject = new MediaStream(this.screenStream);
       this.forceRender();
     } catch {
       // throw error to outside
@@ -194,8 +197,8 @@ class RecorderManager {
   }
 
   async makeComposite() {
-    const cameraEl = this.cameraRef.current;
-    const screenEl = this.screenRef.current;
+    const cameraEl = this.cameraInstanceRef.current.videoEl;
+    const screenEl = this.screenInstanceRef.current.videoEl;
 
     if (cameraEl && screenEl) {
       const videoWidth = screenEl.videoWidth || 1;
@@ -260,10 +263,10 @@ class RecorderManager {
       ...audioDES.stream.getTracks(),
     ]);
 
-    this.cameraRef.current!.volume = 0;
-    this.screenRef.current!.volume = 0;
-    this.mergedRef.current!.volume = 0;
-    this.mergedRef.current!.srcObject = mergedStream;
+    this.cameraInstanceRef.current.videoEl!.volume = 0;
+    this.screenInstanceRef.current.videoEl!.volume = 0;
+    this.mergedInstanceRef.current.videoEl!.volume = 0;
+    this.mergedInstanceRef.current.videoEl!.srcObject = mergedStream;
 
     this.createRecorder(mergedStream);
   }

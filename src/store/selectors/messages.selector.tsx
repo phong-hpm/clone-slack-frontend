@@ -12,6 +12,11 @@ import { dayFormat, isToday, minuteDiff } from "utils/dayjs";
 // types
 import { UserType, MessageType } from "store/slices/_types";
 
+interface UserMessageType {
+  userOwner?: UserType;
+  message: MessageType;
+}
+
 export const getMessages = (state: RootState) => state.messages;
 
 export const isLoading = createSelector([getMessages], (messages) => messages.isLoading);
@@ -21,11 +26,6 @@ const getList = createSelector([getMessages], (messages) => messages.list);
 export const getMessageList = createSelector([getList], (list) =>
   [...list].sort((a, b) => a.created - b.created)
 );
-
-interface UserMessageType {
-  userOwner?: UserType;
-  message: MessageType;
-}
 
 export const getGroupedMessageList = createSelector(
   [getMessageList, usersSelector.getUserList],

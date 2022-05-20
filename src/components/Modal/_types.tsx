@@ -10,6 +10,7 @@ export interface ReactModalProps
     | "className"
     | "overlayClassName"
     | "onAfterOpen"
+    | "onRequestClose"
     | "onAfterClose"
     | "overlayRef"
     | "contentRef"

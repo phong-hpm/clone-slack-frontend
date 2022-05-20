@@ -59,7 +59,7 @@ const RecordModalFooter: FC<RecordModalFooterProps> = ({
         <Box>
           {/* upload video button */}
           {status === "active" && (
-            <Button color="error" size="medium" sx={{ ml: -1.25 }} onClick={() => {}}>
+            <Button variant="text" size="large" sx={{ ml: -1.25 }} onClick={() => {}}>
               <SlackIcon icon="cloud-upload" />
               <Typography fontWeight={700} color={color.HIGH} sx={{ ml: 1 }}>
                 Upload video
@@ -71,7 +71,7 @@ const RecordModalFooter: FC<RecordModalFooterProps> = ({
         <Box>
           {/* sharescreen button */}
           {status !== "counting" && (
-            <Button color="error" size="medium" onClick={toggleShareScreen}>
+            <Button variant="text" size="large" onClick={toggleShareScreen}>
               <SlackIcon icon={isShareScreen ? "stop-screen-sharing-alt" : "share-screen"} />
               <Typography fontWeight={700} color={color.HIGH} sx={{ ml: 1 }}>
                 {isShareScreen ? "Stop sharing" : "Share screen"}
@@ -81,7 +81,7 @@ const RecordModalFooter: FC<RecordModalFooterProps> = ({
 
           {/* pause/resume button */}
           {status === "recording" && (
-            <Button color="error" size="medium" onClick={togglePlaying}>
+            <Button variant="text" size="large" onClick={togglePlaying}>
               <SlackIcon icon={isPlaying ? "pause" : "play"} />
               <Typography fontWeight={700} color={color.HIGH} sx={{ ml: 1 }}>
                 {isPlaying ? "Pause" : "Resume"}

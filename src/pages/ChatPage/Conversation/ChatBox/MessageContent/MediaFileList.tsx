@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 
 // redux selectors
+import * as channelsSelector from "store/selectors/channels.selector";
 import * as usersSelector from "store/selectors/users.selector";
 
 // components
@@ -21,6 +22,7 @@ export interface MediaFileListProps {
 }
 
 const MediaFileList: FC<MediaFileListProps> = ({ message }) => {
+  const selectedChannel = useSelector(channelsSelector.getSelectedChannel);
   const userOwner = useSelector(usersSelector.getUserById(message.user));
 
   const [isCollapsed, setCollapsed] = useState(false);
@@ -44,7 +46,7 @@ const MediaFileList: FC<MediaFileListProps> = ({ message }) => {
 
       {/* file List */}
       <Collapse in={!isCollapsed} timeout={0} unmountOnExit>
-        <Box display="flex" flexWrap="wrap" mt={1}>
+        <Box display="flex" flexWrap="wrap">
           {message.files.map((file) => {
             return file.type === "audio" ? (
               <ReviewAudioCard
@@ -66,7 +68,14 @@ const MediaFileList: FC<MediaFileListProps> = ({ message }) => {
                 scripts={file.scripts}
                 ratio={file.ratio}
                 userOwner={userOwner}
-                style={{ maxWidth: 480, borderRadius: 8, overflow: "hidden" }}
+                channelName={selectedChannel?.name}
+                style={{
+                  maxWidth: 480,
+                  borderRadius: 8,
+                  overflow: "hidden",
+                  marginTop: 8,
+                  marginRight: 8,
+                }}
               />
             );
           })}

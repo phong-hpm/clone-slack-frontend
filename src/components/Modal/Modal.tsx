@@ -140,14 +140,14 @@ const Modal: FC<ModalProps> = ({
       >
         {children}
         {isCloseBtn && (
-          <Box position="absolute" top="16px" right="16px">
+          <Box position="absolute" zIndex="1000" top="12px" right="12px">
             <IconButton onClick={onClose} sx={{ borderRadius: 1 }}>
               <SlackIcon icon="close" />
             </IconButton>
           </Box>
         )}
         {isCloseBtnCorner && (
-          <Box position="absolute" top={-10} right={-10}>
+          <Box position="absolute" zIndex="1000" top={-10} right={-10}>
             <IconButton color="secondary" onClick={onClose} size="medium">
               <SlackIcon fontSize="small" icon="close" />
             </IconButton>

@@ -19,6 +19,9 @@ import {
   Typography,
 } from "@mui/material";
 
+// hooks
+import useFireOnce from "hooks/useFireOnce";
+
 // images
 import MessageContent from "./MessageContent";
 
@@ -27,6 +30,8 @@ import { color } from "utils/constants";
 import SlackIcon from "components/SlackIcon";
 
 const MessageContentList: FC = () => {
+  const { fireOnce } = useFireOnce();
+
   const isLoading = useSelector(messagesSelectors.isLoading);
   // messages in [userMessagesDayGroup] were have the same reference with it's previous reference
   //    only updated message's reference was changed
@@ -39,11 +44,15 @@ const MessageContentList: FC = () => {
 
   // scroll to bottom after messages were loaded
   useEffect(() => {
-    if (isLoading || !containerRef.current || !userMessagesDayGroup.length) return;
-    // user scrolled
-    if (containerRef.current.scrollTop) return;
-    containerRef.current.scrollTo({ top: containerRef.current.scrollHeight });
-  }, [isLoading, userMessagesDayGroup]);
+    if (isLoading || !userMessagesDayGroup.length) return;
+    // waiting for [MessageContent] render data
+    setTimeout(() => {
+      // using [fireOnce] to prevent scroll after [messages] updated
+      fireOnce(() => {
+        containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
+      });
+    }, 1);
+  }, [isLoading, fireOnce, userMessagesDayGroup]);
 
   if (isLoading) {
     return (

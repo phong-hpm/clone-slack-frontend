@@ -26,10 +26,19 @@ export const channelsSlice = createSlice({
     setSelectedChannelId: (state, action: PayloadAction<string>) => {
       state.selectedId = action.payload;
     },
+    resetState: (state) => {
+      state.list = [];
+      state.directMessages = [];
+    },
   },
 });
 
-export const { setSelectedChannelId, setChannelsList, addChannelList, setDirectMessagesList } =
-  channelsSlice.actions;
+export const {
+  setSelectedChannelId,
+  setChannelsList,
+  addChannelList,
+  setDirectMessagesList,
+  resetState,
+} = channelsSlice.actions;
 
 export default channelsSlice.reducer;

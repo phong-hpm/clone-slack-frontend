@@ -37,7 +37,7 @@ const components: Theme["components"] = {
       {
         props: { size: "medium" },
         style: {
-          padding: "4px",
+          padding: "5px",
         },
       },
       {

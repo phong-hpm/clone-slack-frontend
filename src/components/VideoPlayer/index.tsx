@@ -1,24 +1,48 @@
-import { useState } from "react";
+import { VideoProps } from "components/Video";
+import { FC, useRef, useState } from "react";
 
 // components
 import FullScreenModal from "./FullScreenModal";
-import PlayerBase, { PlayerBaseProps } from "./PlayerBase";
+import PlayerBase from "./PlayerBase";
 
-export interface VideoPlayerProps extends PlayerBaseProps {}
+// context
+import { VideoPlayerContextProvider } from "./VideoPlayerContext";
 
-const VideoPlayer = ({ ...props }) => {
-  const [isShowFullScreenModal, setShowFullScreenModal] = useState(false);
+// types
+import { PlayerBaseInstance } from "./_types";
+import { VideoPlayerProviderDataProps } from "./_types";
+
+export interface VideoPlayerProps extends Partial<VideoPlayerProviderDataProps> {
+  videoProps?: VideoProps;
+  style?: React.CSSProperties;
+  controlStyle?: React.CSSProperties;
+}
+
+const VideoPlayer: FC<VideoPlayerProps> = ({ videoProps, style, controlStyle, ...props }) => {
+  const playerBaseInstanceRef = useRef<PlayerBaseInstance>({
+    video: { videoEl: null, containerEl: null },
+    containerEl: null,
+  });
+
+  const [containerEl, setContainerEl] = useState<HTMLDivElement | null>(null);
 
   return (
-    <>
-      <PlayerBase {...props} onClickExpand={() => setShowFullScreenModal(true)} />
+    <VideoPlayerContextProvider dataProps={props}>
+      <PlayerBase
+        ref={playerBaseInstanceRef}
+        portalEl={containerEl}
+        videoProps={videoProps}
+        style={style}
+        controlStyle={controlStyle}
+        {...props}
+      />
 
       <FullScreenModal
-        isOpen={isShowFullScreenModal}
-        playerProps={{ ...props, style: { ...props.style, maxWidth: "100%" } }}
-        onClose={() => setShowFullScreenModal(false)}
+        playerInstance={playerBaseInstanceRef.current}
+        onAfterOpen={setContainerEl}
+        onClose={() => setContainerEl(null)}
       />
-    </>
+    </VideoPlayerContextProvider>
   );
 };
 

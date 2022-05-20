@@ -14,6 +14,7 @@ import { color, resolutions, rgba } from "utils/constants";
 
 // types
 import { StatusType } from "./_types";
+import { VideoInstance } from "components/Video/_types";
 
 // sounds
 import popSound from "assets/media/effect/pop_sound.mp3";
@@ -23,9 +24,9 @@ export interface RecordModalProps extends ModalProps {
 }
 
 const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
-  const cameraRef = useRef<HTMLVideoElement>(null);
-  const screenRef = useRef<HTMLVideoElement>(null);
-  const mergedRef = useRef<HTMLVideoElement>(null);
+  const cameraInstanceRef = useRef<VideoInstance>({ videoEl: null, containerEl: null });
+  const screenInstanceRef = useRef<VideoInstance>({ videoEl: null, containerEl: null });
+  const mergedInstanceRef = useRef<VideoInstance>({ videoEl: null, containerEl: null });
 
   const keepRef = useRef({
     canvasEl: null as HTMLCanvasElement | null,
@@ -152,9 +153,9 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
   // init [recorderManager]
   useEffect(() => {
     keepRef.current.recorderManager = new RecorderManager(
-      cameraRef,
-      screenRef,
-      mergedRef,
+      cameraInstanceRef,
+      screenInstanceRef,
+      mergedInstanceRef,
       setForUpdate,
       setDuration
     );
@@ -195,9 +196,9 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
               size of sharecreen video have to fit with user's monitor
               ratio={keepRef.current.resolution.height / keepRef.current.resolution.width}
             */}
-            <Video ref={screenRef} autoPlay />
+            <Video ref={screenInstanceRef} autoPlay />
             <Box position="absolute" top="0" bottom="0" left="0" right="0">
-              <Video id="test" ref={mergedRef} autoPlay />
+              <Video ref={mergedInstanceRef} autoPlay />
             </Box>
           </Box>
           <Box
@@ -209,7 +210,7 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
             sx={{ opacity: !isShareScreen ? "1" : "0" }}
           >
             <Video
-              ref={cameraRef}
+              ref={cameraInstanceRef}
               autoPlay
               ratio={resolutions[0].height / resolutions[0].width}
               style={{ transform: "rotateY(180deg)" }}

@@ -67,6 +67,7 @@ const MoreMenu: FC<MoreMenuProps> = ({
       {!isSystem && (
         <Tooltip
           arrow={false}
+          disableInteractive={false}
           classes={{ popper: "tooltip-menu" }}
           placement="left-start"
           title={<MoreRemindList {...props} />}
