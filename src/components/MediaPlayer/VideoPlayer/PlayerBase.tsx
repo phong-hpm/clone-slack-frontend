@@ -30,14 +30,15 @@ import { VideoInstance } from "components/Video/_types";
 
 export interface PlayerBaseProps {
   ratio?: number;
-  videoProps?: VideoProps;
   style?: React.CSSProperties;
   controlStyle?: React.CSSProperties;
   portalEl?: HTMLDivElement | null;
+  videoProps?: VideoProps;
+  onDelete?: () => void;
 }
 
 const PlayerBase = forwardRef<PlayerBaseInstance, PlayerBaseProps>(
-  ({ ratio, videoProps, style, controlStyle, portalEl }, ref) => {
+  ({ ratio, videoProps, style, controlStyle, portalEl, onDelete }, ref) => {
     const { state, updateState } = useContext(VideoPlayerContext);
 
     const videoInstanceRef = useRef<VideoInstance>({ videoEl: null, containerEl: null });
@@ -77,6 +78,8 @@ const PlayerBase = forwardRef<PlayerBaseInstance, PlayerBaseProps>(
     };
 
     const renderControls = () => {
+      if (!state.src) return <></>;
+
       return (
         <Box
           position="absolute"
@@ -99,7 +102,7 @@ const PlayerBase = forwardRef<PlayerBaseInstance, PlayerBaseProps>(
             <Box>
               <Box display="flex" justifyContent="end">
                 <PlayerExpand />
-                <PlayerMoreAction />
+                <PlayerMoreAction onClickDelete={onDelete} />
               </Box>
             </Box>
           )}

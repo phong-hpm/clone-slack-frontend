@@ -17,9 +17,6 @@ import { color } from "utils/constants";
 import { quillFormats } from "utils/constants";
 import { removeUnnecessaryFields } from "utils/message";
 
-// redux actions
-import { uploadFiles } from "store/actions/message/uploadFiles";
-
 // hook
 import useQuillReact from "./useQuillReact";
 
@@ -27,7 +24,6 @@ import useQuillReact from "./useQuillReact";
 import { Delta, RangeStatic } from "quill";
 import { LinkCustomEventDetailType } from "./_types";
 import { MessageFileType } from "store/slices/_types";
-import { useDispatch } from "store";
 
 export interface InputMainProps {
   autoFocus?: boolean;
@@ -44,7 +40,6 @@ const InputMain: FC<InputMainProps> = ({
   onCancel,
   onSend,
 }) => {
-  const dispatch = useDispatch();
   const { appState, quillReact, updateQuillState, updateAppState, setQuillReact, setFocus } =
     useContext(InputContext);
 
@@ -57,13 +52,12 @@ const InputMain: FC<InputMainProps> = ({
     const textLength = quillReact?.getEditor().getText()?.trim()?.length;
     const inputDelta = quillReact?.getEditor()?.getContents();
 
-    if (appState.inputFiles.length) {
-      dispatch(uploadFiles({ files: appState.inputFiles }));
-    }
-
-    if (inputDelta) {
-      const delta = textLength ? removeUnnecessaryFields(inputDelta) : ({} as Delta);
-      onSend(delta, appState.inputFiles);
+    if (appState.inputFiles.length || inputDelta) {
+      let uploadDelta = {} as Delta;
+      if (inputDelta) {
+        uploadDelta = textLength ? removeUnnecessaryFields(inputDelta) : ({} as Delta);
+      }
+      onSend(uploadDelta, appState.inputFiles);
     }
 
     quillReact?.getEditor()?.setContents({ ops: [{ insert: "\n" }] } as Delta);

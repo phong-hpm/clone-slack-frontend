@@ -8,14 +8,13 @@ import { SocketEvent } from "utils/constants";
 
 // types
 import { Delta } from "quill";
-import { MessageFileType } from "store/slices/_types";
 
 const useMessageSocket = () => {
   // if socket is connected, socket will not null
   const { socket } = useContext(MessageSocketContext);
 
-  const emitAddMessage = (delta: Delta, files: MessageFileType[]) => {
-    socket?.emit(SocketEvent.EMIT_ADD_MESSAGE, { data: { delta, files } });
+  const emitAddMessage = (delta: Delta) => {
+    socket?.emit(SocketEvent.EMIT_ADD_MESSAGE, { data: { delta } });
   };
 
   const emitEditMessage = (id: string, delta: Delta) => {
@@ -24,6 +23,10 @@ const useMessageSocket = () => {
 
   const emitRemoveMessage = (id: string) => {
     socket?.emit(SocketEvent.EMIT_REMOVE_MESSAGE, { data: { id } });
+  };
+
+  const emitRemoveMessageFile = (id: string, fileId: string) => {
+    socket?.emit(SocketEvent.EMIT_REMOVE_MESSAGE_FILE, { data: { id, fileId } });
   };
 
   const emitStarMessage = (id: string) => {
@@ -39,6 +42,7 @@ const useMessageSocket = () => {
     emitAddMessage,
     emitEditMessage,
     emitRemoveMessage,
+    emitRemoveMessageFile,
     emitStarMessage,
     emitReactionMessage,
   };

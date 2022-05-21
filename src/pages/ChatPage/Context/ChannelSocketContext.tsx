@@ -40,7 +40,7 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
   const dispatch = useDispatch();
 
   const user = useSelector(authSelectors.getUser);
-  const selectedTeamId = useSelector(teamsSelectors.getSelectedId);
+  const selectedTeamId = useSelector(teamsSelectors.getSelectedTeamId);
 
   const { socket, updateNamespace } = useSocket();
 

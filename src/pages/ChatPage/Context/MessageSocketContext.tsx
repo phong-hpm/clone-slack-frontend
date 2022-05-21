@@ -91,7 +91,8 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
       })
       .on(SocketEvent.ON_ADDED_MESSAGE, handleAddNewMessage)
       .on(SocketEvent.ON_EDITED_MESSAGE, handleUpdateMessage)
-      .on(SocketEvent.ON_REMOVED_MESSAGE, handleRemoveMessage);
+      .on(SocketEvent.ON_REMOVED_MESSAGE, handleRemoveMessage)
+      .on(SocketEvent.ON_REMOVED_MESSAGE_FILE, handleUpdateMessage);
 
     socket.connect();
     return () => {

@@ -1,11 +1,7 @@
 import { createContext, FC, useCallback, useEffect, useMemo, useState } from "react";
 
 // types
-import {
-  VideoPlayerContextType,
-  VideoPlayerContextStateType,
-  VideoPlayerProviderDataProps,
-} from "./_types";
+import { VideoPlayerContextType, VideoPlayerContextStateType, VideoPlayerDataType } from "./_types";
 
 const initialState: VideoPlayerContextStateType = {
   channelName: "",
@@ -34,7 +30,7 @@ export const VideoPlayerContext = createContext<VideoPlayerContextType>(initialC
 
 export interface VideoPlayerContextProviderProps {
   children: React.ReactNode;
-  dataProps: Partial<VideoPlayerProviderDataProps>;
+  dataProps: Partial<VideoPlayerDataType>;
 }
 
 export const VideoPlayerContextProvider: FC<VideoPlayerContextProviderProps> = ({

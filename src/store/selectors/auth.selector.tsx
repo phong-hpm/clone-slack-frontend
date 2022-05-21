@@ -12,3 +12,4 @@ export const isVerified = createSelector([getAuth], (auth) => auth.isVerified);
 export const getAccessToken = createSelector([getAuth], (auth) => auth.accessToken);
 export const getRefreshToken = createSelector([getAuth], (auth) => auth.refreshToken);
 export const getUser = createSelector([getAuth], (auth) => auth.user);
+export const getUserId = createSelector([getUser], (user) => user.id);

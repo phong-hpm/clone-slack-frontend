@@ -8,24 +8,22 @@ export interface TranScriptType {
 }
 
 // VideoPlayerContext.tsx  -----------------
-export interface VideoPlayerProviderDataProps {
+export interface VideoPlayerDataType {
   channelName: string;
-  isFullScreen: boolean;
   src: string;
   created: number;
   duration: number;
   scripts: TranScriptType[];
-  ratio?: number;
   thumbnail?: string;
   userOwner?: UserType;
 }
 
-export interface VideoPlayerContextStateType extends VideoPlayerProviderDataProps {
+export interface VideoPlayerContextStateType extends VideoPlayerDataType {
+  isFullScreen: boolean;
   currentTime: number;
   volume: number;
   speed: string;
   isHover: boolean;
-  isFullScreen: boolean;
   isPlaying: boolean;
   isCaption: boolean;
   isShowThreadScriptBar: boolean;

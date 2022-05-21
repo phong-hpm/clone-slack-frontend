@@ -64,7 +64,9 @@ const Modal: FC<ModalProps> = ({
     const modalStyles: ReactModal.Styles = {
       content: {
         width: autoWidth ? "auto" : undefined,
+        minWidth: autoWidth ? "auto" : undefined,
         height: autoHeight ? "auto" : undefined,
+        minHeight: autoHeight ? "auto" : undefined,
         ...position,
         ...content,
       },

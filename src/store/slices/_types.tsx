@@ -1,4 +1,4 @@
-import { TranScriptType } from "components/VideoPlayer/_types";
+import { TranScriptType } from "components/MediaPlayer/VideoPlayer/_types";
 import { Delta } from "quill";
 
 // users.slice.tsx -----------------

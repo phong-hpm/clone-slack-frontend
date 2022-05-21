@@ -74,8 +74,6 @@ class RecorderManager {
         this.cameraStream = stream;
       }
 
-      console.log(this.cameraInstanceRef.current.videoEl);
-
       this.cameraInstanceRef.current.videoEl!.volume = 0;
       this.cameraInstanceRef.current.videoEl!.srcObject = new MediaStream(this.cameraStream);
       this.createRecorder(this.cameraStream);

@@ -10,15 +10,25 @@ import { VideoPlayerContextProvider } from "./VideoPlayerContext";
 
 // types
 import { PlayerBaseInstance } from "./_types";
-import { VideoPlayerProviderDataProps } from "./_types";
+import { VideoPlayerDataType } from "./_types";
 
-export interface VideoPlayerProps extends Partial<VideoPlayerProviderDataProps> {
-  videoProps?: VideoProps;
+export interface VideoPlayerProps {
+  ratio?: number;
   style?: React.CSSProperties;
   controlStyle?: React.CSSProperties;
+  videoProps?: VideoProps;
+  data: Partial<VideoPlayerDataType>;
+  onDelete?: () => void;
 }
 
-const VideoPlayer: FC<VideoPlayerProps> = ({ videoProps, style, controlStyle, ...props }) => {
+const VideoPlayer: FC<VideoPlayerProps> = ({
+  videoProps,
+  style,
+  controlStyle,
+  data,
+  ratio,
+  onDelete,
+}) => {
   const playerBaseInstanceRef = useRef<PlayerBaseInstance>({
     video: { videoEl: null, containerEl: null },
     containerEl: null,
@@ -27,14 +37,15 @@ const VideoPlayer: FC<VideoPlayerProps> = ({ videoProps, style, controlStyle, ..
   const [containerEl, setContainerEl] = useState<HTMLDivElement | null>(null);
 
   return (
-    <VideoPlayerContextProvider dataProps={props}>
+    <VideoPlayerContextProvider dataProps={data}>
       <PlayerBase
         ref={playerBaseInstanceRef}
-        portalEl={containerEl}
-        videoProps={videoProps}
+        ratio={ratio}
         style={style}
         controlStyle={controlStyle}
-        {...props}
+        portalEl={containerEl}
+        videoProps={videoProps}
+        onDelete={onDelete}
       />
 
       <FullScreenModal

@@ -22,11 +22,15 @@ const UploadingFileList: FC<UploadingFileListProps> = () => {
               isRemove
               height={34}
               width={143}
-              file={file}
+              data={{ url: file.url, duration: file.duration, wavePeaks: file.wavePeaks }}
               onRemove={() => removeInputFile(file.id)}
             />
           ) : (
-            <ReviewVideoCard file={file} onRemove={() => removeInputFile(file.id)} />
+            <ReviewVideoCard
+              file={file}
+              boxProps={{ sx: { mb: 1, mr: 1 } }}
+              onRemove={() => removeInputFile(file.id)}
+            />
           )}
         </Box>
       ))}

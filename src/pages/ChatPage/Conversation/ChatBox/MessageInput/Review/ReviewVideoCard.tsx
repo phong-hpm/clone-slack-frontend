@@ -1,7 +1,7 @@
 import { FC, useState } from "react";
 
 // components
-import { Box, IconButton } from "@mui/material";
+import { Box, BoxProps, IconButton } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 import Image from "components/Image";
 import ReviewVideo from "./ReviewVideo";
@@ -12,27 +12,35 @@ import { color, rgba } from "utils/constants";
 
 export interface ReviewVideoCardProps {
   file: MessageFileType;
+  isReadOnly?: boolean;
+  size?: number;
+  boxProps?: BoxProps;
   onRemove?: () => void;
 }
 
-const ReviewVideoCard: FC<ReviewVideoCardProps> = ({ file, onRemove }) => {
+const ReviewVideoCard: FC<ReviewVideoCardProps> = ({
+  file,
+  isReadOnly,
+  size = 60,
+  boxProps,
+  onRemove,
+}) => {
   const [isShowReviewModal, setShowReviewModal] = useState(false);
   const [isHovering, setHovering] = useState(false);
 
   return (
     <Box
       position="relative"
-      mb={1}
-      mr={1}
       onMouseOver={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
+      {...boxProps}
     >
       <Box
         display="flex"
         justifyContent="center"
         overflow="hidden"
-        width={60}
-        height={60}
+        width={size}
+        height={size}
         borderRadius={2.5}
         bgcolor={rgba(color.DARK, 0.2)}
       >
@@ -49,13 +57,13 @@ const ReviewVideoCard: FC<ReviewVideoCardProps> = ({ file, onRemove }) => {
         justifyContent="center"
         alignItems="center"
         sx={{ cursor: "pointer" }}
-        onClick={() => setShowReviewModal(true)}
+        onClick={() => !isReadOnly && setShowReviewModal(true)}
       >
         <SlackIcon icon="play-filled" />
       </Box>
 
       {/* remove button */}
-      {isHovering && (
+      {isHovering && !isReadOnly && (
         <Box position="absolute" top={-8} right={-8}>
           <IconButton color="secondary" size="medium" onClick={onRemove}>
             <SlackIcon fontSize="small" icon="close" />

@@ -25,7 +25,7 @@ export const ChatPage: FC = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const selectedTeamId = useSelector(teamsSelectors.getSelectedId);
+  const selectedTeamId = useSelector(teamsSelectors.getSelectedTeamId);
 
   const [isCheckingPrams, setIsCheckingParams] = useState(true);
 

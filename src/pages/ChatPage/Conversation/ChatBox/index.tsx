@@ -1,7 +1,10 @@
 import { FC, useRef } from "react";
 
 // redux store
-import { useSelector } from "store";
+import { useSelector, useDispatch } from "store";
+
+// redux actions
+import { uploadFiles } from "store/actions/message/uploadFiles";
 
 // redux selectors
 import * as channelsSelector from "store/selectors/channels.selector";
@@ -22,12 +25,26 @@ import LinkDetailModal from "./MessageLink/LinkDetailModal";
 import LinkDetailPopover from "./MessageLink/LinkDetailPopover";
 import LinkEditModal from "./MessageLink/LinkEditModal";
 
+// types
+import { Delta } from "quill";
+import { MessageFileType } from "store/slices/_types";
+
 const ChatBox: FC = () => {
+  const dispatch = useDispatch();
+
   const selectedChannel = useSelector(channelsSelector.getSelectedChannel);
 
   const { emitAddMessage } = useMessageSocket();
 
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleSend = (delta: Delta, files: MessageFileType[]) => {
+    if (files.length) {
+      dispatch(uploadFiles({ files, delta }));
+    } else {
+      emitAddMessage(delta);
+    }
+  };
 
   return (
     <Box
@@ -43,7 +60,7 @@ const ChatBox: FC = () => {
       <Box px={2.5}>
         <MessageInput
           placeHolder={`Send a message to #${selectedChannel?.name || ""}`}
-          onSend={emitAddMessage}
+          onSend={handleSend}
         />
       </Box>
 

@@ -3,18 +3,20 @@ import { FC, useContext, useRef, useState } from "react";
 // components
 import { Tooltip } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
-import MoreMenu from "./MoreMenu";
-import IconButtonCustom from "../IconButtonCustom";
+import IconButtonCustom from "./IconButtonCustom";
+import MoreMenu from "components/MediaPlayer/MoreMenu";
 
 // context
-import { VideoPlayerContext } from "../../VideoPlayerContext";
+import { VideoPlayerContext } from "../VideoPlayerContext";
 
 // constants
 import { color, rgba } from "utils/constants";
 
-export interface PlayerMoreActionProps {}
+export interface PlayerMoreActionProps {
+  onClickDelete?: () => void;
+}
 
-const PlayerMoreAction: FC<PlayerMoreActionProps> = () => {
+const PlayerMoreAction: FC<PlayerMoreActionProps> = ({ onClickDelete }) => {
   const { state } = useContext(VideoPlayerContext);
 
   const moreButtonRef = useRef<HTMLButtonElement>(null);
@@ -37,6 +39,7 @@ const PlayerMoreAction: FC<PlayerMoreActionProps> = () => {
 
       <MoreMenu
         open={isShowMoreMenu}
+        type="video"
         anchorEl={moreButtonRef.current}
         anchorOrigin={
           state.isFullScreen
@@ -48,6 +51,7 @@ const PlayerMoreAction: FC<PlayerMoreActionProps> = () => {
             ? { vertical: "bottom", horizontal: "right" }
             : { vertical: "top", horizontal: "right" }
         }
+        onClickDelete={onClickDelete}
         onClose={() => setShowMoreMenu(false)}
       />
     </>
