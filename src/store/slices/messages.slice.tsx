@@ -6,6 +6,7 @@ import { MessagesState, MessageType } from "store/slices/_types";
 const initialState: MessagesState = {
   isLoading: true,
   list: [],
+  latestModify: 0,
 };
 
 export const messagesSlice = createSlice({

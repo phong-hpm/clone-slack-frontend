@@ -47,15 +47,16 @@ export interface MessageFileType {
   id: string;
   url: string;
   created: number;
-  size: number;
   type: "audio" | "video";
   mineType: "audio/webm" | "video/webm";
   duration: number;
+  size?: number;
   wavePeaks?: number[];
-  status?: "uploading" | "done";
-  thumb?: string;
   scripts?: TranScriptType[];
   ratio?: number;
+  thumb?: string;
+  thumbList?: string[];
+  status?: "uploading" | "done";
 }
 
 export interface MessageType {
@@ -75,6 +76,7 @@ export interface MessageType {
 export interface MessagesState {
   isLoading: boolean;
   list: MessageType[];
+  latestModify: number;
 }
 
 // channels.slice.tsx -----------------

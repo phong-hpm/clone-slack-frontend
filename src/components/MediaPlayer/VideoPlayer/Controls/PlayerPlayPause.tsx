@@ -16,9 +16,10 @@ import { bgButton } from "../_constants";
 
 export interface PlayerPlayPauseProps {
   onClick: () => void;
+  isHover?: boolean;
 }
 
-const PlayerPlayPause: FC<PlayerPlayPauseProps> = ({ onClick }) => {
+const PlayerPlayPause: FC<PlayerPlayPauseProps> = ({ isHover, onClick }) => {
   const { state } = useContext(VideoPlayerContext);
 
   return state.isFullScreen ? (
@@ -31,7 +32,7 @@ const PlayerPlayPause: FC<PlayerPlayPauseProps> = ({ onClick }) => {
     <Button
       sx={{
         p: 0.625,
-        background: state.isHover ? "transparent" : bgButton,
+        background: isHover ? "transparent" : bgButton,
         "&:hover": { background: bgButton },
       }}
       onClick={onClick}

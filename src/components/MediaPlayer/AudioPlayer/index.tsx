@@ -55,12 +55,12 @@ const AudioPlayer: FC<AudioPlayerProps> = ({
   );
 
   const handlePlay = () => {
-    if (!waveSurfer || !data.url) return;
+    if (!waveSurfer || !data.src) return;
     // audio is loading
     if (isPlaying && loadPercent < 100) return;
 
     // audio have not loaded yet
-    if (loadPercent === startLoadPercent) waveSurfer.load(data.url, data.wavePeaks);
+    if (loadPercent === startLoadPercent) waveSurfer.load(data.src, data.wavePeaks);
 
     if (isPlaying) {
       setPlaying(false);
@@ -101,7 +101,7 @@ const AudioPlayer: FC<AudioPlayerProps> = ({
           color="info"
           size="large"
           onClick={handlePlay}
-          disabled={(isPlaying && loadPercent < 100) || !data.url}
+          disabled={(isPlaying && loadPercent < 100) || !data.src || data.status === "uploading"}
         >
           <SlackIcon icon={isPlaying ? "pause-bold" : "play-filled"} />
         </IconButton>
@@ -169,6 +169,7 @@ const AudioPlayer: FC<AudioPlayerProps> = ({
       <MoreMenu
         open={isShowMoreMenu}
         type="audio"
+        url={data.src}
         anchorEl={moreButtonRef.current}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         transformOrigin={{ vertical: "bottom", horizontal: "right" }}

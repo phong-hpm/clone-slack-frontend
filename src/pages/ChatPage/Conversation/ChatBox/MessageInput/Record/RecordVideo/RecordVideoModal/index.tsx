@@ -3,7 +3,6 @@ import { FC, useCallback, useEffect, useRef, useState } from "react";
 // components
 import { Modal, ModalBody, ModalProps } from "components/Modal";
 import { Box, Typography } from "@mui/material";
-import Video from "components/Video";
 import RecordModalHeader from "./RecordModalHeader";
 import RecordModalFooter from "./RecordModalFooter";
 import RecordVideoToolbar from "./RecordVideoToolbar";
@@ -14,19 +13,18 @@ import { color, resolutions, rgba } from "utils/constants";
 
 // types
 import { StatusType } from "./_types";
-import { VideoInstance } from "components/Video/_types";
 
 // sounds
 import popSound from "assets/media/effect/pop_sound.mp3";
 
 export interface RecordModalProps extends ModalProps {
-  onNext: (chunks: Blob[], thumb: string, duration: number) => void;
+  onNext: (url: string, duration: number) => void;
 }
 
 const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
-  const cameraInstanceRef = useRef<VideoInstance>({ videoEl: null, containerEl: null });
-  const screenInstanceRef = useRef<VideoInstance>({ videoEl: null, containerEl: null });
-  const mergedInstanceRef = useRef<VideoInstance>({ videoEl: null, containerEl: null });
+  const mergedRef = useRef<HTMLVideoElement>(null);
+  const cameraRef = useRef<HTMLVideoElement>(null);
+  const screenRef = useRef<HTMLVideoElement>(null);
 
   const keepRef = useRef({
     canvasEl: null as HTMLCanvasElement | null,
@@ -45,15 +43,16 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
   const [selectedDevice, setSelectedDevice] = useState({ audio: "", video: "" });
   const [enabledDevice, setEnabledDevice] = useState({ audio: true, video: true });
 
-  const handleDone = () => {
+  const handleDone = useCallback(() => {
     const { recorderManager } = keepRef.current;
     if (!recorderManager) return;
-    onNext(
-      recorderManager.chunks,
-      recorderManager.thumbnailUrl || "",
-      Math.floor(recorderManager.duration / 1000)
-    );
-  };
+    const blob = new Blob(recorderManager.chunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
+
+    recorderManager?.stop();
+
+    onNext(url, Math.floor(recorderManager.duration / 1000));
+  }, [onNext]);
 
   const setupStream = useCallback(async () => {
     const { recorderManager } = keepRef.current;
@@ -153,9 +152,9 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
   // init [recorderManager]
   useEffect(() => {
     keepRef.current.recorderManager = new RecorderManager(
-      cameraInstanceRef,
-      screenInstanceRef,
-      mergedInstanceRef,
+      cameraRef,
+      screenRef,
+      mergedRef,
       setForUpdate,
       setDuration
     );
@@ -163,14 +162,12 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
 
   // limit record times is 5 minutes
   useEffect(() => {
-    if (duration >= 300) keepRef.current.recorderManager?.stop();
-  }, [duration]);
+    if (duration >= 300) handleDone();
+  }, [duration, handleDone]);
 
   const isDisabledRecord =
     !keepRef.current.recorderManager?.recorder ||
-    (status === "recording" &&
-      (!keepRef.current.recorderManager?.chunks.length ||
-        !keepRef.current.recorderManager?.thumbnailUrl));
+    (status === "recording" && !keepRef.current.recorderManager?.chunks.length);
 
   return (
     <Modal
@@ -196,9 +193,9 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
               size of sharecreen video have to fit with user's monitor
               ratio={keepRef.current.resolution.height / keepRef.current.resolution.width}
             */}
-            <Video ref={screenInstanceRef} autoPlay />
+            <video ref={screenRef} autoPlay />
             <Box position="absolute" top="0" bottom="0" left="0" right="0">
-              <Video ref={mergedInstanceRef} autoPlay />
+              <video ref={mergedRef} autoPlay />
             </Box>
           </Box>
           <Box
@@ -209,12 +206,7 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
             display={isShareScreen && !enabledDevice.video ? "none" : "block"}
             sx={{ opacity: !isShareScreen ? "1" : "0" }}
           >
-            <Video
-              ref={cameraInstanceRef}
-              autoPlay
-              ratio={resolutions[0].height / resolutions[0].width}
-              style={{ transform: "rotateY(180deg)" }}
-            />
+            <video ref={cameraRef} autoPlay style={{ transform: "rotateY(180deg)" }} />
           </Box>
 
           {/* countdown */}

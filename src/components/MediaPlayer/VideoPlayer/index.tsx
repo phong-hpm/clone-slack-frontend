@@ -18,6 +18,7 @@ export interface VideoPlayerProps {
   controlStyle?: React.CSSProperties;
   videoProps?: VideoProps;
   data: Partial<VideoPlayerDataType>;
+  onEditThumbnail?: () => void;
   onDelete?: () => void;
 }
 
@@ -27,6 +28,7 @@ const VideoPlayer: FC<VideoPlayerProps> = ({
   controlStyle,
   data,
   ratio,
+  onEditThumbnail,
   onDelete,
 }) => {
   const playerBaseInstanceRef = useRef<PlayerBaseInstance>({
@@ -45,6 +47,7 @@ const VideoPlayer: FC<VideoPlayerProps> = ({
         controlStyle={controlStyle}
         portalEl={containerEl}
         videoProps={videoProps}
+        onEditThumbnail={onEditThumbnail}
         onDelete={onDelete}
       />
 

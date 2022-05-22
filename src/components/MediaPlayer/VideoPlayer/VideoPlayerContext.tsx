@@ -9,7 +9,6 @@ const initialState: VideoPlayerContextStateType = {
   created: 0,
   isFullScreen: false,
   isPlaying: false,
-  isHover: false,
   isCaption: false,
   isShowThreadScriptBar: false,
 

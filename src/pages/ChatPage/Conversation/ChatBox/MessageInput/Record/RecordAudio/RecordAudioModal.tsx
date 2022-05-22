@@ -72,7 +72,6 @@ const AudioRecordModal: FC<AudioRecordModalProps> = ({ isOpen, onClose, ...props
           url: URL.createObjectURL(blob),
           created: Date.now(),
           type: "audio",
-          size: blob.size,
           wavePeaks: buildPeaks(wavePeaks),
           mineType: "audio/webm",
           duration: Math.ceil(keepRef.current.duration / 10),

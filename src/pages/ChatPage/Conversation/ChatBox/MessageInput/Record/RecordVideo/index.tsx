@@ -2,7 +2,7 @@ import { FC, useContext, useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
 // components
-import RecordModal from "./RecordVideoModal";
+import RecordVideoModal from "./RecordVideoModal";
 
 // types
 import { RecordStatusType } from "./_types";
@@ -25,17 +25,15 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
   const [status, setStatus] = useState<RecordStatusType>("ready");
   const [file, setFile] = useState<MessageFileType | null>(null);
 
-  const handleNext = (chunks: Blob[], thumb: string, duration: number) => {
-    const blob = new Blob(chunks, { type: "video/webm" });
+  const handleNext = (url: string, duration: number) => {
     setFile({
       id: `F-${uuid()}`,
-      url: URL.createObjectURL(blob),
+      url,
       created: Date.now(),
       type: "video",
       mineType: "video/webm",
-      size: blob.size,
       duration,
-      thumb,
+      ratio: 9 / 16,
     });
     setStatus("review");
   };
@@ -47,6 +45,10 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
 
   const handleSelectThumbnail = (thumb: string) => {
     if (file) setFile({ ...file, thumb });
+  };
+
+  const handleUpdateThumbList = (thumbList: string[]) => {
+    if (file) setFile({ ...file, thumb: thumbList[0], thumbList });
   };
 
   const handleDoneReview = () => {
@@ -66,7 +68,7 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
 
   return (
     <>
-      <RecordModal isOpen={status === "recording"} onClose={handleClose} onNext={handleNext} />
+      <RecordVideoModal isOpen={status === "recording"} onClose={handleClose} onNext={handleNext} />
 
       {file && (
         <ReviewVideo
@@ -75,6 +77,7 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
           downloadable
           onRepeat={handleRepeat}
           onSelectThumbnail={handleSelectThumbnail}
+          onUpdateThumbList={handleUpdateThumbList}
           onDone={handleDoneReview}
           onClose={handleClose}
         />

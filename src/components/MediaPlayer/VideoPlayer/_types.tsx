@@ -16,6 +16,7 @@ export interface VideoPlayerDataType {
   scripts: TranScriptType[];
   thumbnail?: string;
   userOwner?: UserType;
+  status?: "uploading" | "done";
 }
 
 export interface VideoPlayerContextStateType extends VideoPlayerDataType {
@@ -23,7 +24,6 @@ export interface VideoPlayerContextStateType extends VideoPlayerDataType {
   currentTime: number;
   volume: number;
   speed: string;
-  isHover: boolean;
   isPlaying: boolean;
   isCaption: boolean;
   isShowThreadScriptBar: boolean;

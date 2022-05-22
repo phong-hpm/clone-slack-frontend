@@ -34,8 +34,8 @@ const components: Theme["components"] = {
           },
 
           "&:disabled": {
-            backgroundColor: color.LOW_SOLID,
-            color: rgba(color.PRIMARY, 0.75),
+            backgroundColor: "transparent",
+            color: rgba(color.PRIMARY, 0.3),
           },
         },
       },

@@ -1,5 +1,6 @@
 export interface AudioPlayerDataType {
-  url?: string;
+  src?: string;
   wavePeaks?: number[];
   duration?: number;
+  status?: "uploading" | "done";
 }

@@ -59,9 +59,14 @@ const RecordModalFooter: FC<RecordModalFooterProps> = ({
         <Box>
           {/* upload video button */}
           {status === "active" && (
-            <Button variant="text" size="large" sx={{ ml: -1.25 }} onClick={() => {}}>
+            <Button
+              variant="text"
+              size="large"
+              sx={{ ml: -1.25, color: color.HIGH }}
+              onClick={() => {}}
+            >
               <SlackIcon icon="cloud-upload" />
-              <Typography fontWeight={700} color={color.HIGH} sx={{ ml: 1 }}>
+              <Typography fontWeight={700} sx={{ ml: 1 }}>
                 Upload video
               </Typography>
             </Button>
@@ -71,9 +76,14 @@ const RecordModalFooter: FC<RecordModalFooterProps> = ({
         <Box>
           {/* sharescreen button */}
           {status !== "counting" && (
-            <Button variant="text" size="large" onClick={toggleShareScreen}>
+            <Button
+              variant="text"
+              size="large"
+              sx={{ color: color.HIGH }}
+              onClick={toggleShareScreen}
+            >
               <SlackIcon icon={isShareScreen ? "stop-screen-sharing-alt" : "share-screen"} />
-              <Typography fontWeight={700} color={color.HIGH} sx={{ ml: 1 }}>
+              <Typography fontWeight={700} sx={{ ml: 1 }}>
                 {isShareScreen ? "Stop sharing" : "Share screen"}
               </Typography>
             </Button>
@@ -81,9 +91,9 @@ const RecordModalFooter: FC<RecordModalFooterProps> = ({
 
           {/* pause/resume button */}
           {status === "recording" && (
-            <Button variant="text" size="large" onClick={togglePlaying}>
+            <Button variant="text" size="large" sx={{ color: color.HIGH }} onClick={togglePlaying}>
               <SlackIcon icon={isPlaying ? "pause" : "play"} />
-              <Typography fontWeight={700} color={color.HIGH} sx={{ ml: 1 }}>
+              <Typography fontWeight={700} sx={{ ml: 1 }}>
                 {isPlaying ? "Pause" : "Resume"}
               </Typography>
             </Button>

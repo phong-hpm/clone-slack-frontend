@@ -22,7 +22,7 @@ const UploadingFileList: FC<UploadingFileListProps> = () => {
               isRemove
               height={34}
               width={143}
-              data={{ url: file.url, duration: file.duration, wavePeaks: file.wavePeaks }}
+              data={{ src: file.url, duration: file.duration, wavePeaks: file.wavePeaks }}
               onRemove={() => removeInputFile(file.id)}
             />
           ) : (

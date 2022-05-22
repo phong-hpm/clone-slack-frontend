@@ -11,19 +11,23 @@ import { css } from "utils/constants";
 
 export interface SelectThumnailModalProps extends ModalProps {
   src: string;
+  thumb?: string;
+  thumbList?: string[];
   onSelect?: (url: string) => void;
 }
 
 const SelectThumnailModal: FC<SelectThumnailModalProps> = ({
   isOpen,
   src,
+  thumb,
+  thumbList,
   onSelect,
   onClose,
   ...props
 }) => {
   const keepRef = useRef({ isOpen: false });
 
-  const [selected, setSelected] = useState<string>();
+  const [selected, setSelected] = useState<string | undefined>(thumb);
   const [thumbnails, setThumbnails] = useState<string[]>([]);
 
   const handleSelect = () => {
@@ -32,15 +36,23 @@ const SelectThumnailModal: FC<SelectThumnailModalProps> = ({
   };
 
   useEffect(() => {
-    if (!src || !isOpen) return;
-    createThumbnails({ src }).then((thumbs) => {
-      // this callback can be fired after component was unmounted
-      // check isOpen in keepRef will prevent updating state
-      if (!keepRef.current.isOpen || !thumbs?.length) return;
-      setSelected(thumbs[0]);
-      setThumbnails(thumbs);
-    });
-  }, [src, isOpen]);
+    if (thumb) setSelected(thumb);
+  }, [thumb]);
+
+  useEffect(() => {
+    if (!isOpen || !src || thumbnails.length) return;
+    if (thumbList?.length) {
+      setThumbnails(thumbList);
+    } else {
+      createThumbnails({ src }).then((thumbs) => {
+        // this callback can be fired after component was unmounted
+        // check isOpen in keepRef will prevent updating state
+        if (!keepRef.current.isOpen || !thumbs?.length) return;
+        setSelected((state) => state || thumbs[0]);
+        setThumbnails(thumbs);
+      });
+    }
+  }, [isOpen, src, thumbnails, thumbList]);
 
   // keep isOpen value in ref
   useEffect(() => {
@@ -68,9 +80,9 @@ const SelectThumnailModal: FC<SelectThumnailModalProps> = ({
         </Box>
 
         <Box display="flex" overflow="hidden" borderRadius={2} sx={{ boxShadow: css.BOX_SHADOW }}>
-          {thumbnails.map((thumbnail, index) => (
+          {thumbnails.map((thumbnail) => (
             <Box
-              key={index}
+              key={thumbnail}
               flex="1"
               sx={{ cursor: "pointer" }}
               onClick={() => setSelected(thumbnail)}

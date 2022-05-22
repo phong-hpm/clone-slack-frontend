@@ -1,32 +1,3 @@
-export const createRecorder = ({
-  stream,
-  onData,
-  onStop,
-}: {
-  stream: MediaStream;
-  onData?: (chunk: Blob) => void;
-  onStop?: (chunk: Blob) => void;
-}) => {
-  const recordedChunks: Blob[] = [];
-  const mediaRecoder = new MediaRecorder(stream);
-
-  // ondata recorder listener
-  mediaRecoder.ondataavailable = (event) => {
-    if (event.data.size > 0) {
-      recordedChunks.push(event.data);
-      onData && onData(event.data);
-    }
-  };
-
-  // onstop recorder listener
-  mediaRecoder.onstop = () => {
-    const blob = new Blob(recordedChunks);
-    onStop && onStop(blob);
-  };
-
-  return mediaRecoder;
-};
-
 // we should take thumbnails from blob:url
 // if we pass a network url, it will take so much time to finish
 export const createThumbnails = ({

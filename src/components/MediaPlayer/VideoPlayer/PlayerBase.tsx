@@ -34,11 +34,12 @@ export interface PlayerBaseProps {
   controlStyle?: React.CSSProperties;
   portalEl?: HTMLDivElement | null;
   videoProps?: VideoProps;
+  onEditThumbnail?: () => void;
   onDelete?: () => void;
 }
 
 const PlayerBase = forwardRef<PlayerBaseInstance, PlayerBaseProps>(
-  ({ ratio, videoProps, style, controlStyle, portalEl, onDelete }, ref) => {
+  ({ ratio, videoProps, style, controlStyle, portalEl, onEditThumbnail, onDelete }, ref) => {
     const { state, updateState } = useContext(VideoPlayerContext);
 
     const videoInstanceRef = useRef<VideoInstance>({ videoEl: null, containerEl: null });
@@ -74,11 +75,10 @@ const PlayerBase = forwardRef<PlayerBaseInstance, PlayerBaseProps>(
     const handlePlayPause = () => {
       if (state.isPlaying) videoInstanceRef.current.videoEl?.pause();
       else videoInstanceRef.current.videoEl?.play();
-      updateState({ isPlaying: !state.isPlaying });
     };
 
     const renderControls = () => {
-      if (!state.src) return <></>;
+      if (!state.src || state.status === "uploading") return <></>;
 
       return (
         <Box
@@ -102,7 +102,7 @@ const PlayerBase = forwardRef<PlayerBaseInstance, PlayerBaseProps>(
             <Box>
               <Box display="flex" justifyContent="end">
                 <PlayerExpand />
-                <PlayerMoreAction onClickDelete={onDelete} />
+                <PlayerMoreAction onClickEditThumbnail={onEditThumbnail} onClickDelete={onDelete} />
               </Box>
             </Box>
           )}
@@ -117,7 +117,7 @@ const PlayerBase = forwardRef<PlayerBaseInstance, PlayerBaseProps>(
             {/* actions */}
             <Box display="flex" justifyContent="space-between">
               <Box display="flex">
-                <PlayerPlayPause onClick={handlePlayPause} />
+                <PlayerPlayPause isHover={isHover} onClick={handlePlayPause} />
                 {isHover && <PlayerVolume onChange={handleChangeVolumeSlider} />}
                 {state.isFullScreen && <PlayerDuration />}
               </Box>

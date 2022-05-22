@@ -49,14 +49,7 @@ const Video = forwardRef<VideoInstance, VideoProps>(
     };
 
     return (
-      <Box
-        ref={containerRef}
-        id="video"
-        position="relative"
-        width="100%"
-        maxWidth="100%"
-        maxHeight="100%"
-      >
+      <Box ref={containerRef} position="relative" width="100%" maxWidth="100%" maxHeight="100%">
         {ratio ? (
           <Box
             position="relative"

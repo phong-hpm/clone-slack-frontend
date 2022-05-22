@@ -22,6 +22,7 @@ import { MessageFileType, UserType } from "store/slices/_types";
 import { VideoPlayerDataType } from "components/MediaPlayer/VideoPlayer/_types";
 import { Box, CircularProgress } from "@mui/material";
 import { AudioPlayerDataType } from "components/MediaPlayer/AudioPlayer/_types";
+import SelectThumnailModal from "components/MediaPlayer/SelectThumbnailModal";
 
 export interface MediaFileProps {
   messageId: string;
@@ -35,26 +36,30 @@ const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
   const { emitRemoveMessageFile } = useMessageSocket();
 
   const [isShowDeleteModal, setShowDeleteModal] = useState(false);
+  const [isShowThumbnailModal, setShowThumbnailModal] = useState(false);
 
-  const videoData = useMemo<Partial<VideoPlayerDataType>>(() => {
-    return {
+  const videoData = useMemo<Partial<VideoPlayerDataType>>(
+    () => ({
       channelName: selectedChannel?.name,
       src: file.url,
       created: file.created,
       duration: file.duration,
       scripts: file.scripts,
       thumbnail: file.thumb,
+      status: file.status,
       userOwner,
-    };
-  }, [file, selectedChannel, userOwner]);
+    }),
+    [file, selectedChannel, userOwner]
+  );
 
-  const audioData = useMemo<AudioPlayerDataType>(() => {
-    return {
-      url: file.url,
-      wavePeaks: file.wavePeaks,
-      duration: file.duration,
-    };
-  }, [file]);
+  const audioData = useMemo<AudioPlayerDataType>(
+    () => ({ src: file.url, wavePeaks: file.wavePeaks, duration: file.duration }),
+    [file]
+  );
+
+  const handleEditThumbnail = () => {
+    setShowThumbnailModal(false);
+  };
 
   const handleDelete = () => {
     emitRemoveMessageFile(messageId, file.id);
@@ -90,12 +95,13 @@ const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
             marginTop: 8,
             marginRight: 8,
           }}
+          onEditThumbnail={() => setShowThumbnailModal(true)}
           onDelete={() => setShowDeleteModal(true)}
         />
       )}
 
       {/* uploading wheel */}
-      {!file.url && (
+      {file.status === "uploading" && (
         <Box
           position="absolute"
           top={0}
@@ -110,12 +116,23 @@ const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
         </Box>
       )}
 
+      {file.url && (
+        <SelectThumnailModal
+          isOpen={isShowThumbnailModal}
+          src={file.url}
+          thumb={file.thumb}
+          thumbList={file.thumbList}
+          onSelect={handleEditThumbnail}
+          onClose={() => setShowThumbnailModal(false)}
+        />
+      )}
+
       <MediaFileDeleteModal
         isOpen={isShowDeleteModal}
         file={file}
         userOwner={userOwner}
-        onClose={() => setShowDeleteModal(false)}
         onSubmit={handleDelete}
+        onClose={() => setShowDeleteModal(false)}
       />
     </Box>
   );

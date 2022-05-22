@@ -20,6 +20,7 @@ interface UserMessageType {
 export const getMessages = (state: RootState) => state.messages;
 
 export const isLoading = createSelector([getMessages], (messages) => messages.isLoading);
+export const latestModify = createSelector([getMessages], (messages) => messages.latestModify);
 
 const getList = createSelector([getMessages], (messages) => messages.list);
 

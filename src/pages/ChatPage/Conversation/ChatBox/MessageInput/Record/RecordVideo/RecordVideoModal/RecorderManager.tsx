@@ -1,24 +1,22 @@
 // utils
 import { deviceKind, resolutions } from "utils/constants";
-import { createRecorder, createThumbnails } from "utils/videoRecorder";
 
 // types
 import { ResolutionType } from "utils/_types";
-import { VideoInstance } from "components/Video/_types";
 
 class RecorderManager {
-  frame = 48;
+  frame = 24;
   timeFrame = 1000 / this.frame;
   renderId = 0;
   duration = 0;
   startDuration = 0;
+  ratio = 720 / 1280;
 
   timeoutId?: NodeJS.Timeout;
   dutaionTimeoutId?: NodeJS.Timeout;
   enableCamera = true;
   resolution: ResolutionType = resolutions[0];
   devices: MediaDeviceInfo[] = [];
-  thumbnailUrl?: string;
   chunks: Blob[] = [];
 
   recorder: MediaRecorder | undefined;
@@ -27,18 +25,18 @@ class RecorderManager {
 
   canvasEl = document.createElement("canvas");
   canvasCtx = this.canvasEl.getContext("2d")!;
-  cameraInstanceRef: React.MutableRefObject<VideoInstance>;
-  screenInstanceRef: React.MutableRefObject<VideoInstance>;
-  mergedInstanceRef: React.MutableRefObject<VideoInstance>;
+  cameraInstanceRef: React.MutableRefObject<HTMLVideoElement | null>;
+  screenInstanceRef: React.MutableRefObject<HTMLVideoElement | null>;
+  mergedInstanceRef: React.MutableRefObject<HTMLVideoElement | null>;
 
   render = (id: number) => {};
   onDuration: (sec: number) => void;
   selectedDevice = { audio: "", video: "" };
 
   constructor(
-    cameraInstanceRef: React.MutableRefObject<VideoInstance>,
-    screenInstanceRef: React.MutableRefObject<VideoInstance>,
-    mergedInstanceRef: React.MutableRefObject<VideoInstance>,
+    cameraInstanceRef: React.MutableRefObject<HTMLVideoElement | null>,
+    screenInstanceRef: React.MutableRefObject<HTMLVideoElement | null>,
+    mergedInstanceRef: React.MutableRefObject<HTMLVideoElement | null>,
     render: (id: number) => void,
     onDuration: (sec: number) => void
   ) {
@@ -70,12 +68,14 @@ class RecorderManager {
   async createCameraStream(audio: { deviceId: string }, video: { deviceId: string }) {
     try {
       if (!this.cameraStream?.active) {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio, video });
-        this.cameraStream = stream;
+        this.cameraStream = await navigator.mediaDevices.getUserMedia({
+          audio,
+          video: { ...video, frameRate: { ideal: this.frame }, aspectRatio: 16 / 9 },
+        });
       }
 
-      this.cameraInstanceRef.current.videoEl!.volume = 0;
-      this.cameraInstanceRef.current.videoEl!.srcObject = new MediaStream(this.cameraStream);
+      this.cameraInstanceRef.current!.volume = 0;
+      this.cameraInstanceRef.current!.srcObject = new MediaStream(this.cameraStream);
       this.createRecorder(this.cameraStream);
       this.forceRender();
     } catch {
@@ -87,13 +87,16 @@ class RecorderManager {
   async createScreenStream(audio: { deviceId: string }, video: { deviceId: string }) {
     try {
       if (!this.screenStream?.active) {
-        const stream = await navigator.mediaDevices.getDisplayMedia({ audio, video });
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          audio,
+          video: { ...video, frameRate: { ideal: this.frame }, aspectRatio: 16 / 9 },
+        });
         this.screenStream = stream;
-        this.screenInstanceRef.current.videoEl!.oncanplay = () => this.mergeStreams();
+        this.screenInstanceRef.current!.oncanplay = () => this.mergeStreams();
       }
 
-      this.screenInstanceRef.current.videoEl!.volume = 0;
-      this.screenInstanceRef.current.videoEl!.srcObject = new MediaStream(this.screenStream);
+      this.screenInstanceRef.current!.volume = 0;
+      this.screenInstanceRef.current!.srcObject = new MediaStream(this.screenStream);
       this.forceRender();
     } catch {
       // throw error to outside
@@ -121,27 +124,11 @@ class RecorderManager {
     this.dutaionTimeoutId = undefined;
   }
 
-  takeThumbnail(blob: Blob) {
-    if (this.thumbnailUrl !== undefined) return;
-    // we only want to take 1 thumbnail, setting [thumbnailUrl = ""]
-    //    to prevent recall multiple times
-    this.thumbnailUrl = "";
-    createThumbnails({ blob, limit: 1 }).then((thumbs) => {
-      this.thumbnailUrl = thumbs[0];
-      if (this.thumbnailUrl) this.forceRender();
-    });
-  }
-
   createRecorder(stream: MediaStream) {
-    const onData = (chunk: Blob) => this.chunks.push(chunk);
-    this.recorder = createRecorder({ stream, onData });
+    this.recorder = new MediaRecorder(stream);
 
     this.recorder.ondataavailable = ({ data }) => {
       if (data.size > 0) this.chunks.push(data);
-
-      // this function will take 1 thumbnail only
-      // in start time, data is too small (maybe data.size = 1)
-      if (data.size > 1000) this.takeThumbnail(new Blob(this.chunks, { type: "video/webm" }));
     };
     this.recorder.onstart = () => this.startCountDuration();
     this.recorder.onresume = () => this.startCountDuration();
@@ -149,9 +136,6 @@ class RecorderManager {
     this.recorder.onstop = () => {
       this.duration += Date.now() - this.startDuration;
       this.stopCountDuration();
-      // when use stop video too fast, [ondataavailable] was not fired
-      // re take thumnail again
-      this.takeThumbnail(this.chunks[this.chunks.length]);
     };
   }
 
@@ -177,6 +161,7 @@ class RecorderManager {
     this.onDuration(0);
 
     this.recorder!.start(this.timeFrame);
+    console.log(this.recorder!.videoBitsPerSecond);
   }
 
   stopCamera() {
@@ -194,79 +179,83 @@ class RecorderManager {
     this.recorder?.state === "recording" && this.recorder.stop();
   }
 
-  async makeComposite() {
-    const cameraEl = this.cameraInstanceRef.current.videoEl;
-    const screenEl = this.screenInstanceRef.current.videoEl;
+  async makeComposite({
+    cameraEl,
+    screenEl,
+    cameraD,
+  }: {
+    cameraEl: HTMLVideoElement;
+    screenEl: HTMLVideoElement;
+    cameraD: { dx: number; dy: number; dw: number; dh: number };
+  }) {
+    // prepair canvas
+    this.canvasCtx.save();
+    this.canvasCtx.clearRect(0, 0, screenEl.videoWidth, screenEl.videoHeight);
 
-    if (cameraEl && screenEl) {
-      const videoWidth = screenEl.videoWidth || 1;
-      const videoHeight = screenEl.videoHeight || 1;
-
-      // prepair canvas
-      this.canvasCtx.save();
-      this.canvasEl.setAttribute("width", `${videoWidth}px`);
-      this.canvasEl.setAttribute("height", `${videoHeight}px`);
-      this.canvasCtx.clearRect(0, 0, videoWidth, videoHeight);
-
-      // draw screen onto canvas
-      this.canvasCtx.scale(1, 1);
-      this.canvasCtx.drawImage(screenEl, 0, 0, videoWidth, videoHeight);
-      // draw camera onto canvas
-      if (this.enableCamera) {
-        const { width: cameraWidth, height: cameraHeight } = cameraEl.getBoundingClientRect();
-        const { width: screenWidth, height: screenHeight } = screenEl.getBoundingClientRect();
-        const ratioWidthCanvas = videoWidth / screenWidth;
-        const ratioHeightCanvas = videoHeight / screenHeight;
-
-        // mirror camera
-        this.canvasCtx.scale(-1, 1);
-        this.canvasCtx.drawImage(
-          cameraEl,
-          -Math.floor(videoWidth - ratioWidthCanvas * cameraWidth - ratioWidthCanvas * 10),
-          Math.floor(videoHeight - ratioHeightCanvas * cameraHeight - ratioHeightCanvas * 10),
-          -ratioWidthCanvas * cameraWidth,
-          ratioHeightCanvas * cameraHeight
-        );
-      }
-
-      // after drawing screen and camera, get image from context
-      let imageData = this.canvasCtx.getImageData(0, 0, videoWidth, videoHeight);
-
-      // paint data to canvas
-      this.canvasCtx.putImageData(imageData, 0, 0);
-
-      this.canvasCtx.restore();
-      this.timeoutId = setTimeout(() => this.makeComposite(), this.timeFrame);
+    // draw screen onto canvas
+    this.canvasCtx.scale(1, 1);
+    this.canvasCtx.drawImage(screenEl, 0, 0, screenEl.videoWidth, screenEl.videoHeight);
+    // draw camera onto canvas
+    if (this.enableCamera) {
+      // mirror camera
+      this.canvasCtx.scale(-1, 1);
+      this.canvasCtx.drawImage(cameraEl, cameraD.dx, cameraD.dy, cameraD.dw, cameraD.dh);
     }
+
+    this.canvasCtx.restore();
+    this.timeoutId = setTimeout(
+      () => this.makeComposite({ cameraEl, screenEl, cameraD }),
+      this.timeFrame
+    );
   }
 
   async mergeStreams() {
-    await this.makeComposite();
+    const cameraEl = this.cameraInstanceRef.current;
+    const screenEl = this.screenInstanceRef.current;
 
-    const audioCTX = new AudioContext();
-    const audioDES = audioCTX.createMediaStreamDestination();
-    let canvasStream = this.canvasEl.captureStream();
-    let audioStreams = [
-      ...(this.cameraStream ? this.cameraStream.getAudioTracks() : []),
-      ...(this.screenStream ? this.screenStream.getAudioTracks() : []),
-    ];
-    const audioTracks = [];
-    audioTracks.push(audioCTX.createMediaStreamSource(new MediaStream([audioStreams[0]])));
-    if (audioStreams.length > 1) {
-      audioTracks.push(audioCTX.createMediaStreamSource(new MediaStream([audioStreams[1]])));
+    if (cameraEl && screenEl) {
+      const { videoWidth, videoHeight } = screenEl;
+      this.canvasEl.setAttribute("width", `${videoWidth}px`);
+      this.canvasEl.setAttribute("height", `${videoHeight}px`);
+      const { width: cameraWidth, height: cameraHeight } = cameraEl.getBoundingClientRect();
+      const { width: screenWidth, height: screenHeight } = screenEl.getBoundingClientRect();
+      const ratioWidthCanvas = videoWidth / screenWidth;
+      const ratioHeightCanvas = videoHeight / screenHeight;
+
+      const dx = -Math.floor(videoWidth - ratioWidthCanvas * cameraWidth - ratioWidthCanvas * 10);
+      const dy = Math.floor(
+        videoHeight - ratioHeightCanvas * cameraHeight - ratioHeightCanvas * 10
+      );
+      const dw = -ratioWidthCanvas * cameraWidth;
+      const dh = ratioHeightCanvas * cameraHeight;
+
+      await this.makeComposite({ cameraEl, screenEl, cameraD: { dx, dy, dw, dh } });
+
+      const audioCTX = new AudioContext();
+      const audioDES = audioCTX.createMediaStreamDestination();
+      let canvasStream = this.canvasEl.captureStream();
+      let audioStreams = [
+        ...(this.cameraStream ? this.cameraStream.getAudioTracks() : []),
+        ...(this.screenStream ? this.screenStream.getAudioTracks() : []),
+      ];
+      const audioTracks = [];
+      audioTracks.push(audioCTX.createMediaStreamSource(new MediaStream([audioStreams[0]])));
+      if (audioStreams.length > 1) {
+        audioTracks.push(audioCTX.createMediaStreamSource(new MediaStream([audioStreams[1]])));
+      }
+      audioTracks.map((track) => track.connect(audioDES));
+      let mergedStream = new MediaStream([
+        ...canvasStream.getVideoTracks(),
+        ...audioDES.stream.getTracks(),
+      ]);
+
+      this.cameraInstanceRef.current!.volume = 0;
+      this.screenInstanceRef.current!.volume = 0;
+      this.mergedInstanceRef.current!.volume = 0;
+      this.mergedInstanceRef.current!.srcObject = new MediaStream(mergedStream);
+
+      this.createRecorder(mergedStream);
     }
-    audioTracks.map((track) => track.connect(audioDES));
-    let mergedStream = new MediaStream([
-      ...canvasStream.getVideoTracks(),
-      ...audioDES.stream.getTracks(),
-    ]);
-
-    this.cameraInstanceRef.current.videoEl!.volume = 0;
-    this.screenInstanceRef.current.videoEl!.volume = 0;
-    this.mergedInstanceRef.current.videoEl!.volume = 0;
-    this.mergedInstanceRef.current.videoEl!.srcObject = mergedStream;
-
-    this.createRecorder(mergedStream);
   }
 }
 
