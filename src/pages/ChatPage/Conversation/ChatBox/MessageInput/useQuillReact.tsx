@@ -135,9 +135,11 @@ export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
     if (!autoFocus) return;
 
     // using setTimeout to wait for quill-react finish rendering
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setFocus(true, quillReact?.getEditor()?.scroll.length());
     }, 1);
+
+    return () => clearTimeout(timeoutId);
   }, [autoFocus, quillReact, setFocus]);
 
   return { keepRef, modules, toolbarEL, setToolbarEL };

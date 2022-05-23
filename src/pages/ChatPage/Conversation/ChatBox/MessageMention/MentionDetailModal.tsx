@@ -1,4 +1,4 @@
-import { FC, useCallback, useLayoutEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 
 // images
 import defaultAvatarLarge from "assets/images/default_avatar_large.png";
@@ -50,7 +50,7 @@ const MentionDetailModal: FC = () => {
   );
 
   // handle click event
-  useLayoutEffect(() => {
+  useEffect(() => {
     const mentionClicked = (e: any) => {
       const { id, isReadOnly } = e.value as UserType & { isReadOnly: "true" | "false" };
       const node = e.event.path[0] as HTMLSpanElement;

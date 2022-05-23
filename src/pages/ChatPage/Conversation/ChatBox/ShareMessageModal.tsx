@@ -19,17 +19,13 @@ import Status from "components/Status";
 // utils
 import { color } from "utils/constants";
 
-// types
-import { MessageType } from "store/slices/_types";
-
 export interface ShareMessageModalProps {
   isOpen: boolean;
-  message: MessageType;
   onClose: () => void;
   onSubmit: (name: string, desc: string) => void;
 }
 
-const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onSubmit, onClose }) => {
+const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, onSubmit, onClose }) => {
   const user = useSelector(authSelectors.getUser);
   const userList = useSelector(usersSelectors.getUserList);
 

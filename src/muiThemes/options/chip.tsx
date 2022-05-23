@@ -18,6 +18,13 @@ const components: Theme["components"] = {
           color: color.PRIMARY,
         },
       },
+      {
+        props: { color: "error" },
+        style: {
+          backgroundColor: color.DANGER,
+          color: color.PRIMARY,
+        },
+      },
     ],
   },
 };

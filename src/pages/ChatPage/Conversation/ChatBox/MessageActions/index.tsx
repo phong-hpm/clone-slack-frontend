@@ -93,6 +93,8 @@ const MessageActions: FC<MessageActionsProps> = ({
     },
   ];
 
+  const actionDisplay = actions.filter((item) => !item.isHide);
+
   return (
     <Box
       color={color.HIGH}
@@ -101,9 +103,7 @@ const MessageActions: FC<MessageActionsProps> = ({
       p={0.25}
       borderRadius={1}
     >
-      {actions.map((action) => {
-        if (action.isHide) return <></>;
-
+      {actionDisplay.map((action) => {
         return (
           <Tooltip key={action.tooltip} title={action.tooltip}>
             <IconButton

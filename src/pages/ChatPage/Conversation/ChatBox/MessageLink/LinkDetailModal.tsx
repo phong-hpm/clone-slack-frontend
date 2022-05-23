@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 // components
 import { Box, Button, Link, Typography } from "@mui/material";
@@ -50,7 +50,7 @@ const LinkDetailModal: FC = () => {
     handleClose();
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleOpenLinkDetailModal = (event: any) => {
       if (event.detail?.anchorEl && event.detail?.quillReact) handleOpen(event.detail);
     };

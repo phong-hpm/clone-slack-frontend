@@ -19,10 +19,11 @@ import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 import { MessageType } from "store/slices/_types";
 
 export interface ReactionsProps {
-  message: MessageType;
+  messageId: string;
+  reactions: MessageType["reactions"];
 }
 
-const Reactions: FC<ReactionsProps> = ({ message }) => {
+const Reactions: FC<ReactionsProps> = ({ messageId, reactions }) => {
   const anchorEmojiModalRef = useRef<HTMLDivElement>(null);
 
   const { emitReactionMessage } = useMessageSocket();
@@ -31,13 +32,13 @@ const Reactions: FC<ReactionsProps> = ({ message }) => {
 
   const [isShowEmojiModal, setShowEmojiModal] = useState(false);
 
-  if (!message.reactions.length) return <></>;
+  if (!reactions.length) return <></>;
 
   return (
     <Box display="flex">
       <Box flexBasis={36} mr={1} />
 
-      {message.reactions.map((reaction) => (
+      {reactions.map((reaction) => (
         <Box key={reaction.id} mr={0.5}>
           <Chip
             clickable
@@ -51,7 +52,7 @@ const Reactions: FC<ReactionsProps> = ({ message }) => {
                 </Typography>
               </Box>
             }
-            onClick={() => emitReactionMessage(message.id, reaction.id)}
+            onClick={() => emitReactionMessage(messageId, reaction.id)}
           />
         </Box>
       ))}
@@ -70,7 +71,7 @@ const Reactions: FC<ReactionsProps> = ({ message }) => {
       <EmojiModal
         isOpen={isShowEmojiModal}
         anchorEl={anchorEmojiModalRef.current}
-        onEmojiSelect={(emoji) => emitReactionMessage(message.id, emoji.id)}
+        onEmojiSelect={(emoji) => emitReactionMessage(messageId, emoji.id)}
         onClose={() => setShowEmojiModal(false)}
       />
     </Box>

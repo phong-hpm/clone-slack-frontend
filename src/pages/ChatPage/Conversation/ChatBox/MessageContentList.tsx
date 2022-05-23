@@ -5,6 +5,7 @@ import { useSelector } from "store";
 
 // redux selectors
 import * as messagesSelectors from "store/selectors/messages.selector";
+import * as channelsSelectors from "store/selectors/channels.selector";
 
 // components
 import {
@@ -31,32 +32,36 @@ import SlackIcon from "components/SlackIcon";
 
 const MessageContentList: FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const keepRef = useRef({ latestModify: 0 });
 
   const { fireOnce } = useFireOnce();
 
+  const [scrolled, setScrolled] = useState(false);
   const isLoading = useSelector(messagesSelectors.isLoading);
-  const latestModify = useSelector(messagesSelectors.latestModify);
   // messages in [userMessagesDayGroup] were have the same reference with it's previous reference
   //    only updated message's reference was changed
   // If update [userMessagesDayGroup], we MUST NOT to create new message's reference in it
   const userMessagesDayGroup = useSelector(messagesSelectors.getGroupedMessageList);
+  const unreadMessageCount = useSelector(channelsSelectors.getUnreadMessageCount);
 
   const [anchorJumpMenu, setAnchorJumpMenu] = useState<HTMLButtonElement | null>(null);
 
   // scroll to bottom after messages were loaded
   useEffect(() => {
     if (isLoading || !userMessagesDayGroup.length) return;
-    if (keepRef.current.latestModify !== latestModify) {
+    let timeoutId: NodeJS.Timer;
+    if (!scrolled || unreadMessageCount) {
       // waiting for [MessageContent] render data
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         // using [fireOnce] to prevent scroll after [messages] updated
         fireOnce(() => {
           containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
+          setScrolled(true);
         });
       }, 1);
     }
-  }, [isLoading, latestModify, fireOnce, userMessagesDayGroup]);
+
+    return () => clearTimeout(timeoutId!);
+  }, [scrolled, isLoading, fireOnce, unreadMessageCount, userMessagesDayGroup]);
 
   if (isLoading) {
     return (

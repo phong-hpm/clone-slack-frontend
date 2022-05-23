@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 // components
 import { Box, Popover, Typography } from "@mui/material";
@@ -35,7 +35,7 @@ const LinkDetailPopover: FC = () => {
   };
 
   // listen event hover link
-  useLayoutEffect(() => {
+  useEffect(() => {
     let node: HTMLSpanElement;
 
     const clinkHover = (e: any) => {

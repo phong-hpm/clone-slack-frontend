@@ -25,3 +25,8 @@ export const getSelectedChannel = createSelector(
     return directMessages.find((channel) => channel.id === selectedId);
   }
 );
+
+export const getUnreadMessageCount = createSelector(
+  [getSelectedChannel],
+  (channel) => channel?.unreadMessageCount || 0
+);

@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect, useState, useRef, useCallback } from "react";
+import { FC, useEffect, useState, useRef, useCallback } from "react";
 
 // images
 import defaultAvatar from "assets/images/default_avatar.png";
@@ -49,7 +49,7 @@ const MentionDetailPopover: FC = () => {
   );
 
   // handle mouseenter and mouseleave event
-  useLayoutEffect(() => {
+  useEffect(() => {
     let node: HTMLSpanElement;
 
     const mentionHovered = (e: any) => {
@@ -72,7 +72,7 @@ const MentionDetailPopover: FC = () => {
   }, [handleOpen]);
 
   // handle click event
-  useLayoutEffect(() => {
+  useEffect(() => {
     const mentionClicked = () => {
       const isReadOnly = keepRef.current.anchorEl?.dataset["isReadOnly"] === "true";
       if (isReadOnly) handleClose();

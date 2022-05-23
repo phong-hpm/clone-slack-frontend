@@ -56,7 +56,7 @@ const WorkSpace: FC = () => {
       <ChannelSocketProvider>
         <WorkSpaceSidebar />
         <Routes>
-          <Route path="/:channelId" element={<Channels onAddChannel={handleSendChannel} />} />
+          <Route path="/:channelId" element={<Channels />} />
         </Routes>
       </ChannelSocketProvider>
     </Box>

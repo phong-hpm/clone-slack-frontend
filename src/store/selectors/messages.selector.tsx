@@ -20,7 +20,10 @@ interface UserMessageType {
 export const getMessages = (state: RootState) => state.messages;
 
 export const isLoading = createSelector([getMessages], (messages) => messages.isLoading);
-export const latestModify = createSelector([getMessages], (messages) => messages.latestModify);
+
+export const getCachedList = createSelector([getMessages], (messages) => messages.cachedList);
+export const isMessagesCached = (channelId: string) =>
+  createSelector([getCachedList], (cachedList) => !!cachedList[channelId]);
 
 const getList = createSelector([getMessages], (messages) => messages.list);
 

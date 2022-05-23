@@ -70,7 +70,7 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
     <>
       <RecordVideoModal isOpen={status === "recording"} onClose={handleClose} onNext={handleNext} />
 
-      {file && (
+      {file && status === "review" && (
         <ReviewVideo
           isOpen={status === "review"}
           file={file}

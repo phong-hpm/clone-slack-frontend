@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 
 // components
 import { Box, Link, Typography } from "@mui/material";
@@ -7,16 +7,12 @@ import SlackIcon from "components/SlackIcon";
 // utils
 import { color, rgba } from "utils/constants";
 
-// types
-import { MessageType } from "store/slices/_types";
-
 export interface BookmarkProps {
-  message: MessageType;
+  isStared?: boolean;
 }
 
-const Bookmark: FC<BookmarkProps> = ({ message }) => {
-  if (!message.isStared) return <></>;
-
+const Bookmark: FC<BookmarkProps> = ({ isStared }) => {
+  if (!isStared) return <></>;
   return (
     <Box display="flex">
       <Box flexBasis={36} mr={1} display="flex" justifyContent="end">
@@ -30,4 +26,4 @@ const Bookmark: FC<BookmarkProps> = ({ message }) => {
   );
 };
 
-export default Bookmark;
+export default memo(Bookmark);

@@ -1,14 +1,10 @@
 import { FC, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 // redux store
-import { useDispatch, useSelector } from "store";
+import { useSelector } from "store";
 
 // redux selector
 import * as channelsSelectors from "store/selectors/channels.selector";
-
-// redux slices
-import { setSelectedChannelId } from "store/slices/channels.slice";
 
 // components
 import { Box, List, ListItemButton, ListItemIcon, Typography } from "@mui/material";
@@ -16,30 +12,13 @@ import SlackIcon from "components/SlackIcon";
 import ChannelList from "./ChannelList";
 import CreateChannelModal from "./CreateChannelModal";
 
-export interface ChannelProps {
-  onAddChannel: (channelName: string, desc: string) => void;
-}
+export interface ChannelProps {}
 
-const ChannelContent: FC<ChannelProps> = ({ onAddChannel }) => {
-  const navigate = useNavigate();
-  const { teamId } = useParams();
-  const dispatch = useDispatch();
-
+const ChannelContent: FC<ChannelProps> = () => {
   const channelList = useSelector(channelsSelectors.getChannelList);
   const directMessagesList = useSelector(channelsSelectors.getDirectMessagesList);
-  const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   const [openModal, setOpenModal] = useState(false);
-
-  const handleAddChannel = (channelName: string, desc: string) => {
-    onAddChannel(channelName, desc);
-    setOpenModal(false);
-  };
-
-  const handleSelectChannel = (id: string) => {
-    dispatch(setSelectedChannelId(id));
-    navigate(`/${teamId}/${id}`);
-  };
 
   return (
     <Box mt={1.5}>
@@ -69,25 +48,17 @@ const ChannelContent: FC<ChannelProps> = ({ onAddChannel }) => {
       <ChannelList
         label="Channels"
         channels={channelList}
-        selectedChannel={selectedChannel}
-        onSelect={handleSelectChannel}
         onClickAdd={() => setOpenModal(true)}
         addText="Add channels"
       />
       <ChannelList
         label="Direct messages"
         channels={directMessagesList}
-        selectedChannel={selectedChannel}
-        onSelect={handleSelectChannel}
         onClickAdd={() => setOpenModal(true)}
         addText="Add teammates"
       />
 
-      <CreateChannelModal
-        isOpen={openModal}
-        onSubmit={handleAddChannel}
-        onClose={() => setOpenModal(false)}
-      />
+      <CreateChannelModal isOpen={openModal} onClose={() => setOpenModal(false)} />
     </Box>
   );
 };

@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 // redux store
 import { useSelector } from "store";
@@ -6,11 +7,13 @@ import { useSelector } from "store";
 // redux selector
 import * as authSelectors from "store/selectors/auth.selector";
 import * as usersSelectors from "store/selectors/users.selector";
+import * as channelsSelectors from "store/selectors/channels.selector";
 
 // components
 import {
   Avatar,
   Box,
+  Chip,
   Collapse,
   IconButton,
   List,
@@ -34,22 +37,17 @@ import { ChannelType } from "store/slices/_types";
 export interface ChannelListProps {
   label: string;
   channels: ChannelType[];
-  selectedChannel?: ChannelType;
-  onSelect: (channelId: string) => void;
   onClickAdd: () => void;
   addText: string;
 }
 
-const ChannelList: FC<ChannelListProps> = ({
-  label,
-  channels,
-  selectedChannel,
-  onSelect,
-  addText,
-  onClickAdd,
-}) => {
+const ChannelList: FC<ChannelListProps> = ({ label, channels, addText, onClickAdd }) => {
+  const navigate = useNavigate();
+  const { teamId } = useParams();
+
   const user = useSelector(authSelectors.getUser);
   const userList = useSelector(usersSelectors.getUserList);
+  const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMouseEnter, setIsMouseEnter] = useState(false);
@@ -112,7 +110,7 @@ const ChannelList: FC<ChannelListProps> = ({
                 key={channel.id}
                 selected={isSelected}
                 sx={{ p: 0, pl: 4 }}
-                onClick={() => !isSelected && onSelect(channel.id)}
+                onClick={() => !isSelected && navigate(`/${teamId}/${channel.id}`)}
               >
                 <ListItemIcon sx={{ minWidth: 28 }}>
                   {channel.type === "channel" ? (
@@ -138,7 +136,23 @@ const ChannelList: FC<ChannelListProps> = ({
                     </Box>
                   )}
                 </ListItemIcon>
-                <Typography sx={{ lineHeight: "28px" }}>{channel.name}</Typography>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  width="100%"
+                  pr={2}
+                >
+                  <Typography sx={{ lineHeight: "28px" }}>{channel.name}</Typography>
+                  {!!channel.unreadMessageCount && (
+                    <Chip
+                      color="error"
+                      size="small"
+                      label={channel.unreadMessageCount}
+                      sx={{ height: 18 }}
+                    />
+                  )}
+                </Box>
               </ListItemButton>
             );
           })}

@@ -23,6 +23,9 @@ import {
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "components/Modal";
 import SlackIcon from "components/SlackIcon";
 
+// hooks
+import useChannelSocket from "pages/ChatPage/hooks/useChannelSocket";
+
 const nameSuggestions = [
   { label: "help", desc: "For questions, assistance, and resources on a topic" },
   { label: "proj", desc: "For collaboration on and discussion about a project" },
@@ -32,10 +35,11 @@ const nameSuggestions = [
 export interface CreateChannelModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (name: string, desc: string) => void;
 }
 
-const CreateChannelModal: FC<CreateChannelModalProps> = ({ isOpen, onSubmit, onClose }) => {
+const CreateChannelModal: FC<CreateChannelModalProps> = ({ isOpen, onClose }) => {
+  const { handleSendChannel } = useChannelSocket();
+
   const user = useSelector(authSelectors.getUser);
 
   const [isPrivate, setIsPrivate] = useState(false);
@@ -43,7 +47,8 @@ const CreateChannelModal: FC<CreateChannelModalProps> = ({ isOpen, onSubmit, onC
   const [desc, setDesc] = useState("");
 
   const handleSubmit = () => {
-    onSubmit(channelName, desc);
+    handleSendChannel(channelName, desc);
+    onClose();
   };
 
   return (

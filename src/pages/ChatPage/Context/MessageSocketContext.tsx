@@ -1,4 +1,4 @@
-import { createContext, FC, useCallback, useEffect, useMemo, useState } from "react";
+import { createContext, FC, useCallback, useEffect, useMemo } from "react";
 
 // redux store
 import { useDispatch, useSelector } from "store";
@@ -8,11 +8,11 @@ import * as channelsSelector from "store/selectors/channels.selector";
 
 // redux slices
 import {
-  setLoading,
   addMessage,
   updateMessage,
   removeMessage,
   setMessagesList,
+  resetMessageState,
 } from "store/slices/messages.slice";
 
 // hooks
@@ -27,7 +27,6 @@ import { MessageType } from "store/slices/_types";
 import { MessageContextType } from "./_types";
 
 const initialContext: MessageContextType = {
-  isConnected: false,
   updateNamespace: () => {},
 };
 
@@ -42,10 +41,9 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
   const { teamId } = useParams();
 
   const selectedChannelId = useSelector(channelsSelector.getSelectedChannelId);
+  const unreadMessageCount = useSelector(channelsSelector.getUnreadMessageCount);
 
   const { socket, updateNamespace } = useSocket();
-
-  const [isConnected, setConnected] = useState(false);
 
   const handleAddNewMessage = useCallback(
     (message: MessageType) => dispatch(addMessage(message)),
@@ -59,8 +57,11 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
 
   const handleRemoveMessage = useCallback((id: string) => dispatch(removeMessage(id)), [dispatch]);
 
-  const handleUpdateMessageList = useCallback(
-    (messages: MessageType[]) => dispatch(setMessagesList(messages)),
+  const handleSetMessageList = useCallback(
+    (channelId: string, messages: MessageType[]) => {
+      dispatch(setMessagesList({ channelId, messages }));
+      localStorage.setItem(channelId, JSON.stringify(messages));
+    },
     [dispatch]
   );
 
@@ -70,25 +71,28 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     updateNamespace(`/${teamId}/${selectedChannelId}`);
   }, [teamId, selectedChannelId, updateNamespace]);
 
+  // [EMIT_LOAD_MESSAGES] will be emited when [channelId] has new message
+  //    or messages were not cached
+  useEffect(() => {
+    if (!socket || !selectedChannelId) return;
+    dispatch(resetMessageState());
+
+    const cachedMessages = localStorage.getItem(selectedChannelId);
+    if (!unreadMessageCount && cachedMessages) {
+      dispatch(
+        setMessagesList({ channelId: selectedChannelId, messages: JSON.parse(cachedMessages) })
+      );
+    } else {
+      socket.emit(SocketEvent.EMIT_LOAD_MESSAGES, {});
+    }
+  }, [unreadMessageCount, selectedChannelId, socket, dispatch]);
+
   useEffect(() => {
     if (!socket) return;
-
-    dispatch(setLoading(true));
-    socket
-      .on(SocketEventDefault.CONNECT, () => {
-        setConnected(true);
-        socket.emit(SocketEvent.EMIT_LOAD_MESSAGES, {});
-      })
-      .on(SocketEventDefault.DISCONNECT, () => {
-        setConnected(false);
-        dispatch(setLoading(false));
-      });
+    socket.on(SocketEventDefault.CONNECT, () => {}).on(SocketEventDefault.DISCONNECT, () => {});
 
     socket
-      .on(SocketEvent.ON_MESSAGES, (message: MessageType[]) => {
-        handleUpdateMessageList(message);
-        dispatch(setLoading(false));
-      })
+      .on(SocketEvent.ON_MESSAGES, handleSetMessageList)
       .on(SocketEvent.ON_ADDED_MESSAGE, handleAddNewMessage)
       .on(SocketEvent.ON_EDITED_MESSAGE, handleUpdateMessage)
       .on(SocketEvent.ON_REMOVED_MESSAGE, handleRemoveMessage)
@@ -98,22 +102,14 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     return () => {
       socket?.disconnect();
     };
-  }, [
-    socket,
-    handleUpdateMessageList,
-    handleAddNewMessage,
-    handleUpdateMessage,
-    handleRemoveMessage,
-    dispatch,
-  ]);
+  }, [socket, handleSetMessageList, handleAddNewMessage, handleUpdateMessage, handleRemoveMessage]);
 
   const value = useMemo(
     () => ({
       socket,
-      isConnected,
       updateNamespace,
     }),
-    [socket, isConnected, updateNamespace]
+    [socket, updateNamespace]
   );
 
   return <MessageSocketContext.Provider value={value}>{children}</MessageSocketContext.Provider>;

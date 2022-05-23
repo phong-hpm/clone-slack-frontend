@@ -1,4 +1,4 @@
-import { createContext, FC, useCallback, useEffect, useMemo, useState } from "react";
+import { createContext, FC, useCallback, useEffect, useMemo } from "react";
 
 // redux store
 import { useDispatch, useSelector } from "store";
@@ -12,6 +12,7 @@ import {
   setChannelsList,
   setDirectMessagesList,
   addChannelList,
+  updateChannel,
 } from "store/slices/channels.slice";
 import { setUserList, updateUserOnline } from "store/slices/users.slice";
 
@@ -26,7 +27,6 @@ import { UserType, ChannelType } from "store/slices/_types";
 import { ChannelContextType } from "./_types";
 
 const initialContext: ChannelContextType = {
-  isConnected: false,
   updateNamespace: () => {},
 };
 
@@ -44,19 +44,17 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
 
   const { socket, updateNamespace } = useSocket();
 
-  const [isConnected, setConnected] = useState(false);
-
-  const addNewChannel = useCallback(
+  const handleAddNewChannel = useCallback(
     (channel: ChannelType) => dispatch(addChannelList(channel)),
     [dispatch]
   );
 
-  const updateUserStatus = useCallback(
+  const handleUpdateUserStatus = useCallback(
     (id: string, isOnline: boolean) => dispatch(updateUserOnline({ id, isOnline })),
     [dispatch]
   );
 
-  const updateChannels = useCallback(
+  const handleSetChannelList = useCallback(
     (data: { channels?: ChannelType[]; users?: UserType[] }) => {
       const { channels, users } = data || {};
 
@@ -77,6 +75,12 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
     [dispatch]
   );
 
+  const handleUpdateChannelUnreadMessageCount = useCallback(
+    (channelId: string, unreadMessageCount: number) =>
+      dispatch(updateChannel({ id: channelId, channel: { unreadMessageCount } })),
+    [dispatch]
+  );
+
   // update namespace for socket with [teamId]
   useEffect(() => {
     if (selectedTeamId) updateNamespace(`/${selectedTeamId}`);
@@ -88,23 +92,17 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
     socket
       // Step 2: connecting socket
       .on(SocketEventDefault.CONNECT, () => {
-        setConnected(true);
         // Step 3: asking for channels data
         socket.emit(SocketEvent.EMIT_LOAD_CHANNELS, { userId: user.id });
       })
-      .on(SocketEventDefault.DISCONNECT, () => {
-        setConnected(false);
-      });
+      .on(SocketEventDefault.DISCONNECT, () => {});
 
     socket
-      // Step 4: looking for channels data
-      .on(SocketEvent.ON_CHANNELS, updateChannels)
-      // looking for new channel data, which just added
-      .on(SocketEvent.ON_ADDED_CHANNEL, addNewChannel)
-      // looking for new user online, who just logined
-      .on(SocketEvent.ON_USER_ONLINE, (id: string) => updateUserStatus(id, true))
-      // looking for new user online, who just logouted
-      .on(SocketEvent.ON_USER_OFFLINE, (id: string) => updateUserStatus(id, false));
+      .on(SocketEvent.ON_CHANNELS, handleSetChannelList)
+      .on(SocketEvent.ON_ADDED_CHANNEL, handleAddNewChannel)
+      .on(SocketEvent.ON_EDITED_CHANNEL_UNREAD_MESSAGE_COUNT, handleUpdateChannelUnreadMessageCount)
+      .on(SocketEvent.ON_USER_ONLINE, (id: string) => handleUpdateUserStatus(id, true))
+      .on(SocketEvent.ON_USER_OFFLINE, (id: string) => handleUpdateUserStatus(id, false));
 
     // Step 1: trigger connect socket
     socket.connect();
@@ -112,15 +110,21 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
       // disconnect socket
       socket?.disconnect();
     };
-  }, [user, socket, updateChannels, addNewChannel, updateUserStatus]);
+  }, [
+    user,
+    socket,
+    handleSetChannelList,
+    handleUpdateChannelUnreadMessageCount,
+    handleAddNewChannel,
+    handleUpdateUserStatus,
+  ]);
 
   const value = useMemo(
     () => ({
       socket,
-      isConnected,
       updateNamespace,
     }),
-    [socket, isConnected, updateNamespace]
+    [socket, updateNamespace]
   );
 
   return <ChannelSocketContext.Provider value={value}>{children}</ChannelSocketContext.Provider>;

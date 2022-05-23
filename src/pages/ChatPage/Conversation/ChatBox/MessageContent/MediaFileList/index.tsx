@@ -12,26 +12,28 @@ import SlackIcon from "components/SlackIcon";
 import { color } from "utils/constants";
 
 // types
-import { MessageType } from "store/slices/_types";
+import { MessageFileType } from "store/slices/_types";
 import MediaFile from "./MediaFile";
 
 export interface MediaFileListProps {
-  message: MessageType;
+  messageId: string;
+  messageUserId: string;
+  files?: MessageFileType[];
 }
 
-const MediaFileList: FC<MediaFileListProps> = ({ message }) => {
-  const userOwner = useSelector(usersSelector.getUserById(message.user));
+const MediaFileList: FC<MediaFileListProps> = ({ messageId, messageUserId, files }) => {
+  const userOwner = useSelector(usersSelector.getUserById(messageUserId));
 
   const [isCollapsed, setCollapsed] = useState(false);
 
-  if (!message.files?.length) return <></>;
+  if (!files?.length) return <></>;
 
   return (
     <Box display="flex" flexDirection="column" pt={0.5} pr={0.5}>
       {/* Label */}
       <Box display="flex" color={color.HIGH} onClick={() => setCollapsed(!isCollapsed)}>
         <Typography variant="h5" sx={{ mr: 0.5, textTransform: "capitalize" }}>
-          {message.files.length > 1 ? `${message.files.length} files` : message.files[0].type}
+          {files.length > 1 ? `${files.length} files` : files[0].type}
         </Typography>
 
         <SlackIcon
@@ -44,9 +46,9 @@ const MediaFileList: FC<MediaFileListProps> = ({ message }) => {
       {/* file List */}
       <Collapse in={!isCollapsed} timeout={0} unmountOnExit>
         <Box display="flex" flexWrap="wrap">
-          {message.files.map((file) => {
+          {files.map((file) => {
             return (
-              <MediaFile key={file.id} messageId={message.id} file={file} userOwner={userOwner} />
+              <MediaFile key={file.id} messageId={messageId} file={file} userOwner={userOwner} />
             );
           })}
         </Box>

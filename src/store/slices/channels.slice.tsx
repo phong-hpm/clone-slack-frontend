@@ -20,6 +20,22 @@ export const channelsSlice = createSlice({
     addChannelList: (state, action: PayloadAction<ChannelType>) => {
       state.list.push(action.payload);
     },
+    updateChannel: (
+      state,
+      action: PayloadAction<{ id: string; channel: Partial<ChannelType> }>
+    ) => {
+      const { id, channel: updatedChannel } = action.payload;
+      let channels = state.list;
+      let index = channels.findIndex((channel) => channel.id === id);
+
+      if (index === -1) {
+        channels = state.directMessages;
+        index = channels.findIndex((channel) => channel.id === id);
+      }
+      if (index === -1) return;
+
+      channels[index] = { ...channels[index], ...updatedChannel };
+    },
     setDirectMessagesList: (state, action: PayloadAction<ChannelType[]>) => {
       state.directMessages = action.payload;
     },
@@ -37,6 +53,7 @@ export const {
   setSelectedChannelId,
   setChannelsList,
   addChannelList,
+  updateChannel,
   setDirectMessagesList,
   resetState,
 } = channelsSlice.actions;

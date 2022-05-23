@@ -1,4 +1,4 @@
-import { FC, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 // images
 import defaultAvatar from "assets/images/default_avatar.png";
@@ -76,7 +76,7 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
     setMessage({ ...messageProp, isOwner, delta });
   }, [user.id, userList, messageProp]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // wait for update user mention
     if (!userList?.length) return;
     if (isEditing || !quillRef.current || !message.delta.ops?.length) return;
@@ -86,9 +86,7 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
   // after [isEditing] state change, we should reset [isHovering] state
   // 1: when user change status to editing, should remove hovering status
   // 1: when user change status to NOT editing, should remove hovering status
-  useLayoutEffect(() => setHovering(false), [isEditing]);
-
-  if (!message.delta.ops?.length && !message.files?.length) return <></>;
+  useEffect(() => setHovering(false), [isEditing]);
 
   const bgcolor = isEditing
     ? "rgba(242, 199, 68, 0.2)"
@@ -110,7 +108,7 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
     >
       {/* stared */}
       <Box my={1}>
-        <Bookmark message={message} />
+        <Bookmark isStared={message.isStared} />
       </Box>
 
       <Box my={1}>
@@ -163,26 +161,22 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
                     readOnly
                   />
                 )}
-
-                <Typography>
-                  {message.isEdited && (
-                    <Typography variant="h5" pl={0.375} component="span" color={color.HIGH_SOLID}>
-                      (edited)
-                    </Typography>
-                  )}
-                </Typography>
               </>
             )}
 
             {/* MediaFileList */}
-            <MediaFileList message={message} />
+            <MediaFileList
+              messageId={message.id}
+              messageUserId={message.user}
+              files={message.files}
+            />
           </Box>
         </Box>
       </Box>
 
       {/* reactions */}
       <Box my={1}>
-        <Reactions message={message} />
+        <Reactions messageId={message.id} reactions={message.reactions} />
       </Box>
 
       {/* action bar */}
@@ -204,7 +198,6 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
       {/* share message modal */}
       <ShareMessageModal
         isOpen={isShowShareMessageModal}
-        message={message}
         onClose={() => setShowShareMessageModal(false)}
         onSubmit={() => {}}
       />

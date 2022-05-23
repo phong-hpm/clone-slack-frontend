@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 // components
 import Delta from "quill-delta";
@@ -60,7 +60,7 @@ const EditLinkModal: FC = () => {
     handleClose();
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleOpenLinkEditModal = (event: any) => {
       if (event.detail.quillReact) handleOpen(event.detail);
     };

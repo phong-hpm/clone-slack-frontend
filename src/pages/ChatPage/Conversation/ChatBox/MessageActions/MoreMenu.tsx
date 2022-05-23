@@ -8,9 +8,6 @@ import MoreRemindList, { MoreRemindListProps } from "./MoreRemindList";
 // utils
 import { color } from "utils/constants";
 
-// hooks
-import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
-
 export interface MoreMenuProps extends MoreRemindListProps {
   messageId?: string;
   isOwner?: boolean;
@@ -33,14 +30,7 @@ const MoreMenu: FC<MoreMenuProps> = ({
   onClose,
   ...props
 }) => {
-  const { emitRemoveMessage } = useMessageSocket();
-
   const [isSelectRemind, setSelectRemind] = useState(false);
-
-  const handleDeleteMessage = () => {
-    onClickDelete();
-    messageId && emitRemoveMessage(messageId);
-  };
 
   return (
     <Menu
@@ -113,7 +103,7 @@ const MoreMenu: FC<MoreMenuProps> = ({
       )}
 
       {!isSystem && isOwner && (
-        <MenuItem onMouseDown={handleDeleteMessage}>
+        <MenuItem onMouseDown={onClickDelete}>
           <Box display="flex" justifyContent="space-between" width="100%">
             <Typography color={color.DANGER}>Delete message</Typography>
             <Typography color={color.HIGH}>delete</Typography>

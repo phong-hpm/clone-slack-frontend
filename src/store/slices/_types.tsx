@@ -76,7 +76,7 @@ export interface MessageType {
 export interface MessagesState {
   isLoading: boolean;
   list: MessageType[];
-  latestModify: number;
+  cachedList: Record<string, MessageType[]>;
 }
 
 // channels.slice.tsx -----------------
@@ -87,8 +87,8 @@ export interface ChannelType {
   isAllUser: boolean;
   users: string[];
   creater: string;
-  latest: number;
   created: number;
+  unreadMessageCount: number;
 }
 
 export interface ChannelsState {
