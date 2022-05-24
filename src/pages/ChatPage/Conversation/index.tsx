@@ -18,12 +18,12 @@ const Conversation: FC = () => {
     <Box flex="1" display="flex" flexDirection="column" bgcolor={color.PRIMARY_BACKGROUND}>
       <ConversationHeader />
       <ConversationToolBar />
-      <ChatBox />
-      <Box px={2.5}>
-        <MessageSocketProvider>
+      <MessageSocketProvider>
+        <ChatBox />
+        <Box px={2.5}>
           <MessageInput />
-        </MessageSocketProvider>
-      </Box>
+        </Box>
+      </MessageSocketProvider>
       <Box display="flex" justifyContent="end" pr={3} py={0.5}>
         <Link component="button" underline="hover" color={color.HIGHLIGHT}>
           <Typography variant="h6" fontSize={10.5}>

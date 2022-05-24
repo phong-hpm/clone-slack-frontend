@@ -129,10 +129,16 @@ const InputActions: FC<InputActionsProps> = ({
       <Box ref={anchorRef} flex="0" display="flex" color={rgba(color.LIGHT, 0.7)}>
         {appState.isEditMode ? (
           <>
-            <Button variant="outlined" size="small" sx={{ mr: 1 }} onClick={onCancel}>
-              <Typography variant="h5">cancel</Typography>
+            <Button variant="outlined" size="small" sx={{ mr: 1, px: 1.5 }} onClick={onCancel}>
+              <Typography variant="h5">Cancel</Typography>
             </Button>
-            <Button variant="contained" size="small" onClick={onSend}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ px: 1.5 }}
+              onClick={onSend}
+            >
               <Typography variant="h5">Save</Typography>
             </Button>
           </>

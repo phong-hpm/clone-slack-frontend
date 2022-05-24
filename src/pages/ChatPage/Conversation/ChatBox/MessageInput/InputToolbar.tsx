@@ -1,4 +1,4 @@
-import React, { FC, forwardRef, useContext, useImperativeHandle, useMemo, useRef } from "react";
+import React, { forwardRef, useContext, useImperativeHandle, useMemo, useRef } from "react";
 import ReactDOMServer from "react-dom/server";
 import classnames from "classnames";
 
@@ -30,57 +30,59 @@ export interface InputToolbarProps {
   onClickLink: (event: React.MouseEvent) => void;
 }
 
-const InputToolbar: FC<InputToolbarProps> = ({ isFocus, onClickLink }, ref) => {
-  const { setFocus } = useContext(InputContext);
+const InputToolbar = forwardRef<HTMLDivElement, InputToolbarProps>(
+  ({ isFocus, onClickLink }, ref) => {
+    const { setFocus } = useContext(InputContext);
 
-  const containerRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-  useImperativeHandle(ref, () => containerRef.current);
+    useImperativeHandle(ref, () => containerRef.current!);
 
-  const toolList = useMemo(
-    () => [
-      { name: "bold" },
-      { name: "italic" },
-      { name: "strike" },
-      { isDivider: true },
-      { name: "link", customAction: onClickLink },
-      { isDivider: true },
-      { name: "list", value: "ordered" },
-      { name: "list", value: "bullet" },
-      { isDivider: true },
-      { name: "blockquote" },
-      { isDivider: true },
-      { name: "code" },
-      { name: "code-block" },
-    ],
-    [onClickLink]
-  );
+    const toolList = useMemo(
+      () => [
+        { name: "bold" },
+        { name: "italic" },
+        { name: "strike" },
+        { isDivider: true },
+        { name: "link", customAction: onClickLink },
+        { isDivider: true },
+        { name: "list", value: "ordered" },
+        { name: "list", value: "bullet" },
+        { isDivider: true },
+        { name: "blockquote" },
+        { isDivider: true },
+        { name: "code" },
+        { name: "code-block" },
+      ],
+      [onClickLink]
+    );
 
-  return (
-    <Box
-      ref={containerRef}
-      id="ql-toolbar"
-      display="flex"
-      className={classnames(isFocus && "focus")}
-      onClick={() => setFocus(true)}
-    >
-      {toolList.map(({ name = "", customAction, isDivider, value }, index) => {
-        return isDivider ? (
-          <Box key={index} mx={0.5} display="flex">
-            <Divider flexItem orientation="vertical" />
-          </Box>
-        ) : (
-          <IconButton
-            key={index}
-            disabled={!isFocus}
-            className={`ql-${name}`}
-            value={value}
-            onClick={customAction}
-          />
-        );
-      })}
-    </Box>
-  );
-};
+    return (
+      <Box
+        ref={containerRef}
+        id="ql-toolbar"
+        display="flex"
+        className={classnames(isFocus && "focus")}
+        onClick={() => setFocus(true)}
+      >
+        {toolList.map(({ name = "", customAction, isDivider, value }, index) => {
+          return isDivider ? (
+            <Box key={index} mx={0.5} display="flex">
+              <Divider flexItem orientation="vertical" />
+            </Box>
+          ) : (
+            <IconButton
+              key={index}
+              disabled={!isFocus}
+              className={`ql-${name}`}
+              value={value}
+              onClick={customAction}
+            />
+          );
+        })}
+      </Box>
+    );
+  }
+);
 
-export default forwardRef<HTMLDivElement, InputToolbarProps>(InputToolbar as any);
+export default InputToolbar;

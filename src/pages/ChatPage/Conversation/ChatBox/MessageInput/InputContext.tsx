@@ -31,7 +31,6 @@ const InputContext = createContext<InputContextType>(initialContext as unknown a
 
 export interface MessageInputProviderProps {
   isEditMode?: boolean;
-  children: React.ReactNode;
 }
 
 export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode, children }) => {
@@ -40,10 +39,12 @@ export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode
 
   const [quillState, setQuillState] = useState<ContextQuillStateType>(initialQuillState);
   const [appState, setAppState] = useState<ContextAppStateType>(initialAppState);
+  const [quillReact, setQuill] = useState<ReactQuill>();
 
   const setQuillReact = useCallback((quill: ReactQuill) => {
     if (quillRef.current === quill) return;
     quillRef.current = quill;
+    setQuill(quill);
   }, []);
 
   const updateQuillState = useCallback((payload: Partial<ContextQuillStateType>) => {
@@ -101,7 +102,7 @@ export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode
 
   const value = useMemo(
     () => ({
-      quillReact: quillRef.current || undefined,
+      quillReact,
       setQuillReact,
       quillState,
       updateQuillState,
@@ -113,6 +114,7 @@ export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode
       removeInputFile,
     }),
     [
+      quillReact,
       quillState,
       appState,
       setQuillReact,

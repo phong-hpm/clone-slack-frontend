@@ -52,10 +52,10 @@ const MentionDetailModal: FC = () => {
   // handle click event
   useEffect(() => {
     const mentionClicked = (e: any) => {
-      const { id, isReadOnly } = e.value as UserType & { isReadOnly: "true" | "false" };
+      const { id, isEditable } = e.value as UserType & { isEditable: "true" | "false" };
       const node = e.event.path[0] as HTMLSpanElement;
 
-      if (node && isReadOnly === "true") handleOpen(id, node);
+      if (node && isEditable !== "true") handleOpen(id, node);
     };
 
     // listening event from quill-mention

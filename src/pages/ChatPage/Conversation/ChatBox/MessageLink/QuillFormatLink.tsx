@@ -6,7 +6,7 @@ import { ContextLinkValueType } from "../MessageInput/_types";
 const Link = Quill.import("formats/link");
 
 class QuillFormatLink extends Link {
-  public static create(value: Omit<ContextLinkValueType, "url">): QuillFormatLink {
+  public static create(value: ContextLinkValueType): QuillFormatLink {
     const node = super.create(value.href) as HTMLElement;
 
     node.setAttribute("href", QuillFormatLink.sanitize(value.href));
@@ -17,17 +17,17 @@ class QuillFormatLink extends Link {
     node.dataset["text"] = value.text;
     node.dataset["href"] = value.href;
     node.dataset["url"] = QuillFormatLink.sanitize(value.href);
-    node.dataset["isReadOnly"] = value.isReadOnly ? "true" : "false";
+    node.dataset["isEditabe"] = value.isEditable ? "true" : "false";
 
     const linkValue: ContextLinkValueType = {
       text: value.text,
       href: value.href,
       url: QuillFormatLink.sanitize(value.href),
-      isReadOnly: value.isReadOnly,
+      isEditable: value.isEditable,
     };
 
     node.addEventListener("click", (e: MouseEvent) => {
-      if (linkValue.isReadOnly) return;
+      if (!linkValue.isEditable) return;
 
       e.preventDefault();
 
@@ -61,7 +61,7 @@ class QuillFormatLink extends Link {
       href: node.dataset["href"],
       url: node.dataset["url"],
       text: node.dataset["text"],
-      isReadOnly: node.dataset["isReadOnly"] === "true",
+      isEditable: node.dataset["isEditable"] === "true",
     };
   }
 }
@@ -73,5 +73,9 @@ QuillFormatLink.sanitize = function (url: any) {
 };
 
 Quill.register("formats/link", QuillFormatLink, true);
+
+const Size = Quill.import("attributors/style/size");
+Size.whitelist = ["13px", "15px"];
+Quill.register(Size, true);
 
 export default QuillFormatLink;

@@ -7,7 +7,7 @@ export interface ContextLinkValueType {
   text: string;
   href: string;
   url: string;
-  isReadOnly?: boolean;
+  isEditable?: boolean;
 }
 
 export interface ContextQuillStateType {

@@ -52,7 +52,7 @@ export const uploadFiles = createAsyncThunk<
         thumbList.push({ id: file.id, blob: thumbBlob });
       }
     }
-    fileData.push(file);
+    fileData.push({ ...file, url: "", thumb: "", thumbList: [] });
   }
 
   formData.append("delta", new Blob([JSON.stringify(delta)], { type: "application/json" }));

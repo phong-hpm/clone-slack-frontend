@@ -114,6 +114,10 @@
         background-color: rgba(232, 145, 45, 0.4);
         color: rgb(242, 199, 68);
       }
+
+      &[data-is-editable="true"] {
+        cursor: auto;
+      }
     }
   }
 

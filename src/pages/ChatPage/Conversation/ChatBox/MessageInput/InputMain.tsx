@@ -1,4 +1,4 @@
-import { useState, useContext, FC } from "react";
+import { useState, useContext, FC, useEffect, useRef, useMemo } from "react";
 
 // components
 import "quill-mention";
@@ -21,7 +21,7 @@ import { removeUnnecessaryFields } from "utils/message";
 import useQuillReact from "./useQuillReact";
 
 // types
-import { Delta, RangeStatic } from "quill";
+import { StringMap, Delta, RangeStatic } from "quill";
 import { LinkCustomEventDetailType } from "./_types";
 import { MessageFileType } from "store/slices/_types";
 
@@ -43,10 +43,26 @@ const InputMain: FC<InputMainProps> = ({
   const { appState, quillReact, updateQuillState, updateAppState, setQuillReact, setFocus } =
     useContext(InputContext);
 
-  const { keepRef, modules, toolbarEL, setToolbarEL } = useQuillReact({ autoFocus });
+  const { keepRef, mentionModule } = useQuillReact({ autoFocus });
 
+  const modulesRef = useRef<StringMap>({});
+  const toolbarRef = useRef<HTMLDivElement>(null);
+
+  const [isMounted, setMounted] = useState(false);
   const [isDisabled, setDisabled] = useState(true);
   const [isShowToolbar, setShowToolbar] = useState(true);
+
+  // modulesRef.current will keep reference of module
+  //   will help QuillReact re-render correctly
+  const modules = useMemo(() => {
+    modulesRef.current.toolbar = isMounted ? { container: toolbarRef.current } : false;
+    modulesRef.current.mention = mentionModule;
+    modulesRef.current.clipboard = { matchVisual: false };
+    // remove handler of enter key
+    modulesRef.current.keyboard = { bindings: { enter: { key: 13, handler: () => {} } } };
+
+    return modulesRef.current;
+  }, [isMounted, mentionModule]);
 
   const handleSend = () => {
     const textLength = quillReact?.getEditor().getText()?.trim()?.length;
@@ -142,6 +158,13 @@ const InputMain: FC<InputMainProps> = ({
     quillReact?.getEditor().insertText(curIndex || 0, emojiNative);
   };
 
+  useEffect(() => {
+    if (!placeHolder || !quillReact) return;
+    quillReact.getEditor().root.dataset.placeholder = placeHolder;
+  }, [placeHolder, quillReact]);
+
+  useEffect(() => setMounted(true), []);
+
   return (
     <Box color={color.PRIMARY}>
       <Box
@@ -153,20 +176,19 @@ const InputMain: FC<InputMainProps> = ({
       >
         <Box display={isShowToolbar ? "block" : "none"}>
           <InputToolbar
-            ref={(ref) => setToolbarEL(ref)}
+            ref={toolbarRef}
             isFocus={appState.isFocus}
             onClickLink={handleClickLinkToolbar}
           />
         </Box>
 
         {/* wait for toolbar rendered */}
-        {toolbarEL && (
+        {isMounted && (
           <ReactQuill
             ref={setQuillReact}
             className="quill-editor"
             modules={modules}
             formats={quillFormats}
-            placeholder={placeHolder}
             defaultValue={defaultValue}
             onKeyDown={handleKeyDown}
             onChangeSelection={handleChangeSelection}

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import * as ReactDOMServer from "react-dom/server";
 
 // redux store
@@ -15,7 +15,6 @@ import InputContext, { initialQuillState } from "./InputContext";
 import MentionItem from "./InputMentionItem";
 
 // types
-import { StringMap } from "quill";
 import { UserType } from "store/slices/_types";
 import { ContextLinkValueType, LinkCustomEventDetailType } from "./_types";
 
@@ -31,71 +30,58 @@ export interface UseQuillReactProps {
 export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
   const { quillReact, updateQuillState, updateAppState, setFocus } = useContext(InputContext);
 
-  const user = useSelector(authSelectors.getUser);
+  const userId = useSelector(authSelectors.getUserId);
   const userList = useSelector(usersSelectors.getUserList);
 
   // modules ref will keep the reference of modules, help QuillReact will not be broken
-  const modulesRef = useRef<StringMap>({});
-  const keepRef = useRef({ ...initialQuillState, isMentioning: false });
-
-  const [toolbarEL, setToolbarEL] = useState<HTMLDivElement | null>(null);
-
-  const mentionSource = useCallback(
-    (search: string, renderList: Function) => {
-      if (search.length === 0) return renderList(userList, search);
-      renderList(searchUserMention(userList, search), search);
-    },
-    [userList]
-  );
-
-  const selectMention = useCallback(
-    (userMention: UserType, insertItem: Function) => {
-      insertItem({
-        ...userMention,
-        id: userMention.id,
-        value: userMention.name,
-        isOwner: userMention.id === user.id,
-        isClickable: false,
-      });
-    },
-    [user.id]
-  );
-
-  const renderUserMentionItem = useCallback(
-    (userMention: UserType) =>
-      ReactDOMServer.renderToString(<MentionItem userId={user.id} userMention={userMention} />),
-    [user.id]
-  );
+  const keepRef = useRef({
+    ...initialQuillState,
+    isMentioning: false,
+    userId: "",
+    userList: [] as UserType[],
+  });
 
   const mentionModule = useMemo(() => {
     return {
-      dataAttributes: [...Object.keys(stateDefault.USER), "isOwner", "isReadOnly"],
+      dataAttributes: [...Object.keys(stateDefault.USER), "isOwner", "isEditable"],
       allowedChars: /^[A-Za-z\s]*$/,
       mentionDenotationChars: ["@"],
       spaceAfterInsert: true,
       defaultMenuOrientation: "top",
-      source: mentionSource,
-      renderItem: renderUserMentionItem,
       onOpen: () => (keepRef.current.isMentioning = true),
       onClose: () => {
         // setTimeout will keep isMentioning is true when reactquill onKeydown is calling
         setTimeout(() => (keepRef.current.isMentioning = false), 1);
       },
-      onSelect: selectMention,
+      onSelect: (userMention: UserType, insertItem: Function) => {
+        insertItem({
+          ...userMention,
+          id: userMention.id,
+          value: userMention.name,
+          isOwner: userMention.id === keepRef.current.userId,
+          isEditable: true,
+        });
+      },
+      source: (search: string, renderList: Function) => {
+        const { userList = [] } = keepRef.current;
+        if (search.length === 0) return renderList(userList, search);
+        renderList(searchUserMention(userList, search), search);
+      },
+      renderItem: (userMention: UserType) => {
+        return ReactDOMServer.renderToString(
+          <MentionItem userId={keepRef.current.userId} userMention={userMention} />
+        );
+      },
     };
-  }, [keepRef, selectMention, mentionSource, renderUserMentionItem]);
+  }, []);
 
-  // modulesRef.current will keep reference of module
-  //   will help QuillReact re-render correctly
-  const modules = useMemo(() => {
-    modulesRef.current.toolbar = toolbarEL ? { container: toolbarEL } : false;
-    modulesRef.current.mention = mentionModule;
-    modulesRef.current.clipboard = { matchVisual: false };
-    // remove handler of enter key
-    modulesRef.current.keyboard = { bindings: { enter: { key: 13, handler: () => {} } } };
-
-    return modulesRef.current;
-  }, [toolbarEL, mentionModule]);
+  // after [Quill] render [modules], we can NOT update data
+  // assign [userId] and [userList] to keepRef will help
+  //    [selectMention] and [selectMention] can access new data in runtime
+  useEffect(() => {
+    keepRef.current.userId = userId;
+    keepRef.current.userList = userList;
+  }, [userId, userList]);
 
   // listen event click link
   useEffect(() => {
@@ -104,7 +90,7 @@ export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
       const linkValue = event.value as ContextLinkValueType;
       const isFocus = quillReact?.getEditor()?.hasFocus();
 
-      if (isFocus && !linkValue.isReadOnly) {
+      if (isFocus && linkValue.isEditable) {
         const detail: LinkCustomEventDetailType = {
           ...keepRef.current,
           anchorEl: node,
@@ -142,7 +128,7 @@ export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
     return () => clearTimeout(timeoutId);
   }, [autoFocus, quillReact, setFocus]);
 
-  return { keepRef, modules, toolbarEL, setToolbarEL };
+  return { keepRef, mentionModule };
 };
 
 export default useQuillReact;

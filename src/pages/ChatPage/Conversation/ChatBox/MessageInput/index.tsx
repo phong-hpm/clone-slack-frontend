@@ -1,10 +1,13 @@
-import { FC, memo, useCallback } from "react";
+import { FC, memo, useCallback, useMemo } from "react";
 
 // redux store
-import { useDispatch } from "store";
+import { useDispatch, useSelector } from "store";
 
 // redux actions
 import { uploadFiles } from "store/actions/message/uploadFiles";
+
+// redux selectors
+import * as channelsSelector from "store/selectors/channels.selector";
 
 // components
 import { MessageInputProvider } from "./InputContext";
@@ -22,25 +25,43 @@ export interface MessageInputProps extends Omit<InputMainProps, "onSend"> {
   onSend?: (delta: Delta, files: MessageFileType[]) => void;
 }
 
-const MessageInput: FC<MessageInputProps> = ({ isEditMode, defaultValue }) => {
+const MessageInput: FC<MessageInputProps> = ({ isEditMode, defaultValue, onSend, ...props }) => {
   const dispatch = useDispatch();
 
   const { emitAddMessage } = useMessageSocket();
 
+  const selectedChannel = useSelector(channelsSelector.getSelectedChannel);
+
+  const placeHolder = useMemo(() => {
+    if (!selectedChannel?.name || !selectedChannel?.type) return "";
+
+    if (selectedChannel?.type === "channel") {
+      return `Send a message to #${selectedChannel.name}`;
+    } else {
+      return `Send a message to ${selectedChannel.name}`;
+    }
+  }, [selectedChannel?.name, selectedChannel?.type]);
+
   const handleSend = useCallback(
     (delta: Delta, files: MessageFileType[]) => {
-      if (files.length) {
-        dispatch(uploadFiles({ files, delta }));
-      } else {
-        emitAddMessage(delta);
-      }
+      // controlled
+      if (onSend) return onSend(delta, files);
+
+      // uncontrolled
+      if (files.length) dispatch(uploadFiles({ files, delta }));
+      else emitAddMessage(delta);
     },
-    [dispatch, emitAddMessage]
+    [onSend, emitAddMessage, dispatch]
   );
 
   return (
     <MessageInputProvider isEditMode={isEditMode}>
-      <InputMain placeHolder={`Send a message`} defaultValue={defaultValue} onSend={handleSend} />
+      <InputMain
+        placeHolder={placeHolder}
+        defaultValue={defaultValue}
+        {...props}
+        onSend={handleSend}
+      />
     </MessageInputProvider>
   );
 };

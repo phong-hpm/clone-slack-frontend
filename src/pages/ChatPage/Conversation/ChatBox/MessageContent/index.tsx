@@ -28,7 +28,7 @@ import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 import { dayFormat } from "utils/dayjs";
 import { color } from "utils/constants";
 import { addNecessaryFields } from "utils/message";
-import { updateReadonlyLinkField } from "utils/message";
+import { updateEditableLinkField } from "utils/message";
 
 // types
 import { UserType, MessageType } from "store/slices/_types";
@@ -80,7 +80,7 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
     // wait for update user mention
     if (!userList?.length) return;
     if (isEditing || !quillRef.current || !message.delta.ops?.length) return;
-    quillRef.current.getEditor().setContents(updateReadonlyLinkField(message.delta, true));
+    quillRef.current.getEditor().setContents(message.delta);
   }, [isEditing, userList, message.delta]);
 
   // after [isEditing] state change, we should reset [isHovering] state
@@ -147,7 +147,7 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
                     <MessageInput
                       autoFocus
                       isEditMode
-                      defaultValue={updateReadonlyLinkField(message.delta, false)}
+                      defaultValue={updateEditableLinkField(message.delta, true)}
                       onCancel={() => setEditing(false)}
                       onSend={(delta) => handleEdit(message.id, delta)}
                     />

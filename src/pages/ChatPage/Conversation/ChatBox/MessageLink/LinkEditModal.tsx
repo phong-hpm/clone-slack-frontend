@@ -7,7 +7,10 @@ import { Box, Button, Typography, TextField } from "@mui/material";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "components/Modal";
 
 // types
-import { LinkCustomEventDetailType } from "pages/ChatPage/Conversation/ChatBox/MessageInput/_types";
+import {
+  ContextLinkValueType,
+  LinkCustomEventDetailType,
+} from "pages/ChatPage/Conversation/ChatBox/MessageInput/_types";
 
 const EditLinkModal: FC = () => {
   // using ref, we can update anchorEl and user before component's rendering
@@ -53,7 +56,7 @@ const EditLinkModal: FC = () => {
     const linkDelta = new Delta()
       .retain(index)
       .delete(length)
-      .insert(text, { link: { href, text, isReadOnly: false } });
+      .insert(text, { link: { href, text, isEditable: true } as ContextLinkValueType });
 
     keepRef.current.quillReact?.getEditor().updateContents(linkDelta as unknown as DeltaStatic);
     keepRef.current.range = { index: index + text.length, length: 0 };

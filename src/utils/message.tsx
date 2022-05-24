@@ -1,9 +1,10 @@
 import { Delta } from "quill";
+import { ContextLinkValueType } from "pages/ChatPage/Conversation/ChatBox/MessageInput/_types";
 
 // types
 import { UserType } from "store/slices/_types";
 
-export const updateReadonlyLinkField = (delta: Delta, isReadOnly: boolean) => {
+export const updateEditableLinkField = (delta: Delta, isEditable: boolean) => {
   const ops = delta.ops?.map((op) => {
     // link operation
     if (op.attributes?.link) {
@@ -12,7 +13,7 @@ export const updateReadonlyLinkField = (delta: Delta, isReadOnly: boolean) => {
         ...op,
         attributes: {
           ...op.attributes,
-          link: { text, href, isReadOnly },
+          link: { text, href, isEditable },
         },
       };
     }
@@ -25,18 +26,6 @@ export const updateReadonlyLinkField = (delta: Delta, isReadOnly: boolean) => {
 
 export const addNecessaryFields = (delta: Delta, userList: UserType[], id: string) => {
   const ops = delta.ops?.map((op) => {
-    // link operation
-    if (op.attributes?.link) {
-      const { text, href } = op.attributes.link;
-      return {
-        ...op,
-        attributes: {
-          ...op.attributes,
-          link: { text, href, isReadOnly: true },
-        },
-      };
-    }
-
     // mention operation
     if (op?.insert?.mention?.id) {
       const user = userList.find((usr) => usr.id === op.insert.mention.id);
@@ -54,7 +43,6 @@ export const addNecessaryFields = (delta: Delta, userList: UserType[], id: strin
             realname: user.realname,
             value: user.name,
             isOwner: !!id && op?.insert?.mention.id === id, // add mention owner
-            isReadOnly: true,
           },
         },
       };
@@ -79,7 +67,7 @@ export const removeUnnecessaryFields = (delta: Delta) => {
         ...op,
         attributes: {
           ...op.attributes,
-          link: { text, href },
+          link: { text, href } as ContextLinkValueType,
         },
       };
     }

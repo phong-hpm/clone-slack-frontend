@@ -74,8 +74,8 @@ const MentionDetailPopover: FC = () => {
   // handle click event
   useEffect(() => {
     const mentionClicked = () => {
-      const isReadOnly = keepRef.current.anchorEl?.dataset["isReadOnly"] === "true";
-      if (isReadOnly) handleClose();
+      const isEditable = keepRef.current.anchorEl?.dataset["isEditable"];
+      if (!isEditable) handleClose();
     };
 
     // listening event from quill-mention

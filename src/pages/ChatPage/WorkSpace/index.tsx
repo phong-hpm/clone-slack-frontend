@@ -13,9 +13,6 @@ import { setSelectedChannelId } from "store/slices/channels.slice";
 // utils
 import { color } from "utils/constants";
 
-// hooks
-import useChannelSocket from "pages/ChatPage/hooks/useChannelSocket";
-
 // components
 import { Box } from "@mui/material";
 import Channels from "./Channel";
@@ -30,8 +27,6 @@ const WorkSpace: FC = () => {
 
   const selectedChannelId = useSelector(channelsSelectors.getSelectedChannelId);
   const channelList = useSelector(channelsSelectors.getChannelList);
-
-  const { handleSendChannel } = useChannelSocket();
 
   // after got channelList
   // when selectedChannelId is emtpy

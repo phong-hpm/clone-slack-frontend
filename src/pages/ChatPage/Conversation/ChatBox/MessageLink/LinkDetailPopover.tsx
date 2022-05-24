@@ -42,7 +42,7 @@ const LinkDetailPopover: FC = () => {
       const linkValue = e.value as ContextLinkValueType;
       node = e.node as HTMLAnchorElement;
 
-      if (node && linkValue.isReadOnly) {
+      if (node && !linkValue.isEditable) {
         handleOpen(linkValue, node);
         // add mouseleave listener for link after hovered
         node?.addEventListener("mouseleave", handleClose);
