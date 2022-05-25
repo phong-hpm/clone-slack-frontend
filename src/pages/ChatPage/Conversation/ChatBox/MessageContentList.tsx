@@ -39,7 +39,7 @@ const MessageContentList: FC = () => {
   const isLoading = useSelector(messagesSelectors.isLoading);
   // messages in [userMessagesDayGroup] were have the same reference with it's previous reference
   //    only updated message's reference was changed
-  // If update [userMessagesDayGroup], we MUST NOT to create new message's reference in it
+  // If update [userMessagesDayGroup], we MUST NOT to create new message's reference on it
   const userMessagesDayGroup = useSelector(messagesSelectors.getGroupedMessageList);
   const unreadMessageCount = useSelector(channelsSelectors.getUnreadMessageCount);
 
@@ -53,10 +53,10 @@ const MessageContentList: FC = () => {
       // waiting for [MessageContent] render data
       timeoutId = setTimeout(() => {
         // using [fireOnce] to prevent scroll after [messages] updated
-        fireOnce(() => {
-          containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
-          setScrolled(true);
-        });
+        // fireOnce(() => {
+        containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
+        setScrolled(true);
+        // });
       }, 1);
     }
 
@@ -70,6 +70,8 @@ const MessageContentList: FC = () => {
       </Box>
     );
   }
+
+  if (!userMessagesDayGroup.length) return <></>;
 
   return (
     <Box ref={containerRef} flex="1" pb={2.5} style={{ overflowY: "auto" }}>
@@ -105,15 +107,21 @@ const MessageContentList: FC = () => {
                 </Box>
               </Box>
 
-              {minuteGroups.map(({ userOwner, message }) => (
-                <ListItemButton
-                  key={message.id}
-                  className="bg-hover-none"
-                  sx={{ cursor: "auto", padding: "0" }}
-                >
-                  <MessageContent userOwner={userOwner} message={message} />
-                </ListItemButton>
-              ))}
+              {minuteGroups.map(({ userOwner, message, isStartUnreadMessage }, index) => {
+                return (
+                  <ListItemButton
+                    key={message.id}
+                    className="bg-hover-none"
+                    sx={{
+                      cursor: "auto",
+                      padding: "0",
+                      border: isStartUnreadMessage ? `1px solid ${color.DANGER}` : undefined,
+                    }}
+                  >
+                    <MessageContent userOwner={userOwner} message={message} />
+                  </ListItemButton>
+                );
+              })}
             </Box>
           );
         })}

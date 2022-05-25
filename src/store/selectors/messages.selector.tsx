@@ -5,6 +5,7 @@ import { RootState } from "store";
 
 // redux selectors
 import * as usersSelector from "store/selectors/users.selector";
+import * as channelsSelector from "store/selectors/channels.selector";
 
 // utils
 import { dayFormat, isToday, minuteDiff } from "utils/dayjs";
@@ -21,10 +22,6 @@ export const getMessages = (state: RootState) => state.messages;
 
 export const isLoading = createSelector([getMessages], (messages) => messages.isLoading);
 
-export const getCachedList = createSelector([getMessages], (messages) => messages.cachedList);
-export const isMessagesCached = (channelId: string) =>
-  createSelector([getCachedList], (cachedList) => !!cachedList[channelId]);
-
 const getList = createSelector([getMessages], (messages) => messages.list);
 
 export const getMessageList = createSelector([getList], (list) =>
@@ -32,15 +29,22 @@ export const getMessageList = createSelector([getList], (list) =>
 );
 
 export const getGroupedMessageList = createSelector(
-  [getMessageList, usersSelector.getUserList],
+  [getMessageList, usersSelector.getUserList, channelsSelector.getUnreadMessageCount],
   (list, userList) => {
-    if (!list.length) return [];
+    // DONT REMOVE THEM
+    // these checkings will help reduce the number of rendering
+    if (!list.length || !userList.length) return [];
+
+    // const unreadIndex = list.length - unreadMessageCount;
 
     const messageList = [...list].sort((a, b) => a.created - b.created);
 
-    const dayGroups: { day: string; minuteGroups: UserMessageType[] }[] = [];
+    const dayGroups: {
+      day: string;
+      minuteGroups: (UserMessageType & { isStartUnreadMessage?: boolean })[];
+    }[] = [];
 
-    const minuteGroups: UserMessageType[] = [];
+    const minuteGroups: (UserMessageType & { isStartUnreadMessage?: boolean })[] = [];
     let previousUserId = "";
     let previousCreated = 0;
 
@@ -48,7 +52,10 @@ export const getGroupedMessageList = createSelector(
     // if message's references are changed, all [MessageContent] component will be re-render
     //       after [messageList] was changed, althought message's data were not changed
     for (let i = 0; i < messageList.length; i++) {
-      const curMinuteGroup: UserMessageType = { message: messageList[i] };
+      const curMinuteGroup: UserMessageType & { isStartUnreadMessage?: boolean } = {
+        message: messageList[i],
+        // isStartUnreadMessage: i === unreadIndex,
+      };
       const { user: userId, created } = messageList[i];
 
       // add group if message was created after previous message over 5 minutes

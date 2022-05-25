@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, memo, useEffect, useRef, useState } from "react";
 
 // images
 import defaultAvatar from "assets/images/default_avatar.png";
@@ -107,17 +107,19 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
       onMouseLeave={() => setHovering(false)}
     >
       {/* stared */}
-      <Box my={1}>
-        <Bookmark isStared={message.isStared} />
-      </Box>
+      {message.isStared && (
+        <Box my={1}>
+          <Bookmark isStared={message.isStared} />
+        </Box>
+      )}
 
-      <Box my={1}>
+      <Box my={0.75}>
         <Box display="flex">
           <Box flexBasis={36} mr={1} color={color.MAX_SOLID}>
             {userOwner && (
-              <Box mt={0.5}>
-                <Avatar src={defaultAvatar} />
-              </Box>
+              <Avatar src={userOwner.avatar}>
+                <img src={defaultAvatar} alt="" />
+              </Avatar>
             )}
             {!userOwner && isHovering && (
               <Typography variant="h6" align="right" lineHeight="20px">
@@ -130,7 +132,7 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
           <Box flex="1">
             {!isEditing && userOwner && (
               <Box display="flex" alignItems="flex-end">
-                <Link underline="hover" color="inherit">
+                <Link underline="hover" color="inherit" mt={-0.5}>
                   <UserNameCard user={userOwner} />
                 </Link>
 
@@ -175,13 +177,15 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
       </Box>
 
       {/* reactions */}
-      <Box my={1}>
-        <Reactions messageId={message.id} reactions={message.reactions} />
-      </Box>
+      {!!message.reactions?.length && (
+        <Box my={1}>
+          <Reactions messageId={message.id} reactions={message.reactions} />
+        </Box>
+      )}
 
       {/* action bar */}
-      <Box position="absolute" right={12} top={-20}>
-        {isShowActions && (
+      {isShowActions && (
+        <Box position="absolute" right={12} top={-20}>
           <MessageActions
             messageId={message.id}
             isStared={message.isStared}
@@ -192,8 +196,8 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
             onClickDelete={handleDelete}
             onClose={() => setHovering(false)}
           />
-        )}
-      </Box>
+        </Box>
+      )}
 
       {/* share message modal */}
       <ShareMessageModal
@@ -205,4 +209,4 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
   );
 };
 
-export default MessageContent;
+export default memo(MessageContent);

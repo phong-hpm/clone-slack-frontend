@@ -9,6 +9,7 @@ export interface UserType {
   email: string;
   timeZone: string;
   isOnline?: boolean;
+  avatar?: string;
 }
 
 export interface UsersState {
@@ -76,7 +77,6 @@ export interface MessageType {
 export interface MessagesState {
   isLoading: boolean;
   list: MessageType[];
-  cachedList: Record<string, MessageType[]>;
 }
 
 // channels.slice.tsx -----------------
@@ -84,11 +84,11 @@ export interface ChannelType {
   id: string;
   name: string;
   type: "direct_message" | "channel";
-  isAllUser: boolean;
   users: string[];
   creater: string;
   created: number;
   unreadMessageCount: number;
+  latestModify: number;
 }
 
 export interface ChannelsState {

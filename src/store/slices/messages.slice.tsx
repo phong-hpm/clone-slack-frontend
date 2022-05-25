@@ -6,7 +6,6 @@ import { MessagesState, MessageType } from "store/slices/_types";
 const initialState: MessagesState = {
   isLoading: true,
   list: [],
-  cachedList: {},
 };
 
 export const cachedList: any = {};
@@ -30,13 +29,9 @@ export const messagesSlice = createSlice({
       const id = action.payload;
       state.list = state.list.filter((mes) => mes.id !== id);
     },
-    setMessagesList: (
-      state,
-      action: PayloadAction<{ channelId: string; messages?: MessageType[] }>
-    ) => {
-      const { channelId, messages } = action.payload;
-      cachedList[channelId] = messages;
-      state.list = cachedList[channelId];
+    setMessagesList: (state, action: PayloadAction<MessageType[]>) => {
+      const messages = action.payload;
+      state.list = messages;
       state.isLoading = false;
     },
     resetMessageState: (state) => {

@@ -17,7 +17,7 @@ export const channelsSlice = createSlice({
     setChannelsList: (state, action: PayloadAction<ChannelType[]>) => {
       state.list = action.payload;
     },
-    addChannelList: (state, action: PayloadAction<ChannelType>) => {
+    addChannel: (state, action: PayloadAction<ChannelType>) => {
       state.list.push(action.payload);
     },
     updateChannel: (
@@ -52,7 +52,7 @@ export const channelsSlice = createSlice({
 export const {
   setSelectedChannelId,
   setChannelsList,
-  addChannelList,
+  addChannel,
   updateChannel,
   setDirectMessagesList,
   resetState,

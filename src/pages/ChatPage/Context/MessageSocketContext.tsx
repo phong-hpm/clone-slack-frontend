@@ -1,4 +1,4 @@
-import { createContext, FC, useCallback, useEffect, useMemo } from "react";
+import { createContext, FC, useCallback, useEffect, useMemo, useRef } from "react";
 
 // redux store
 import { useDispatch, useSelector } from "store";
@@ -12,13 +12,14 @@ import {
   updateMessage,
   removeMessage,
   setMessagesList,
-  resetMessageState,
+  setLoading,
 } from "store/slices/messages.slice";
 
 // hooks
 import useSocket from "hooks/useSocket";
 
 // utils
+import cacheUtils from "utils/cacheUtils";
 import { SocketEvent, SocketEventDefault } from "utils/constants";
 import { useParams } from "react-router-dom";
 
@@ -45,51 +46,114 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
 
   const { socket, updateNamespace } = useSocket();
 
+  const keepRef = useRef({ unreadMessageCount: 0, selectedChannelId: "" });
+  // keep these datas onto keepRef will help using them without add to dependences
+  keepRef.current.selectedChannelId = selectedChannelId;
+  keepRef.current.unreadMessageCount = unreadMessageCount;
+
   const handleAddNewMessage = useCallback(
-    (message: MessageType) => dispatch(addMessage(message)),
-    [dispatch]
-  );
-
-  const handleUpdateMessage = useCallback(
-    (message: MessageType) => dispatch(updateMessage(message)),
-    [dispatch]
-  );
-
-  const handleRemoveMessage = useCallback((id: string) => dispatch(removeMessage(id)), [dispatch]);
-
-  const handleSetMessageList = useCallback(
-    (channelId: string, messages: MessageType[]) => {
-      dispatch(setMessagesList({ channelId, messages }));
-      localStorage.setItem(channelId, JSON.stringify(messages));
+    ({
+      channelId,
+      message,
+      latestModify,
+    }: {
+      channelId: string;
+      message: MessageType;
+      latestModify: number;
+    }) => {
+      dispatch(addMessage(message));
+      // add cached [messages]
+      cacheUtils.addCachedMessage({ channelId, message });
+      cacheUtils.setChannelLatestModify(channelId, { message: latestModify });
     },
     [dispatch]
   );
 
-  // update namespace when selectedChannel was updated
+  const handleUpdateMessage = useCallback(
+    ({
+      channelId,
+      message,
+      latestModify,
+    }: {
+      channelId: string;
+      message: MessageType;
+      latestModify: number;
+    }) => {
+      dispatch(updateMessage(message));
+      // update cached [messages]
+      cacheUtils.setChannelLatestModify(channelId, { message: latestModify });
+      cacheUtils.updateCachedMessage({ channelId, message });
+    },
+    [dispatch]
+  );
+
+  const handleRemoveMessage = useCallback(
+    ({
+      channelId,
+      messageId,
+      latestModify,
+    }: {
+      channelId: string;
+      messageId: string;
+      latestModify: number;
+    }) => {
+      dispatch(removeMessage(messageId));
+      // update cached [messages]
+      cacheUtils.setChannelLatestModify(channelId, { message: latestModify });
+      cacheUtils.removeCachedMessage({ channelId, messageId });
+    },
+    [dispatch]
+  );
+
+  const handleSetMessageList = useCallback(
+    ({
+      channelId,
+      messages,
+      latestModify,
+    }: {
+      channelId: string;
+      messages: MessageType[];
+      latestModify: number;
+    }) => {
+      dispatch(setMessagesList(messages));
+      // cache [messages] of this [channelId]
+      cacheUtils.setChannelLatestModify(channelId, { message: latestModify });
+      cacheUtils.setCachedMessages({ channelId, messages });
+    },
+    [dispatch]
+  );
+
+  // update namespace when [selectedChannelId] was updated
   useEffect(() => {
-    if (!selectedChannelId) return;
-    updateNamespace(`/${teamId}/${selectedChannelId}`);
+    // [updateNamespace] will disconnect socket
+    if (selectedChannelId) updateNamespace(`/${teamId}/${selectedChannelId}`);
   }, [teamId, selectedChannelId, updateNamespace]);
 
-  // [EMIT_LOAD_MESSAGES] will be emited when [channelId] has new message
-  //    or messages were not cached
+  // check and load cache
   useEffect(() => {
-    if (!socket || !selectedChannelId) return;
-    dispatch(resetMessageState());
+    if (!selectedChannelId) return;
+    const isSameLatestModify = cacheUtils.isSameLatestModify(selectedChannelId);
 
-    const cachedMessages = localStorage.getItem(selectedChannelId);
-    if (!unreadMessageCount && cachedMessages) {
-      dispatch(
-        setMessagesList({ channelId: selectedChannelId, messages: JSON.parse(cachedMessages) })
-      );
-    } else {
-      socket.emit(SocketEvent.EMIT_LOAD_MESSAGES, {});
+    if (!unreadMessageCount && isSameLatestModify) {
+      // get cached messages data from localStorage
+      const { messages } = cacheUtils.getCachedMessages(selectedChannelId);
+      dispatch(setMessagesList(messages));
     }
-  }, [unreadMessageCount, selectedChannelId, socket, dispatch]);
+  }, [unreadMessageCount, selectedChannelId, dispatch]);
 
+  // setup socket
   useEffect(() => {
     if (!socket) return;
-    socket.on(SocketEventDefault.CONNECT, () => {}).on(SocketEventDefault.DISCONNECT, () => {});
+    socket
+      .on(SocketEventDefault.CONNECT, () => {
+        const { selectedChannelId, unreadMessageCount } = keepRef.current;
+        const isSameLatestModify = cacheUtils.isSameLatestModify(selectedChannelId);
+        if (unreadMessageCount || !isSameLatestModify) {
+          dispatch(setLoading(true));
+          socket.emit(SocketEvent.EMIT_LOAD_MESSAGES, {});
+        }
+      })
+      .on(SocketEventDefault.DISCONNECT, () => {});
 
     socket
       .on(SocketEvent.ON_MESSAGES, handleSetMessageList)
@@ -98,11 +162,18 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
       .on(SocketEvent.ON_REMOVED_MESSAGE, handleRemoveMessage)
       .on(SocketEvent.ON_REMOVED_MESSAGE_FILE, handleUpdateMessage);
 
-    socket.connect();
+    !socket.connected && socket.connect();
     return () => {
-      socket?.disconnect();
+      socket.disconnect();
     };
-  }, [socket, handleSetMessageList, handleAddNewMessage, handleUpdateMessage, handleRemoveMessage]);
+  }, [
+    socket,
+    handleSetMessageList,
+    handleAddNewMessage,
+    handleUpdateMessage,
+    handleRemoveMessage,
+    dispatch,
+  ]);
 
   const value = useMemo(
     () => ({

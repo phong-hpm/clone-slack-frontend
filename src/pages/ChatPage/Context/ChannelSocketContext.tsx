@@ -11,7 +11,7 @@ import * as teamsSelectors from "store/selectors/teams.selector";
 import {
   setChannelsList,
   setDirectMessagesList,
-  addChannelList,
+  addChannel,
   updateChannel,
 } from "store/slices/channels.slice";
 import { setUserList, updateUserOnline } from "store/slices/users.slice";
@@ -20,6 +20,7 @@ import { setUserList, updateUserOnline } from "store/slices/users.slice";
 import useSocket from "hooks/useSocket";
 
 // utils
+import cacheUtils from "utils/cacheUtils";
 import { SocketEvent, SocketEventDefault } from "utils/constants";
 
 // types
@@ -45,7 +46,7 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
   const { socket, updateNamespace } = useSocket();
 
   const handleAddNewChannel = useCallback(
-    (channel: ChannelType) => dispatch(addChannelList(channel)),
+    (channel: ChannelType) => dispatch(addChannel(channel)),
     [dispatch]
   );
 
@@ -63,14 +64,28 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
       if (channels) {
         const channelsList: ChannelType[] = [];
         const directMessagesList: ChannelType[] = [];
+
+        // separate [channels] for each [channel.type]
         channels.forEach((channel: ChannelType) => {
           channel.type === "direct_message"
             ? directMessagesList.push(channel)
             : channelsList.push(channel);
+
+          // update cachedModify for channel
+          cacheUtils.setChannelLatestModify(channel.id, { channel: channel.latestModify });
         });
         dispatch(setChannelsList(channelsList));
         dispatch(setDirectMessagesList(directMessagesList));
       }
+    },
+    [dispatch]
+  );
+
+  const handleUpdateChannelLatestodify = useCallback(
+    (channelId: string, latestModify: number) => {
+      dispatch(updateChannel({ id: channelId, channel: { latestModify } }));
+      // update cachedModify for channel
+      cacheUtils.setChannelLatestModify(channelId, { channel: latestModify });
     },
     [dispatch]
   );
@@ -83,6 +98,7 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
 
   // update namespace for socket with [teamId]
   useEffect(() => {
+    // [updateNamespace] will disconnect socket
     if (selectedTeamId) updateNamespace(`/${selectedTeamId}`);
   }, [selectedTeamId, updateNamespace]);
 
@@ -100,20 +116,22 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
     socket
       .on(SocketEvent.ON_CHANNELS, handleSetChannelList)
       .on(SocketEvent.ON_ADDED_CHANNEL, handleAddNewChannel)
+      .on(SocketEvent.ON_EDITED_CHANNEL_LATEST_MOFIDY, handleUpdateChannelLatestodify)
       .on(SocketEvent.ON_EDITED_CHANNEL_UNREAD_MESSAGE_COUNT, handleUpdateChannelUnreadMessageCount)
       .on(SocketEvent.ON_USER_ONLINE, (id: string) => handleUpdateUserStatus(id, true))
       .on(SocketEvent.ON_USER_OFFLINE, (id: string) => handleUpdateUserStatus(id, false));
 
     // Step 1: trigger connect socket
-    socket.connect();
+    // fire [socket.connect] only 1 time
+    !socket.connected && socket.connect();
     return () => {
-      // disconnect socket
-      socket?.disconnect();
+      socket.disconnect();
     };
   }, [
     user,
     socket,
     handleSetChannelList,
+    handleUpdateChannelLatestodify,
     handleUpdateChannelUnreadMessageCount,
     handleAddNewChannel,
     handleUpdateUserStatus,
