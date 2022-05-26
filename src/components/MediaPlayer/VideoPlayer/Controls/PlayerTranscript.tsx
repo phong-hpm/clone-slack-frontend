@@ -28,7 +28,7 @@ const PlayerTranscript: FC<PlayerTranscriptProps> = ({ onChange }) => {
     }
   };
 
-  if (!state.scripts?.length || !state.userOwner || !state.created) return <></>;
+  if (!state.scripts?.length || !state.userOwner || !state.createdTime) return <></>;
 
   return (
     <>
@@ -43,7 +43,7 @@ const PlayerTranscript: FC<PlayerTranscriptProps> = ({ onChange }) => {
           isOpen={isShowTranscriptModal}
           anchorEl={transcriptButtonRef.current}
           scripts={state.scripts}
-          created={state.created}
+          createdTime={state.createdTime}
           user={state.userOwner}
           onClickScript={onChange}
           onClose={() => setShowTranscriptModal(false)}

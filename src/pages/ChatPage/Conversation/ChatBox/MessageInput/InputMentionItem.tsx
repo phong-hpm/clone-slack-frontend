@@ -19,7 +19,9 @@ const MentionItem: FC<MentionItemProps> = ({ userId, userMention }) => {
   return (
     <Box className="mention-item">
       <Box p={0.5}>
-        <Avatar sizes="small" src={defaultAvatar} />
+        <Avatar sizes="small" src={userMention.avatar}>
+          <img src={defaultAvatar} alt="" />
+        </Avatar>
       </Box>
       <Box p={0.5}>
         <Typography fontWeight={700}>{userMention.name || "unknow"}</Typography>

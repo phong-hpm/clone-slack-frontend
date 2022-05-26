@@ -72,7 +72,7 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
             : channelsList.push(channel);
 
           // update cachedModify for channel
-          cacheUtils.setChannelLatestModify(channel.id, { channel: channel.latestModify });
+          cacheUtils.setChannelUpdatedTime(channel.id, { channel: channel.updatedTime });
         });
         dispatch(setChannelsList(channelsList));
         dispatch(setDirectMessagesList(directMessagesList));
@@ -81,11 +81,11 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
     [dispatch]
   );
 
-  const handleUpdateChannelLatestodify = useCallback(
-    (channelId: string, latestModify: number) => {
-      dispatch(updateChannel({ id: channelId, channel: { latestModify } }));
+  const handleUpdateChannelUpdatedTime = useCallback(
+    (channelId: string, updatedTime: number) => {
+      dispatch(updateChannel({ id: channelId, channel: { updatedTime } }));
       // update cachedModify for channel
-      cacheUtils.setChannelLatestModify(channelId, { channel: latestModify });
+      cacheUtils.setChannelUpdatedTime(channelId, { channel: updatedTime });
     },
     [dispatch]
   );
@@ -116,7 +116,7 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
     socket
       .on(SocketEvent.ON_CHANNELS, handleSetChannelList)
       .on(SocketEvent.ON_ADDED_CHANNEL, handleAddNewChannel)
-      .on(SocketEvent.ON_EDITED_CHANNEL_LATEST_MOFIDY, handleUpdateChannelLatestodify)
+      .on(SocketEvent.ON_EDITED_CHANNEL_UPDATED_TIME, handleUpdateChannelUpdatedTime)
       .on(SocketEvent.ON_EDITED_CHANNEL_UNREAD_MESSAGE_COUNT, handleUpdateChannelUnreadMessageCount)
       .on(SocketEvent.ON_USER_ONLINE, (id: string) => handleUpdateUserStatus(id, true))
       .on(SocketEvent.ON_USER_OFFLINE, (id: string) => handleUpdateUserStatus(id, false));
@@ -131,7 +131,7 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
     user,
     socket,
     handleSetChannelList,
-    handleUpdateChannelLatestodify,
+    handleUpdateChannelUpdatedTime,
     handleUpdateChannelUnreadMessageCount,
     handleAddNewChannel,
     handleUpdateUserStatus,

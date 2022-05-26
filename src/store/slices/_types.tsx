@@ -1,5 +1,5 @@
-import { TranScriptType } from "components/MediaPlayer/VideoPlayer/_types";
 import { Delta } from "quill";
+import { TranScriptType } from "components/MediaPlayer/VideoPlayer/_types";
 
 // users.slice.tsx -----------------
 export interface UserType {
@@ -32,7 +32,7 @@ export interface AuthState {
 export interface TeamType {
   id: string;
   name: string;
-  created: number;
+  createdTime: number;
   channels: string[];
   users: string[];
 }
@@ -44,10 +44,14 @@ export interface TeamsState {
 }
 
 // messages.slice.tsx -----------------
+export type DayMessageType =
+  | { day: string; message?: MessageType; userOwner?: UserType }
+  | { day?: string; message: MessageType; userOwner?: UserType };
+
 export interface MessageFileType {
   id: string;
   url: string;
-  created: number;
+  createdTime: number;
   type: "audio" | "video";
   mineType: "audio/webm" | "video/webm";
   duration: number;
@@ -64,19 +68,21 @@ export interface MessageType {
   id: string;
   type: string;
   delta: Delta;
-  created: number;
+  createdTime: number;
+  updatedTime: number;
   team: string;
   user: string;
   isOwner?: boolean;
   isEdited?: boolean;
   isStared?: boolean;
-  reactions: { id: string; users: string[]; count: number }[];
+  reactions: Record<string, { id: string; users: string[]; count: number }>;
   files?: MessageFileType[];
 }
 
 export interface MessagesState {
   isLoading: boolean;
   list: MessageType[];
+  dayMessageList: DayMessageType[];
 }
 
 // channels.slice.tsx -----------------
@@ -86,9 +92,9 @@ export interface ChannelType {
   type: "direct_message" | "channel";
   users: string[];
   creater: string;
-  created: number;
+  createdTime: number;
   unreadMessageCount: number;
-  latestModify: number;
+  updatedTime: number;
 }
 
 export interface ChannelsState {

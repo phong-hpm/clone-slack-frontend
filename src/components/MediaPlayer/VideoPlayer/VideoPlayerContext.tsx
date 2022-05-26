@@ -6,7 +6,7 @@ import { VideoPlayerContextType, VideoPlayerContextStateType, VideoPlayerDataTyp
 const initialState: VideoPlayerContextStateType = {
   channelName: "",
   scripts: [],
-  created: 0,
+  createdTime: 0,
   isFullScreen: false,
   isPlaying: false,
   isCaption: false,

@@ -1,8 +1,5 @@
 import { Theme } from "@mui/material";
 
-// utils
-import { color } from "utils/constants";
-
 const components: Theme["components"] = {
   MuiTab: {
     defaultProps: {},

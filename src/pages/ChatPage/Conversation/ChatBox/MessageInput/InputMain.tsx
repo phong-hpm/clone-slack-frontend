@@ -169,7 +169,7 @@ const InputMain: FC<InputMainProps> = ({
     <Box color={color.PRIMARY}>
       <Box
         position="relative"
-        borderRadius={appState.isEditMode ? 1 : 2}
+        borderRadius={appState.mode === "input" ? 2 : 1}
         border="1px solid"
         borderColor={appState.isFocus ? color.HIGH_SOLID : color.MID_SOLID}
         bgcolor={color.MIN_SOLID}

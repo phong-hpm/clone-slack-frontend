@@ -55,16 +55,17 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     ({
       channelId,
       message,
-      latestModify,
+      updatedTime,
     }: {
       channelId: string;
       message: MessageType;
-      latestModify: number;
+      updatedTime: number;
     }) => {
       dispatch(addMessage(message));
       // add cached [messages]
       cacheUtils.addCachedMessage({ channelId, message });
-      cacheUtils.setChannelLatestModify(channelId, { message: latestModify });
+      cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
+      window.dispatchEvent(new Event("scroll-message-list"));
     },
     [dispatch]
   );
@@ -73,15 +74,15 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     ({
       channelId,
       message,
-      latestModify,
+      updatedTime,
     }: {
       channelId: string;
       message: MessageType;
-      latestModify: number;
+      updatedTime: number;
     }) => {
       dispatch(updateMessage(message));
       // update cached [messages]
-      cacheUtils.setChannelLatestModify(channelId, { message: latestModify });
+      cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
       cacheUtils.updateCachedMessage({ channelId, message });
     },
     [dispatch]
@@ -91,15 +92,15 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     ({
       channelId,
       messageId,
-      latestModify,
+      updatedTime,
     }: {
       channelId: string;
       messageId: string;
-      latestModify: number;
+      updatedTime: number;
     }) => {
       dispatch(removeMessage(messageId));
       // update cached [messages]
-      cacheUtils.setChannelLatestModify(channelId, { message: latestModify });
+      cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
       cacheUtils.removeCachedMessage({ channelId, messageId });
     },
     [dispatch]
@@ -109,15 +110,15 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     ({
       channelId,
       messages,
-      latestModify,
+      updatedTime,
     }: {
       channelId: string;
       messages: MessageType[];
-      latestModify: number;
+      updatedTime: number;
     }) => {
       dispatch(setMessagesList(messages));
       // cache [messages] of this [channelId]
-      cacheUtils.setChannelLatestModify(channelId, { message: latestModify });
+      cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
       cacheUtils.setCachedMessages({ channelId, messages });
     },
     [dispatch]
@@ -132,9 +133,9 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
   // check and load cache
   useEffect(() => {
     if (!selectedChannelId) return;
-    const isSameLatestModify = cacheUtils.isSameLatestModify(selectedChannelId);
+    const isSameUpdatedTime = cacheUtils.isSameUpdatedTime(selectedChannelId);
 
-    if (!unreadMessageCount && isSameLatestModify) {
+    if (!unreadMessageCount && isSameUpdatedTime) {
       // get cached messages data from localStorage
       const { messages } = cacheUtils.getCachedMessages(selectedChannelId);
       dispatch(setMessagesList(messages));
@@ -147,8 +148,8 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     socket
       .on(SocketEventDefault.CONNECT, () => {
         const { selectedChannelId, unreadMessageCount } = keepRef.current;
-        const isSameLatestModify = cacheUtils.isSameLatestModify(selectedChannelId);
-        if (unreadMessageCount || !isSameLatestModify) {
+        const isSameUpdatedTime = cacheUtils.isSameUpdatedTime(selectedChannelId);
+        if (unreadMessageCount || !isSameUpdatedTime) {
           dispatch(setLoading(true));
           socket.emit(SocketEvent.EMIT_LOAD_MESSAGES, {});
         }

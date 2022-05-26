@@ -14,14 +14,14 @@ import { TranScriptType } from "./_types";
 import { UserType } from "store/slices/_types";
 
 export interface TranscriptModalProps extends ModalProps {
-  created: number;
+  createdTime: number;
   scripts: TranScriptType[];
   user: UserType;
   onClickScript?: (currentTime: number) => void;
 }
 
 const TranscriptModal: FC<TranscriptModalProps> = ({
-  created,
+  createdTime,
   scripts,
   user,
   onClickScript,
@@ -38,7 +38,7 @@ const TranscriptModal: FC<TranscriptModalProps> = ({
           <Typography variant="h4">Transcript</Typography>
           <Box display="flex" mb={2}>
             <Typography variant="h5" mr={0.5}>{`${user.name} at`}</Typography>
-            <TimeCard time={created} typographyProps={{ variant: "h5" }} />
+            <TimeCard time={createdTime} typographyProps={{ variant: "h5" }} />
           </Box>
 
           <Box>

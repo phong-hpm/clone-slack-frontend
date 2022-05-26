@@ -97,7 +97,9 @@ const MentionDetailPopover: FC = () => {
     >
       <Box p={1} display="flex">
         <Box p={0.5}>
-          <Avatar sizes="small" src={defaultAvatar} />
+          <Avatar sizes="small" src={keepRef.current.user?.avatar}>
+            <img src={defaultAvatar} alt="" />
+          </Avatar>
         </Box>
         <Box p={0.5}>
           <Typography>{keepRef.current.user?.name || "unknow"}</Typography>

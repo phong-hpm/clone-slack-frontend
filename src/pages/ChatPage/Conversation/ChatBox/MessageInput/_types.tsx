@@ -17,7 +17,7 @@ export interface ContextQuillStateType {
 }
 
 export interface ContextAppStateType {
-  isEditMode?: boolean;
+  mode: "input" | "edit" | "custom";
   isFocus: boolean;
   userMention: UserType;
   inputFiles: MessageFileType[];

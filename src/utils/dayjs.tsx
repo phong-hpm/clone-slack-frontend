@@ -15,6 +15,9 @@ export const isSameDay = (time1: number, time2: number) => {
 export const minuteDiff = (time1: number, time2: number) => {
   return dayjs(time1).diff(dayjs(time2), "minute");
 };
+export const minuteDiffAbs = (time1: number, time2: number) => {
+  return Math.abs(minuteDiff(time1, time2));
+};
 export const dayDiff = (time1: number, time2: number) => {
   return dayjs(time1).diff(dayjs(time2), "day");
 };

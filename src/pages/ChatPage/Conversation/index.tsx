@@ -21,7 +21,7 @@ const Conversation: FC = () => {
       <MessageSocketProvider>
         <ChatBox />
         <Box px={2.5}>
-          <MessageInput />
+          <MessageInput mode="input" />
         </Box>
       </MessageSocketProvider>
       <Box display="flex" justifyContent="end" pr={3} py={0.5}>

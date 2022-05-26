@@ -32,6 +32,7 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) =
         name: user.name,
         realname: user.realname,
         timeZone: user.timeZone,
+        avatar: user.avatar,
       };
       state.isLoading = false;
     })

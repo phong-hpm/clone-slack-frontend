@@ -1,5 +1,11 @@
 import { FC } from "react";
 
+// redux store
+import { useSelector } from "store";
+
+// redux selector
+import * as authSelectors from "store/selectors/auth.selector";
+
 // images
 import defaultAvatar from "assets/images/default_avatar.png";
 
@@ -11,6 +17,8 @@ import SlackIcon from "components/SlackIcon";
 import { color } from "utils/constants";
 
 const ChatBar: FC = () => {
+  const user = useSelector(authSelectors.getUser);
+
   return (
     <Box
       display="flex"
@@ -28,7 +36,9 @@ const ChatBar: FC = () => {
       <Box flexBasis={230} display="flex" justifyContent="flex-end" alignItems="center" px={2}>
         <SlackIcon fontSize="large" icon="help" />
         <Box ml={2}>
-          <Avatar sizes="medium" src={defaultAvatar} />
+          <Avatar sizes="medium" src={user.avatar}>
+            <img src={defaultAvatar} alt="" />
+          </Avatar>
         </Box>
       </Box>
     </Box>

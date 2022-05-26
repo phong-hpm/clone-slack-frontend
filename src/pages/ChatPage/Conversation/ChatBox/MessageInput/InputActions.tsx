@@ -76,9 +76,16 @@ const InputActions: FC<InputActionsProps> = ({
     []
   );
 
+  const customActionList = useMemo(
+    () => [{ icon: "emoji", action: () => {}, isDivider: false, style: {}, ref: undefined }],
+    []
+  );
+
   const actionList = useMemo(() => {
-    return appState.isEditMode ? editActionList : createActionList;
-  }, [appState.isEditMode, createActionList, editActionList]);
+    if (appState.mode === "input") return createActionList;
+    if (appState.mode === "edit") return editActionList;
+    return customActionList;
+  }, [appState.mode, createActionList, editActionList, customActionList]);
 
   return (
     <Box display="flex" p={0.75} onClick={() => setFocus(true)}>
@@ -127,22 +134,7 @@ const InputActions: FC<InputActionsProps> = ({
 
       {/* Send group */}
       <Box ref={anchorRef} flex="0" display="flex" color={rgba(color.LIGHT, 0.7)}>
-        {appState.isEditMode ? (
-          <>
-            <Button variant="outlined" size="small" sx={{ mr: 1, px: 1.5 }} onClick={onCancel}>
-              <Typography variant="h5">Cancel</Typography>
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              sx={{ px: 1.5 }}
-              onClick={onSend}
-            >
-              <Typography variant="h5">Save</Typography>
-            </Button>
-          </>
-        ) : (
+        {appState.mode === "input" && (
           <ButtonGroup
             variant={isDisabledSend ? "outlined" : "contained"}
             disabled
@@ -170,6 +162,23 @@ const InputActions: FC<InputActionsProps> = ({
               <SlackIcon icon="chevron-down" fontSize="medium" />
             </IconButton>
           </ButtonGroup>
+        )}
+
+        {appState.mode === "edit" && (
+          <>
+            <Button variant="outlined" size="small" sx={{ mr: 1, px: 1.5 }} onClick={onCancel}>
+              <Typography variant="h5">Cancel</Typography>
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ px: 1.5 }}
+              onClick={onSend}
+            >
+              <Typography variant="h5">Save</Typography>
+            </Button>
+          </>
         )}
       </Box>
 

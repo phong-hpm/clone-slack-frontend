@@ -20,6 +20,7 @@ const initialAppState: ContextAppStateType = {
   isFocus: true,
   userMention: stateDefault.USER,
   inputFiles: [],
+  mode: "input",
 };
 
 const initialContext: Partial<InputContextType> = {
@@ -30,10 +31,10 @@ const initialContext: Partial<InputContextType> = {
 const InputContext = createContext<InputContextType>(initialContext as unknown as InputContextType);
 
 export interface MessageInputProviderProps {
-  isEditMode?: boolean;
+  mode: "input" | "edit" | "custom";
 }
 
-export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode, children }) => {
+export const MessageInputProvider: FC<MessageInputProviderProps> = ({ mode, children }) => {
   const keepRef = useRef<{ isFocus?: boolean; selectedIndex?: number }>({});
   const quillRef = useRef<ReactQuill | undefined>();
 
@@ -127,7 +128,7 @@ export const MessageInputProvider: FC<MessageInputProviderProps> = ({ isEditMode
     ]
   );
 
-  useEffect(() => updateAppState({ isEditMode }), [isEditMode, updateAppState]);
+  useEffect(() => updateAppState({ mode }), [mode, updateAppState]);
 
   return <InputContext.Provider value={value}>{children}</InputContext.Provider>;
 };

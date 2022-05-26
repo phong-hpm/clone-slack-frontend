@@ -29,7 +29,7 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
     setFile({
       id: `F-${uuid()}`,
       url,
-      created: Date.now(),
+      createdTime: Date.now(),
       type: "video",
       mineType: "video/webm",
       duration,

@@ -70,7 +70,7 @@ const AudioRecordModal: FC<AudioRecordModalProps> = ({ isOpen, onClose, ...props
         setInputFile({
           id,
           url: URL.createObjectURL(blob),
-          created: Date.now(),
+          createdTime: Date.now(),
           type: "audio",
           wavePeaks: buildPeaks(wavePeaks),
           mineType: "audio/webm",

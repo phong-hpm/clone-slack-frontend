@@ -79,7 +79,9 @@ const MentionDetailModal: FC = () => {
     >
       <ModalBody p={0}>
         <Box>
-          <Avatar sizes="300" src={defaultAvatarLarge} />
+          <Avatar sizes="300" src={keepRef.current.user.avatar}>
+            <img src={defaultAvatarLarge} alt="" />
+          </Avatar>
         </Box>
         <Box px={3} pt={3} display="flex" alignItems="center">
           <Box mr={0.5}>

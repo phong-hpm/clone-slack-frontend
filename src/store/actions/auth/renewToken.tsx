@@ -1,13 +1,11 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
 
-// redux store
-import { RootState } from "store";
-
 // utils
 import axios from "utils/axios";
 
 // types
+import { RootState } from "store/_types";
 import { AuthState } from "store/slices/_types";
 import { RenewAccessTokenResponseData } from "store/actions/auth/_types";
 

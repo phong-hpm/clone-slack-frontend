@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 // images
 import defaultAvatar from "assets/images/default_avatar.png";
@@ -13,7 +13,7 @@ import * as usersSelectors from "store/selectors/users.selector";
 // components
 import ReactQuill from "react-quill";
 import { Delta } from "quill";
-import { Avatar, Box, Link, Typography } from "@mui/material";
+import { Avatar, Box, Link } from "@mui/material";
 import MessageInput from "pages/ChatPage/Conversation/ChatBox/MessageInput";
 import MessageActions from "pages/ChatPage/Conversation/ChatBox/MessageActions";
 import ShareMessageModal from "pages/ChatPage/Conversation/ChatBox/ShareMessageModal";
@@ -108,12 +108,12 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
     >
       {/* stared */}
       {message.isStared && (
-        <Box my={1}>
+        <Box mt={0.5}>
           <Bookmark isStared={message.isStared} />
         </Box>
       )}
 
-      <Box my={0.75}>
+      <Box py={0.75}>
         <Box display="flex">
           <Box flexBasis={36} mr={1} color={color.MAX_SOLID}>
             {userOwner && (
@@ -122,9 +122,13 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
               </Avatar>
             )}
             {!userOwner && isHovering && (
-              <Typography variant="h6" align="right" lineHeight="20px">
-                {dayFormat.time(message.created)}
-              </Typography>
+              <Link underline="hover" color={color.MAX_SOLID} textAlign="end">
+                <TimeCard
+                  time={message.createdTime}
+                  formatFn={dayFormat.time}
+                  typographyProps={{ lineHeight: "20px" }}
+                />
+              </Link>
             )}
           </Box>
 
@@ -137,18 +141,18 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
                 </Link>
 
                 <Link underline="hover" color={color.MAX_SOLID}>
-                  <TimeCard time={message.created} formatFn={dayFormat.timeA} />
+                  <TimeCard time={message.createdTime} formatFn={dayFormat.timeA} />
                 </Link>
               </Box>
             )}
 
-            {message.delta.ops && (
+            {!!message.delta.ops && (
               <>
                 {isEditing ? (
                   <Box py={0.5}>
                     <MessageInput
                       autoFocus
-                      isEditMode
+                      mode="edit"
                       defaultValue={updateEditableLinkField(message.delta, true)}
                       onCancel={() => setEditing(false)}
                       onSend={(delta) => handleEdit(message.id, delta)}
@@ -167,18 +171,20 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
             )}
 
             {/* MediaFileList */}
-            <MediaFileList
-              messageId={message.id}
-              messageUserId={message.user}
-              files={message.files}
-            />
+            {!!message.files?.length && (
+              <MediaFileList
+                messageId={message.id}
+                messageUserId={message.user}
+                files={message.files}
+              />
+            )}
           </Box>
         </Box>
       </Box>
 
       {/* reactions */}
-      {!!message.reactions?.length && (
-        <Box my={1}>
+      {!!Object.keys(message.reactions).length && (
+        <Box pb={0.75}>
           <Reactions messageId={message.id} reactions={message.reactions} />
         </Box>
       )}
@@ -209,4 +215,4 @@ const MessageContent: FC<MessageContentProps> = ({ userOwner, message: messagePr
   );
 };
 
-export default memo(MessageContent);
+export default MessageContent;

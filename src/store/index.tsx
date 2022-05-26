@@ -18,6 +18,13 @@ import usersReducer from "store/slices/users.slice";
 // utils
 import { setupAxios } from "utils/axios";
 
+// middlewares
+import { middlewareAfterRegister } from "store/middlewareRegister";
+import messagesHandlers from "store/middlewareHandlers/messages.handler";
+
+// types
+import { AppDispatch, RootState } from "store/_types";
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -27,16 +34,14 @@ export const store = configureStore({
     users: usersReducer,
   },
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware({ serializableCheck: false }).concat([thunk]);
+    return getDefaultMiddleware({ serializableCheck: false }).concat([
+      thunk,
+      middlewareAfterRegister(messagesHandlers),
+    ]);
   },
 });
 
 setupAxios(store);
-
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch;
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useDispatch = () => useReduxDispatch<AppDispatch>();

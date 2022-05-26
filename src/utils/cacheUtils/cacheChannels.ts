@@ -1,29 +1,29 @@
-export type CacheLatestModifyType = Record<string, Record<string, number>>;
+export type CacheUpdatedTimeType = Record<string, Record<string, number>>;
 
-const getLocalStorageLatestModify = () => {
-  let result: CacheLatestModifyType = {};
+const getLocalStorageUpdatedTime = () => {
+  let result: CacheUpdatedTimeType = {};
   try {
-    const dataString = localStorage.getItem("latestModifies") || "";
+    const dataString = localStorage.getItem("updatedTime") || "";
     const data = JSON.parse(dataString);
     result = data;
   } catch {
-    // when [latestModifies] did not exist, add a new one
-    localStorage.setItem("latestModifies", "{}");
+    // when [updatedTime] did not exist, add a new one
+    localStorage.setItem("updatedTime", "{}");
   } finally {
     return result;
   }
 };
 
-export const getChannelLatestModify = (channelId: string) => {
+export const getChannelUpdatedTime = (channelId: string) => {
   const result = { channel: 0, message: 0 };
 
   try {
-    const data = getLocalStorageLatestModify();
-    let latestModify = data[channelId];
+    const data = getLocalStorageUpdatedTime();
+    let updatedTime = data[channelId];
 
-    if (latestModify) {
-      if (latestModify.channel) result.channel = latestModify.channel;
-      if (latestModify.message) result.message = latestModify.message;
+    if (updatedTime) {
+      if (updatedTime.channel) result.channel = updatedTime.channel;
+      if (updatedTime.message) result.message = updatedTime.message;
     }
   } catch {
   } finally {
@@ -31,22 +31,22 @@ export const getChannelLatestModify = (channelId: string) => {
   }
 };
 
-export const setChannelLatestModify = (
+export const setChannelUpdatedTime = (
   channelId: string,
   { channel, message }: { channel?: number; message?: number }
 ) => {
-  const localStorageLatestModify = getLocalStorageLatestModify();
-  const channelLatestModify = getChannelLatestModify(channelId);
+  const localStorageUpdatedTime = getLocalStorageUpdatedTime();
+  const channelUpdatedTime = getChannelUpdatedTime(channelId);
 
-  localStorageLatestModify[channelId] = {
-    channel: channel || channelLatestModify.channel,
-    message: message || channelLatestModify.message,
+  localStorageUpdatedTime[channelId] = {
+    channel: channel || channelUpdatedTime.channel,
+    message: message || channelUpdatedTime.message,
   };
 
-  localStorage.setItem("latestModifies", JSON.stringify(localStorageLatestModify));
+  localStorage.setItem("updatedTime", JSON.stringify(localStorageUpdatedTime));
 };
 
-export const isSameLatestModify = (channelId: string) => {
-  const { channel, message } = getChannelLatestModify(channelId);
+export const isSameUpdatedTime = (channelId: string) => {
+  const { channel, message } = getChannelUpdatedTime(channelId);
   return !!channel && !!message && channel === message;
 };

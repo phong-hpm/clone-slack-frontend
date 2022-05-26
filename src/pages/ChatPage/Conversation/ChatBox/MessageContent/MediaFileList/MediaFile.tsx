@@ -42,7 +42,7 @@ const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
     () => ({
       channelName: selectedChannel?.name,
       src: file.url,
-      created: file.created,
+      createdTime: file.createdTime,
       duration: file.duration,
       scripts: file.scripts,
       thumbnail: file.thumb,

@@ -11,7 +11,6 @@ import * as channelsSelectors from "store/selectors/channels.selector";
 
 // components
 import {
-  Avatar,
   Box,
   Chip,
   Collapse,
@@ -23,16 +22,10 @@ import {
   Typography,
 } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
-import Status from "components/Status";
-
-// images
-import defaultAvatar from "assets/images/default_avatar.png";
-
-// utils
-import { color } from "utils/constants";
 
 // types
-import { ChannelType } from "store/slices/_types";
+import { ChannelType, UserType } from "store/slices/_types";
+import UserAvatarStatus from "components/UserAvatarStatus";
 
 export interface ChannelListProps {
   label: string;
@@ -98,11 +91,10 @@ const ChannelList: FC<ChannelListProps> = ({ label, channels, addText, onClickAd
         <List component="div" disablePadding>
           {channels.map((channel) => {
             const isSelected = channel.id === selectedChannel?.id;
-            let isOnline = false;
+            let userPartner: UserType | undefined = undefined;
             if (channel.type !== "channel") {
               const userPartnerId = channel.users.find((userId) => userId !== user.id);
-              const userPartner = userList.find(({ id: userId }) => userId === userPartnerId);
-              isOnline = !!userPartner?.isOnline;
+              userPartner = userList.find(({ id: userId }) => userId === userPartnerId);
             }
 
             return (
@@ -116,24 +108,11 @@ const ChannelList: FC<ChannelListProps> = ({ label, channels, addText, onClickAd
                   {channel.type === "channel" ? (
                     <SlackIcon icon="channel-pane-hash" />
                   ) : (
-                    <Box position="relative">
-                      <Box position="relative" overflow="hidden">
-                        <Box
-                          position="absolute"
-                          zIndex={1}
-                          right={-4}
-                          bottom={-3}
-                          width={11}
-                          height={11}
-                          borderRadius={5}
-                          bgcolor={color.BG_WORK_SPACE}
-                        />
-                        <Avatar sizes="small" src={defaultAvatar} />
-                      </Box>
-                      <Box position="absolute" zIndex={2} right={-6} bottom={-5}>
-                        <Status isOnline={isOnline} fontSize="medium" />
-                      </Box>
-                    </Box>
+                    <UserAvatarStatus
+                      sizes="small"
+                      src={userPartner?.avatar}
+                      isOnline={userPartner?.isOnline}
+                    />
                   )}
                 </ListItemIcon>
                 <Box

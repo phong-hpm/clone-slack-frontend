@@ -11,7 +11,7 @@ export interface TranScriptType {
 export interface VideoPlayerDataType {
   channelName: string;
   src: string;
-  created: number;
+  createdTime: number;
   duration: number;
   scripts: TranScriptType[];
   thumbnail?: string;

@@ -32,13 +32,14 @@ const Reactions: FC<ReactionsProps> = ({ messageId, reactions }) => {
 
   const [isShowEmojiModal, setShowEmojiModal] = useState(false);
 
-  if (!reactions.length) return <></>;
+  const reactionList = Object.values(reactions || {});
+  if (!reactionList.length) return <></>;
 
   return (
     <Box display="flex">
       <Box flexBasis={36} mr={1} />
 
-      {reactions.map((reaction) => (
+      {reactionList.map((reaction) => (
         <Box key={reaction.id} mr={0.5}>
           <Chip
             clickable

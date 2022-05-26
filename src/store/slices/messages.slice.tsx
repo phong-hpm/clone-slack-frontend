@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // types
-import { MessagesState, MessageType } from "store/slices/_types";
+import { DayMessageType, MessagesState, MessageType } from "store/slices/_types";
 
 const initialState: MessagesState = {
   isLoading: true,
   list: [],
+  dayMessageList: [],
 };
 
 export const cachedList: any = {};
@@ -21,9 +22,12 @@ export const messagesSlice = createSlice({
       state.list.push(action.payload);
     },
     updateMessage: (state, action: PayloadAction<MessageType>) => {
-      const message = action.payload;
-      const index = state.list.findIndex((mes) => mes.id === message.id);
-      state.list[index] = message;
+      const newMessage = action.payload;
+      let index = state.list.findIndex((mes) => mes.id === newMessage.id);
+      state.list[index] = newMessage;
+
+      index = state.dayMessageList.findIndex(({ message }) => message?.id === newMessage.id);
+      state.dayMessageList[index].message = newMessage;
     },
     removeMessage: (state, action: PayloadAction<string>) => {
       const id = action.payload;
@@ -32,6 +36,10 @@ export const messagesSlice = createSlice({
     setMessagesList: (state, action: PayloadAction<MessageType[]>) => {
       const messages = action.payload;
       state.list = messages;
+    },
+    setDayMessageList: (state, action: PayloadAction<DayMessageType[]>) => {
+      const messages = action.payload;
+      state.dayMessageList = messages;
       state.isLoading = false;
     },
     resetMessageState: (state) => {
@@ -44,6 +52,7 @@ export const messagesSlice = createSlice({
 export const {
   setLoading,
   setMessagesList,
+  setDayMessageList,
   addMessage,
   updateMessage,
   removeMessage,

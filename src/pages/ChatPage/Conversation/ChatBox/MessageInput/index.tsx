@@ -21,11 +21,11 @@ import { Delta } from "quill";
 import { MessageFileType } from "store/slices/_types";
 
 export interface MessageInputProps extends Omit<InputMainProps, "onSend"> {
-  isEditMode?: boolean;
+  mode: "input" | "edit" | "custom";
   onSend?: (delta: Delta, files: MessageFileType[]) => void;
 }
 
-const MessageInput: FC<MessageInputProps> = ({ isEditMode, defaultValue, onSend, ...props }) => {
+const MessageInput: FC<MessageInputProps> = ({ mode, defaultValue, onSend, ...props }) => {
   const dispatch = useDispatch();
 
   const { emitAddMessage } = useMessageSocket();
@@ -55,7 +55,7 @@ const MessageInput: FC<MessageInputProps> = ({ isEditMode, defaultValue, onSend,
   );
 
   return (
-    <MessageInputProvider isEditMode={isEditMode}>
+    <MessageInputProvider mode={mode}>
       <InputMain
         placeHolder={placeHolder}
         defaultValue={defaultValue}

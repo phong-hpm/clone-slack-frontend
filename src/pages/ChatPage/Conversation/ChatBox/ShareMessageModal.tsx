@@ -18,6 +18,7 @@ import Status from "components/Status";
 
 // utils
 import { color } from "utils/constants";
+import MessageInput from "./MessageInput";
 
 export interface ShareMessageModalProps {
   isOpen: boolean;
@@ -42,62 +43,65 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, onSubmit, onClo
       </ModalHeader>
       <ModalBody>
         <Box mt={1} color={color.PRIMARY}>
-          <Box>
-            <Autocomplete
-              disablePortal
-              freeSolo
-              options={userList}
-              size="small"
-              PopperComponent={(props) => <Popper {...props} />}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  type="text"
-                  color="primary"
-                  placeholder="Search for channel or person"
-                  value={channelName}
-                  onChange={(e) => setChannelName(e.target.value)}
-                />
-              )}
-              renderOption={(liProps, { id, name, realname, isOnline }) => {
-                return (
-                  <li {...liProps}>
-                    <Box display="flex" color={color.PRIMARY}>
-                      <Box p={0.5}>
-                        <Avatar sizes="small" src={defaultAvatar} />
-                      </Box>
-                      <Box p={0.5}>
-                        <Typography fontWeight={700}>{name || "unknow"}</Typography>
-                      </Box>
-                      {id === user.id && (
-                        <Box p={0.5}>
-                          <Typography fontWeight={700}>(you)</Typography>
-                        </Box>
-                      )}
-                      <Box p={0.5}>
-                        <Status fontSize="large" isOnline={isOnline} />
-                      </Box>
-                      {!!realname && (
-                        <Box p={0.5}>
-                          <Typography>{realname}</Typography>
-                        </Box>
-                      )}
+          <Autocomplete
+            disablePortal
+            freeSolo
+            options={userList}
+            size="small"
+            PopperComponent={(props) => <Popper {...props} />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                type="text"
+                color="primary"
+                placeholder="Search for channel or person"
+                value={channelName}
+                onChange={(e) => setChannelName(e.target.value)}
+              />
+            )}
+            renderOption={(liProps, { id, name, realname, isOnline, avatar }) => {
+              return (
+                <li {...liProps}>
+                  <Box display="flex" color={color.PRIMARY}>
+                    <Box p={0.5}>
+                      <Avatar sizes="small" src={avatar}>
+                        <img src={defaultAvatar} alt="" />
+                      </Avatar>
                     </Box>
-                  </li>
-                );
-              }}
-            />
-          </Box>
+                    <Box p={0.5}>
+                      <Typography fontWeight={700}>{name || "unknow"}</Typography>
+                    </Box>
+                    {id === user.id && (
+                      <Box p={0.5}>
+                        <Typography fontWeight={700}>(you)</Typography>
+                      </Box>
+                    )}
+                    <Box p={0.5}>
+                      <Status fontSize="large" isOnline={isOnline} />
+                    </Box>
+                    {!!realname && (
+                      <Box p={0.5}>
+                        <Typography>{realname}</Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </li>
+              );
+            }}
+          />
+        </Box>
+        <Box mt={2}>
+          <MessageInput mode="custom" placeHolder="Add a message, if you'd like." />
         </Box>
       </ModalBody>
 
       <ModalFooter>
         <Box display="flex" justifyContent="space-between">
-          <Button variant="outlined" color="primary" size="large">
+          <Button variant="outlined" size="large">
             Copy Link
           </Button>
           <Box>
-            <Button variant="outlined" color="primary" size="large" sx={{ mr: 1.5 }}>
+            <Button variant="outlined" size="large" sx={{ mr: 1.5 }}>
               Save Draft
             </Button>
             <Button variant="contained" color="primary" size="large" onClick={handleSubmit}>

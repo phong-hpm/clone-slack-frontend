@@ -119,7 +119,9 @@ const FullScreenModal: FC<FullScreenModalProps> = ({
               }}
             >
               <Box flexBasis={36} mr={1}>
-                <Avatar src={defaultAvatar} />
+                <Avatar src={state.userOwner?.avatar}>
+                  <img src={defaultAvatar} alt="" />
+                </Avatar>
               </Box>
 
               <Box flex="1" display="flex">
@@ -135,7 +137,7 @@ const FullScreenModal: FC<FullScreenModalProps> = ({
                   </Link>
 
                   <Box display="flex">
-                    <TimeCard time={state.created}>{dayFromNow(state.created)}</TimeCard>
+                    <TimeCard time={state.createdTime}>{dayFromNow(state.createdTime)}</TimeCard>
                     {!!state.channelName && (
                       <Typography variant="h6" ml={0.5}>{` in #${state.channelName}`}</Typography>
                     )}

@@ -10,7 +10,7 @@ import * as channelsSelector from "store/selectors/channels.selector";
 import axios from "utils/axios";
 
 // types
-import { RootState } from "store";
+import { RootState } from "store/_types";
 import { GetUserInformationResponseData } from "store/actions/auth/_types";
 import { MessageFilesPostData } from "./_types";
 
