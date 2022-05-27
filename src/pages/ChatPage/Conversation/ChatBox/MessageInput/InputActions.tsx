@@ -17,7 +17,7 @@ import SlackIcon from "components/SlackIcon";
 import InputContext from "./InputContext";
 
 // utils
-import { color, rgba } from "utils/constants";
+import { color } from "utils/constants";
 import EmojiModal from "features/EmojiModal";
 import RecordAudioModal from "./Record/RecordAudio";
 
@@ -54,38 +54,94 @@ const InputActions: FC<InputActionsProps> = ({
   const [isShowAudioModal, setShowAudioModal] = useState(false);
   const [isShowVideoModal, setShowVideoModal] = useState(false);
 
-  const createActionList = useMemo(
-    () => [
-      {
+  const actionList = useMemo(() => {
+    const configActions = appState.configActions;
+
+    const actions = [];
+
+    if (configActions.more) {
+      actions.push({
         icon: "plus",
         style: { backgroundColor: "rgba(255, 255, 255, 0.04)", borderRadius: "50%" },
         action: () => {},
-      },
-      { isDivider: true },
-      { icon: "video", action: () => setShowVideoModal(true) },
-      { icon: "microphone", action: () => setShowAudioModal(true), ref: microButtonRef },
-      { isDivider: true },
-      { icon: "emoji", action: () => setShowEmojiModal(true), ref: emojiButtonRef },
-      { icon: "mentions", action: onClickAtSign },
-    ],
-    [onClickAtSign]
-  );
+      });
+      actions.push({ isDivider: true });
+    }
 
-  const editActionList = useMemo(
-    () => [{ icon: "emoji", action: () => {}, isDivider: false, style: {}, ref: undefined }],
-    []
-  );
+    if (configActions.recordVideo) {
+      actions.push({ icon: "video", action: () => setShowVideoModal(true) });
+    }
 
-  const customActionList = useMemo(
-    () => [{ icon: "emoji", action: () => {}, isDivider: false, style: {}, ref: undefined }],
-    []
-  );
+    if (configActions.recordAudio) {
+      actions.push({
+        icon: "microphone",
+        action: () => setShowAudioModal(true),
+        ref: microButtonRef,
+      });
+    }
 
-  const actionList = useMemo(() => {
-    if (appState.mode === "input") return createActionList;
-    if (appState.mode === "edit") return editActionList;
-    return customActionList;
-  }, [appState.mode, createActionList, editActionList, customActionList]);
+    if (configActions.recordVideo || configActions.recordAudio) {
+      actions.push({ isDivider: true });
+    }
+
+    if (configActions.emoji) {
+      actions.push({ icon: "emoji", action: () => setShowEmojiModal(true), ref: emojiButtonRef });
+    }
+
+    if (configActions.mention) {
+      actions.push({ icon: "mentions", action: onClickAtSign });
+    }
+
+    return actions;
+  }, [appState.configActions, onClickAtSign]);
+
+  const renderSendButton = () => {
+    if (!appState.configActions.send) return <></>;
+
+    if (!appState.configActions.schedule) {
+      return (
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          sx={{ ml: 1, px: 1.5 }}
+          onClick={onSend}
+        >
+          <Typography variant="h5">Save</Typography>
+        </Button>
+      );
+    }
+
+    return (
+      <ButtonGroup
+        variant={isDisabledSend ? "outlined" : "contained"}
+        disabled
+        sx={{ ":disabled": { backgroundColor: "stranparent" } }}
+      >
+        <IconButton
+          size="large"
+          sx={{ borderRadius: 1 }}
+          onClick={onSend}
+          disabled={isDisabledSend}
+        >
+          <SlackIcon icon="send-filled" fontSize="medium" />
+        </IconButton>
+
+        <Box py={0.75} display="flex">
+          <Divider flexItem orientation="vertical" />
+        </Box>
+
+        <IconButton
+          size="large"
+          sx={{ borderRadius: 1, paddingLeft: 0.5, paddingRight: 0.5 }}
+          disabled={isDisabledSend}
+          onClick={() => setShowMenu(true)}
+        >
+          <SlackIcon icon="chevron-down" fontSize="medium" />
+        </IconButton>
+      </ButtonGroup>
+    );
+  };
 
   return (
     <Box display="flex" p={0.75} onClick={() => setFocus(true)}>
@@ -132,55 +188,13 @@ const InputActions: FC<InputActionsProps> = ({
         </Box>
       </Box>
 
-      {/* Send group */}
-      <Box ref={anchorRef} flex="0" display="flex" color={rgba(color.LIGHT, 0.7)}>
-        {appState.mode === "input" && (
-          <ButtonGroup
-            variant={isDisabledSend ? "outlined" : "contained"}
-            disabled
-            sx={{ ":disabled": { backgroundColor: "stranparent" } }}
-          >
-            <IconButton
-              size="large"
-              sx={{ borderRadius: 1 }}
-              onClick={onSend}
-              disabled={isDisabledSend}
-            >
-              <SlackIcon icon="send-filled" fontSize="medium" />
-            </IconButton>
+      {!!appState.configActions.cancel && (
+        <Button variant="outlined" size="small" sx={{ px: 1.5 }} onClick={onCancel}>
+          <Typography variant="h5">Cancel</Typography>
+        </Button>
+      )}
 
-            <Box py={0.75} display="flex">
-              <Divider flexItem orientation="vertical" />
-            </Box>
-
-            <IconButton
-              size="large"
-              sx={{ borderRadius: 1, paddingLeft: 0.5, paddingRight: 0.5 }}
-              disabled={isDisabledSend}
-              onClick={() => setShowMenu(true)}
-            >
-              <SlackIcon icon="chevron-down" fontSize="medium" />
-            </IconButton>
-          </ButtonGroup>
-        )}
-
-        {appState.mode === "edit" && (
-          <>
-            <Button variant="outlined" size="small" sx={{ mr: 1, px: 1.5 }} onClick={onCancel}>
-              <Typography variant="h5">Cancel</Typography>
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              sx={{ px: 1.5 }}
-              onClick={onSend}
-            >
-              <Typography variant="h5">Save</Typography>
-            </Button>
-          </>
-        )}
-      </Box>
+      {renderSendButton()}
 
       <Menu
         variant="menu"

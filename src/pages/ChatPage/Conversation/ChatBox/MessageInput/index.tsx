@@ -19,13 +19,15 @@ import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 // types
 import { Delta } from "quill";
 import { MessageFileType } from "store/slices/_types";
+import { ContextAppStateType } from "./_types";
 
-export interface MessageInputProps extends Omit<InputMainProps, "onSend"> {
-  mode: "input" | "edit" | "custom";
+export interface MessageInputProps
+  extends Omit<InputMainProps, "onSend">,
+    Pick<ContextAppStateType, "configActions"> {
   onSend?: (delta: Delta, files: MessageFileType[]) => void;
 }
 
-const MessageInput: FC<MessageInputProps> = ({ mode, defaultValue, onSend, ...props }) => {
+const MessageInput: FC<MessageInputProps> = ({ configActions, defaultValue, onSend, ...props }) => {
   const dispatch = useDispatch();
 
   const { emitAddMessage } = useMessageSocket();
@@ -55,7 +57,7 @@ const MessageInput: FC<MessageInputProps> = ({ mode, defaultValue, onSend, ...pr
   );
 
   return (
-    <MessageInputProvider mode={mode}>
+    <MessageInputProvider configActions={configActions}>
       <InputMain
         placeHolder={placeHolder}
         defaultValue={defaultValue}

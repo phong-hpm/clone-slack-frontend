@@ -33,6 +33,7 @@ const PlayerSpeed: FC<PlayerSpeedProps> = ({ onChange }) => {
         MenuProps={{
           anchorOrigin: { horizontal: "center", vertical: "top" },
           transformOrigin: { horizontal: "center", vertical: "bottom" },
+          sx: { zIndex: 1500 },
         }}
         variant="standard"
         value={state.speed}

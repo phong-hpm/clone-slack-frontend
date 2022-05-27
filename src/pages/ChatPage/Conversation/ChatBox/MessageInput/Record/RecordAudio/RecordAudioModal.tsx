@@ -14,7 +14,7 @@ import SlackIcon from "components/SlackIcon";
 import { buildProgressTime, buildPeaks, createWaveSurfer } from "utils/waveSurver";
 
 // sounds
-import popSound from "assets/media/effect/pop_sound.mp3";
+import popSound from "assets/media/pop_sound.mp3";
 
 // context
 import InputContext from "../../InputContext";

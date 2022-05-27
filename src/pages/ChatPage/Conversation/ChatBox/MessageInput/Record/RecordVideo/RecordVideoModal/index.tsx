@@ -15,7 +15,7 @@ import { color, resolutions, rgba } from "utils/constants";
 import { StatusType } from "./_types";
 
 // sounds
-import popSound from "assets/media/effect/pop_sound.mp3";
+import popSound from "assets/media/pop_sound.mp3";
 
 export interface RecordModalProps extends ModalProps {
   onNext: (url: string, duration: number) => void;

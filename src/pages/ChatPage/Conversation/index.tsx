@@ -21,7 +21,17 @@ const Conversation: FC = () => {
       <MessageSocketProvider>
         <ChatBox />
         <Box px={2.5}>
-          <MessageInput mode="input" />
+          <MessageInput
+            configActions={{
+              more: true,
+              recordVideo: true,
+              recordAudio: true,
+              emoji: true,
+              mention: true,
+              send: true,
+              schedule: true,
+            }}
+          />
         </Box>
       </MessageSocketProvider>
       <Box display="flex" justifyContent="end" pr={3} py={0.5}>

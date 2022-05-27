@@ -52,6 +52,7 @@ const MoreMenu: FC<MoreMenuProps> = ({
   return (
     <Menu
       variant="menu"
+      sx={{ zIndex: 1500 }}
       MenuListProps={{ sx: { minWidth: 300 } }}
       onClose={onClose}
       onClick={() => onClose && onClose({}, "backdropClick")}

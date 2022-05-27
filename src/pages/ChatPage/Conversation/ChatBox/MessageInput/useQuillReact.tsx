@@ -6,7 +6,7 @@ import { useSelector } from "store";
 
 // redux selectors
 import * as authSelectors from "store/selectors/auth.selector";
-import * as usersSelectors from "store/selectors/users.selector";
+import * as usersSelectors from "store/selectors/channelUsers.selector";
 
 // context
 import InputContext, { initialQuillState } from "./InputContext";
@@ -31,14 +31,14 @@ export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
   const { quillReact, updateQuillState, updateAppState, setFocus } = useContext(InputContext);
 
   const userId = useSelector(authSelectors.getUserId);
-  const userList = useSelector(usersSelectors.getUserList);
+  const channelUserList = useSelector(usersSelectors.getChannelUserList);
 
   // modules ref will keep the reference of modules, help QuillReact will not be broken
   const keepRef = useRef({
     ...initialQuillState,
     isMentioning: false,
     userId: "",
-    userList: [] as UserType[],
+    channelUserList: [] as UserType[],
   });
 
   const mentionModule = useMemo(() => {
@@ -63,9 +63,9 @@ export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
         });
       },
       source: (search: string, renderList: Function) => {
-        const { userList = [] } = keepRef.current;
-        if (search.length === 0) return renderList(userList, search);
-        renderList(searchUserMention(userList, search), search);
+        const { channelUserList = [] } = keepRef.current;
+        if (search.length === 0) return renderList(channelUserList, search);
+        renderList(searchUserMention(channelUserList, search), search);
       },
       renderItem: (userMention: UserType) => {
         return ReactDOMServer.renderToString(
@@ -76,12 +76,12 @@ export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
   }, []);
 
   // after [Quill] render [modules], we can NOT update data
-  // assign [userId] and [userList] to keepRef will help
+  // assign [userId] and [channelUserList] to keepRef will help
   //    [selectMention] and [selectMention] can access new data in runtime
   useEffect(() => {
     keepRef.current.userId = userId;
-    keepRef.current.userList = userList;
-  }, [userId, userList]);
+    keepRef.current.channelUserList = channelUserList;
+  }, [userId, channelUserList]);
 
   // listen event click link
   useEffect(() => {

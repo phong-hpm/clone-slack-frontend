@@ -14,7 +14,7 @@ import {
   addChannel,
   updateChannel,
 } from "store/slices/channels.slice";
-import { setUserList, updateUserOnline } from "store/slices/users.slice";
+import { updateChannelUserOnline } from "store/slices/channelUsers.slice";
 
 // hooks
 import useSocket from "hooks/useSocket";
@@ -26,6 +26,7 @@ import { SocketEvent, SocketEventDefault } from "utils/constants";
 // types
 import { UserType, ChannelType } from "store/slices/_types";
 import { ChannelContextType } from "./_types";
+import { setTeamUserList } from "store/slices/teamUsers.slice";
 
 const initialContext: ChannelContextType = {
   updateNamespace: () => {},
@@ -51,15 +52,13 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
   );
 
   const handleUpdateUserStatus = useCallback(
-    (id: string, isOnline: boolean) => dispatch(updateUserOnline({ id, isOnline })),
+    (id: string, isOnline: boolean) => dispatch(updateChannelUserOnline({ id, isOnline })),
     [dispatch]
   );
 
   const handleSetChannelList = useCallback(
-    (data: { channels?: ChannelType[]; users?: UserType[] }) => {
-      const { channels, users } = data || {};
-
-      if (users) dispatch(setUserList(users));
+    ({ channels, users: teamUsers }: { channels: ChannelType[]; users: UserType[] }) => {
+      dispatch(setTeamUserList(teamUsers));
 
       if (channels) {
         const channelsList: ChannelType[] = [];

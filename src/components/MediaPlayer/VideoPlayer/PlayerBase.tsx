@@ -129,7 +129,12 @@ const PlayerBase = forwardRef<PlayerBaseInstance, PlayerBaseProps>(
                   <PlayerCaption />
                   <PlayerTranscript onChange={handleChangeProgressSlider} />
                   {state.isFullScreen && <PlayerOpenIn />}
-                  {state.isFullScreen && <PlayerMoreAction />}
+                  {state.isFullScreen && (
+                    <PlayerMoreAction
+                      onClickEditThumbnail={onEditThumbnail}
+                      onClickDelete={onDelete}
+                    />
+                  )}
                 </Box>
               )}
             </Box>

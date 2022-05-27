@@ -20,10 +20,10 @@ export interface MoreMenuProps extends MoreRemindListProps {
 }
 
 const MoreMenu: FC<MoreMenuProps> = ({
-  messageId,
   isOwner,
   isSystem,
   open,
+  messageId,
   anchorEl,
   onClickEdit,
   onClickDelete,
@@ -39,8 +39,9 @@ const MoreMenu: FC<MoreMenuProps> = ({
       anchorEl={anchorEl}
       anchorOrigin={{ vertical: "top", horizontal: "left" }}
       transformOrigin={{ vertical: "top", horizontal: "right" }}
-      sx={{ zIndex: 2001 }}
+      sx={{ zIndex: 1500 }}
       MenuListProps={{ sx: { minWidth: 300 } }}
+      onMouseDown={() => onClose && onClose()}
       onClose={onClose}
     >
       {!isSystem && <MenuItem onMouseDown={() => {}}>Get notified about new replies</MenuItem>}

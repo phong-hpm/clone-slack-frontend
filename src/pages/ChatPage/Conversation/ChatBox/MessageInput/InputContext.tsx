@@ -1,4 +1,5 @@
-import React, { FC, useRef, useCallback, createContext, useState, useMemo, useEffect } from "react";
+import { FC, useRef, useCallback, createContext, useState, useMemo, useEffect } from "react";
+import lodashGet from "lodash.get";
 
 // components
 import ReactQuill from "react-quill";
@@ -20,7 +21,7 @@ const initialAppState: ContextAppStateType = {
   isFocus: true,
   userMention: stateDefault.USER,
   inputFiles: [],
-  mode: "input",
+  configActions: {},
 };
 
 const initialContext: Partial<InputContextType> = {
@@ -30,12 +31,13 @@ const initialContext: Partial<InputContextType> = {
 
 const InputContext = createContext<InputContextType>(initialContext as unknown as InputContextType);
 
-export interface MessageInputProviderProps {
-  mode: "input" | "edit" | "custom";
-}
+export interface MessageInputProviderProps extends Pick<ContextAppStateType, "configActions"> {}
 
-export const MessageInputProvider: FC<MessageInputProviderProps> = ({ mode, children }) => {
-  const keepRef = useRef<{ isFocus?: boolean; selectedIndex?: number }>({});
+export const MessageInputProvider: FC<MessageInputProviderProps> = ({
+  configActions,
+  children,
+}) => {
+  const keepRef = useRef<{ isFocus?: boolean; selectedIndex?: number; configActions?: any }>({});
   const quillRef = useRef<ReactQuill | undefined>();
 
   const [quillState, setQuillState] = useState<ContextQuillStateType>(initialQuillState);
@@ -128,7 +130,23 @@ export const MessageInputProvider: FC<MessageInputProviderProps> = ({ mode, chil
     ]
   );
 
-  useEffect(() => updateAppState({ mode }), [mode, updateAppState]);
+  // update state when [configActions] changed
+  // because [configActions] is an object
+  //  using deep compare to recude re-render times
+  useEffect(() => {
+    if (configActions) {
+      setAppState((state) => {
+        // check values on configActions state
+        for (const [key, val] of Object.entries(configActions)) {
+          // at least 1 config has diference value
+          if (val !== lodashGet(state.configActions, key)) return { ...state, configActions };
+        }
+
+        // all config is not chaged
+        return state;
+      });
+    }
+  }, [configActions, updateAppState]);
 
   return <InputContext.Provider value={value}>{children}</InputContext.Provider>;
 };

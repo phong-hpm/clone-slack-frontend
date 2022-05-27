@@ -30,6 +30,7 @@ export interface InputMainProps {
   defaultValue?: Delta;
   placeHolder?: string;
   onCancel?: () => void;
+  onBlur?: (delta: Delta) => void;
   onSend: (delta: Delta, files: MessageFileType[]) => void;
 }
 
@@ -38,6 +39,7 @@ const InputMain: FC<InputMainProps> = ({
   placeHolder,
   defaultValue,
   onCancel,
+  onBlur,
   onSend,
 }) => {
   const { appState, quillReact, updateQuillState, updateAppState, setQuillReact, setFocus } =
@@ -158,6 +160,18 @@ const InputMain: FC<InputMainProps> = ({
     quillReact?.getEditor().insertText(curIndex || 0, emojiNative);
   };
 
+  const handleBlur = () => {
+    setFocus(false);
+
+    if (onBlur) {
+      const textLength = quillReact?.getEditor().getText()?.trim()?.length;
+      const inputDelta = quillReact?.getEditor()?.getContents();
+      if (textLength && inputDelta) {
+        onBlur(inputDelta);
+      }
+    }
+  };
+
   useEffect(() => {
     if (!placeHolder || !quillReact) return;
     quillReact.getEditor().root.dataset.placeholder = placeHolder;
@@ -169,7 +183,8 @@ const InputMain: FC<InputMainProps> = ({
     <Box color={color.PRIMARY}>
       <Box
         position="relative"
-        borderRadius={appState.mode === "input" ? 2 : 1}
+        // if [configActions] has schedule => is main message input -> radius = 2
+        borderRadius={appState.configActions.schedule ? 2 : 1}
         border="1px solid"
         borderColor={appState.isFocus ? color.HIGH_SOLID : color.MID_SOLID}
         bgcolor={color.MIN_SOLID}
@@ -194,7 +209,7 @@ const InputMain: FC<InputMainProps> = ({
             onChangeSelection={handleChangeSelection}
             onChange={handleChange}
             onFocus={() => setFocus(true)}
-            onBlur={() => setFocus(false)}
+            onBlur={handleBlur}
           />
         )}
 

@@ -40,7 +40,7 @@ const MediaFileDeleteModal: FC<MediaFileDeleteModalProps> = ({
       anchorOrigin={{ horizontal: "center", vertical: "top" }}
       transformOrigin={{ horizontal: "center", vertical: "bottom" }}
       transformExtra={{ vertical: 8 }}
-      style={{ overlay: { zIndex: 2000 }, content: { width: "32.5rem" } }}
+      style={{ content: { width: "32.5rem" } }}
       onClose={onClose}
       {...props}
     >
@@ -71,7 +71,7 @@ const MediaFileDeleteModal: FC<MediaFileDeleteModalProps> = ({
               bgcolor="background-color: rgba(91, 179, 129, 0.2)"
               borderRadius={3}
               border="1px solid"
-              borderColor="rgba(232, 232, 232, 0.13)"
+              borderColor={color.BORDER}
             >
               <WaveSurferIcon />
               <Box

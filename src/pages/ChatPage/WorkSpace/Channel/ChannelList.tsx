@@ -5,8 +5,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "store";
 
 // redux selector
-import * as authSelectors from "store/selectors/auth.selector";
-import * as usersSelectors from "store/selectors/users.selector";
 import * as channelsSelectors from "store/selectors/channels.selector";
 
 // components
@@ -24,7 +22,7 @@ import {
 import SlackIcon from "components/SlackIcon";
 
 // types
-import { ChannelType, UserType } from "store/slices/_types";
+import { ChannelType } from "store/slices/_types";
 import UserAvatarStatus from "components/UserAvatarStatus";
 
 export interface ChannelListProps {
@@ -38,8 +36,6 @@ const ChannelList: FC<ChannelListProps> = ({ label, channels, addText, onClickAd
   const navigate = useNavigate();
   const { teamId } = useParams();
 
-  const user = useSelector(authSelectors.getUser);
-  const userList = useSelector(usersSelectors.getUserList);
   const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -91,11 +87,6 @@ const ChannelList: FC<ChannelListProps> = ({ label, channels, addText, onClickAd
         <List component="div" disablePadding>
           {channels.map((channel) => {
             const isSelected = channel.id === selectedChannel?.id;
-            let userPartner: UserType | undefined = undefined;
-            if (channel.type !== "channel") {
-              const userPartnerId = channel.users.find((userId) => userId !== user.id);
-              userPartner = userList.find(({ id: userId }) => userId === userPartnerId);
-            }
 
             return (
               <ListItemButton
@@ -105,14 +96,14 @@ const ChannelList: FC<ChannelListProps> = ({ label, channels, addText, onClickAd
                 onClick={() => !isSelected && navigate(`/${teamId}/${channel.id}`)}
               >
                 <ListItemIcon sx={{ minWidth: 28 }}>
-                  {channel.type === "channel" ? (
-                    <SlackIcon icon="channel-pane-hash" />
-                  ) : (
+                  {!!channel.partner ? (
                     <UserAvatarStatus
                       sizes="small"
-                      src={userPartner?.avatar}
-                      isOnline={userPartner?.isOnline}
+                      src={channel.partner.avatar}
+                      isOnline={channel.partner.isOnline}
                     />
+                  ) : (
+                    <SlackIcon icon="channel-pane-hash" />
                   )}
                 </ListItemIcon>
                 <Box

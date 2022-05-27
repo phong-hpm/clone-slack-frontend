@@ -64,6 +64,7 @@ const RecordSettingMenu: FC<RecordSettingMenuProps> = ({
       anchorOrigin={{ vertical: "top", horizontal: "left" }}
       transformOrigin={{ vertical: "bottom", horizontal: "left" }}
       PaperProps={{ sx: { minWidth: "225px !important" } }}
+      sx={{ zIndex: 1500 }}
       {...props}
     >
       {settingOptions.map((option) => {
