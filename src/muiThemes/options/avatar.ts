@@ -19,6 +19,13 @@ const components: Theme["components"] = {
         },
       },
       {
+        props: { sizes: "14" },
+        style: {
+          height: "14px",
+          width: "14px",
+        },
+      },
+      {
         props: { sizes: "small" },
         style: {
           height: "20px",

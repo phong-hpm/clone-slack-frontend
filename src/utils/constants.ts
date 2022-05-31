@@ -14,11 +14,11 @@ export const SocketEvent = {
   ON_USER_OFFLINE: "ON_USER_OFFLINE",
   EMIT_LOAD_CHANNELS: "EMIT_LOAD_CHANNELS",
   EMIT_ADD_CHANNEL: "EMIT_ADD_CHANNEL",
-  EMIT_RESET_CHANNEL_UNREAD_MESSAGE_COUNT: "EMIT_RESET_CHANNEL_UNREAD_MESSAGE_COUNT",
 
   EMIT_LOAD_MESSAGES: "EMIT_LOAD_MESSAGES",
   EMIT_ADD_MESSAGE: "EMIT_ADD_MESSAGE",
-  EMIT_SHARE_MESSAGE: "EMIT_SHARE_MESSAGE",
+  EMIT_SHARE_MESSAGE_TO_CHANNEL: "EMIT_SHARE_MESSAGE_TO_CHANNEL",
+  EMIT_SHARE_MESSAGE_TO_GROUP_USERS: "EMIT_SHARE_MESSAGE_TO_GROUP_USERS",
   EMIT_EDIT_MESSAGE: "EMIT_EDIT_MESSAGE",
   EMIT_REMOVE_MESSAGE: "EMIT_REMOVE_MESSAGE",
   EMIT_REMOVE_MESSAGE_FILE: "EMIT_REMOVE_MESSAGE_FILE",
@@ -31,7 +31,7 @@ export const SocketEvent = {
 
   ON_MESSAGES: "ON_MESSAGES",
   ON_ADDED_MESSAGE: "ON_ADDED_MESSAGE",
-  ON_SHARED_MESSAGE: "ON_SHARED_MESSAGE",
+  ON_SHARE_MESSAGE_TO_CHANNEL: "ON_SHARE_MESSAGE_TO_CHANNEL",
   ON_EDITED_MESSAGE: "ON_EDITED_MESSAGE",
   ON_REMOVED_MESSAGE: "ON_REMOVED_MESSAGE",
   ON_REMOVED_MESSAGE_FILE: "ON_REMOVED_MESSAGE_FILE",
@@ -51,7 +51,7 @@ export const teamIdRegExp = new RegExp(
 );
 
 export const channelIdRegExp = new RegExp(
-  /^(C|D)-[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$/
+  /^(C|D|G)-[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$/
 );
 
 export enum RouterPath {
@@ -153,3 +153,20 @@ export enum deviceKind {
   CAMERA = "videoinput",
 }
 export const resolutions: ResolutionType[] = [{ width: 1280, height: 720 }];
+
+export const notifyMentions: Record<string, UserType> = {
+  "tag#here": {
+    id: "tag#here",
+    name: "here",
+    realname: "Notify every online member in this channel",
+    email: "",
+    timeZone: "",
+  },
+  "tag#channel": {
+    id: "tag#channel",
+    name: "channel",
+    realname: "Notify everyone in this channel",
+    email: "",
+    timeZone: "",
+  },
+};

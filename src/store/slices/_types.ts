@@ -11,7 +11,7 @@ export interface TeamUsersState {
 export interface UserType {
   id: string;
   name: string;
-  realname: string;
+  realname?: string;
   email: string;
   timeZone: string;
   isOnline?: boolean;
@@ -74,7 +74,6 @@ export interface MessageType {
   updatedTime: number;
   team: string;
   user: string;
-  isOwner?: boolean;
   isEdited?: boolean;
   isStared?: boolean;
   reactions: Record<string, { id: string; users: string[]; count: number }>;
@@ -97,7 +96,7 @@ export interface MessagesState {
 // channels.slice.tsx -----------------
 export interface ChannelType {
   id: string;
-  type: "direct_message" | "channel";
+  type: "direct_message" | "channel" | "group_message";
   name: string;
   users: string[];
   creater: string;
@@ -105,6 +104,7 @@ export interface ChannelType {
   unreadMessageCount: number;
   updatedTime: number;
   partner?: UserType;
+  avatar?: string;
 }
 
 export interface ChannelsState {

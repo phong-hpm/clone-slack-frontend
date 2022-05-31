@@ -42,6 +42,16 @@ const useSocket = () => {
       auth: { userId: user.id, email: user.email, name: user.name, accessToken },
     });
 
+    // logger
+    if (process.env.NODE_ENV === "development") {
+      socketRef.current.onAny((event, ...args) => {
+        // console.group(`%c${event}`, "color: #bada55");
+        console.groupCollapsed(`%c${event}`, "color: #bada55");
+        console.log(...args);
+        console.groupEnd();
+      });
+    }
+
     // authenticated listener
     socketRef.current.on(SocketEvent.ON_AUTHENTICATED, ({ authenticated }) => {
       dispatch(setIsAuth(authenticated));

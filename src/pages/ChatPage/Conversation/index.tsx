@@ -22,6 +22,8 @@ const Conversation: FC = () => {
         <ChatBox />
         <Box px={2.5}>
           <MessageInput
+            className="editor-limit-height"
+            isAutoSend
             configActions={{
               more: true,
               recordVideo: true,

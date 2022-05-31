@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { useEffect } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 // redux store
@@ -21,7 +21,7 @@ import WorkSpaceSidebar from "pages/ChatPage/WorkSpace/WorkSpaceSidebar";
 // contexts
 import ChannelSocketProvider from "pages/ChatPage/Context/ChannelSocketContext";
 
-const WorkSpace: FC = () => {
+const WorkSpace = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

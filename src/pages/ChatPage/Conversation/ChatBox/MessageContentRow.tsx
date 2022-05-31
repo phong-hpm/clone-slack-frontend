@@ -1,10 +1,4 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
-
-// redux store
-import { useSelector } from "store";
-
-// redux selectors
-import * as messagesSelectors from "store/selectors/messages.selector";
+import { FC, memo, useCallback, useEffect, useRef, useState } from "react";
 
 // components
 import { Box, Button, Divider, ListItemButton, Menu, MenuItem, Typography } from "@mui/material";
@@ -16,18 +10,25 @@ import SlackIcon from "components/SlackIcon";
 // utils
 import { color } from "utils/constants";
 
+// types
+import { DayMessageType } from "store/slices/_types";
+
 export interface MessageContentRowProps {
+  dayMessage: DayMessageType;
   index: number;
   style: React.CSSProperties;
   setRowHeight: (index: number, clientHeight: number) => void;
 }
 
-const MessageContentRow: FC<MessageContentRowProps> = ({ index, style, setRowHeight }) => {
-  const dayMessage = useSelector(messagesSelectors.getDayMessageByIndex(index));
-
+const MessageContentRow: FC<MessageContentRowProps> = ({
+  index,
+  dayMessage,
+  style,
+  setRowHeight,
+}) => {
   const rowRef = useRef<HTMLDivElement>(null);
   // keepRef.current.height: using for checking the change of content height
-  const keepRef = useRef<{ height: number; item: any }>({ height: 0, item: null });
+  const keepRef = useRef<{ height: number }>({ height: 0 });
 
   const [anchorJumpMenu, setAnchorJumpMenu] = useState<HTMLButtonElement | null>(null);
 
@@ -132,4 +133,4 @@ const MessageContentRow: FC<MessageContentRowProps> = ({ index, style, setRowHei
   );
 };
 
-export default MessageContentRow;
+export default memo(MessageContentRow);

@@ -15,7 +15,9 @@ export const channelsSlice = createSlice({
   initialState,
   reducers: {
     addChannel: (state, action: PayloadAction<ChannelType>) => {
-      state.list.push(action.payload);
+      const channel = action.payload;
+      if (channel.type === "channel") state.list.push(action.payload);
+      else state.directMessages.push(action.payload);
     },
     updateChannel: (
       state,
@@ -32,6 +34,16 @@ export const channelsSlice = createSlice({
       if (index === -1) return;
 
       channels[index] = { ...channels[index], ...updatedChannel };
+    },
+    updateChannelParterOnline: (state, action: PayloadAction<{ id: string; online: boolean }>) => {
+      const { id, online } = action.payload;
+
+      const index = state.directMessages.findIndex((channel) => channel.partner?.id === id);
+
+      if (index > -1 && state.directMessages[index].partner) {
+        const partner = state.directMessages[index].partner!;
+        partner.isOnline = online;
+      }
     },
     setChannelsList: (state, action: PayloadAction<ChannelType[]>) => {
       state.list = action.payload;
@@ -54,6 +66,7 @@ export const {
   setChannelsList,
   addChannel,
   updateChannel,
+  updateChannelParterOnline,
   setDirectMessagesList,
   resetState,
 } = channelsSlice.actions;

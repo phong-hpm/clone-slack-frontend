@@ -35,11 +35,15 @@ export const middlewareRegister = ({
 }) => {
   const middleware: Redux.Middleware = (storeAPI) => {
     return (next) => (action) => {
-      next(action);
-      const watcher = actionWatcher(action, storeAPI.getState(), storeAPI.dispatch);
+      beforeHandlers.forEach((handler) =>
+        handler(actionWatcher(action, storeAPI.getState(), storeAPI.dispatch))
+      );
 
-      beforeHandlers.forEach((handler) => handler(watcher));
-      afterHandlers.forEach((handler) => handler(watcher));
+      next(action);
+
+      afterHandlers.forEach((handler) =>
+        handler(actionWatcher(action, storeAPI.getState(), storeAPI.dispatch))
+      );
     };
   };
 

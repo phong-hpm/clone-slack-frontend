@@ -1,11 +1,6 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-// redux store
-import { useSelector } from "store";
-
-// redux selector
-import * as channelsSelectors from "store/selectors/channels.selector";
+import Truncate from "react-truncate";
 
 // components
 import {
@@ -16,39 +11,67 @@ import {
   List,
   ListItemButton,
   ListItemIcon,
-  ListItemText,
   Typography,
 } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
+import UserAvatarStatus from "components/UserAvatarStatus";
+import UserAvatarLength from "components/UserAvatarLength";
 
 // types
 import { ChannelType } from "store/slices/_types";
-import UserAvatarStatus from "components/UserAvatarStatus";
 
 export interface ChannelListProps {
   label: string;
+  types: string[];
+  selectedChannel?: ChannelType;
   channels: ChannelType[];
   onClickAdd: () => void;
   addText: string;
 }
 
-const ChannelList: FC<ChannelListProps> = ({ label, channels, addText, onClickAdd }) => {
+const ChannelList: FC<ChannelListProps> = ({
+  label,
+  types,
+  selectedChannel,
+  channels,
+  addText,
+  onClickAdd,
+}) => {
   const navigate = useNavigate();
-  const { teamId } = useParams();
+  const params = useParams();
 
-  const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
+  const truncateContainerRef = useRef<HTMLDivElement>(null);
+  const truncateRefs = useRef<Record<string, Truncate | null>>({});
+  const keepRef = useRef<{ teamId?: string }>({});
+  keepRef.current.teamId = params.teamId;
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMouseEnter, setIsMouseEnter] = useState(false);
+  const [selectedId, setSelectedId] = useState("");
 
   const handleClickAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
     onClickAdd();
   };
 
-  const handleClickSelect = (event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handleSelectChannel = (id: string) => {
+    setSelectedId(id);
+    // [setTimeout] will ask [navigate] wait for this component re-render
+    setTimeout(() => navigate(`/${keepRef.current.teamId}/${id}`), 1);
   };
+
+  useEffect(() => {
+    if (selectedChannel?.id) setSelectedId(selectedChannel.id);
+  }, [selectedChannel?.id]);
+
+  // when container's width changed, trigger resize of truncate
+  useEffect(() => {
+    const observer = new ResizeObserver(() => {
+      Object.values(truncateRefs.current).forEach((ref: any) => ref?.onResize());
+    });
+
+    observer.observe(truncateContainerRef.current!);
+  }, []);
 
   return (
     <>
@@ -71,7 +94,7 @@ const ChannelList: FC<ChannelListProps> = ({ label, channels, addText, onClickAd
         {isMouseEnter && (
           <>
             <Box ml={1}>
-              <IconButton size="small" onClick={handleClickSelect}>
+              <IconButton size="small" onClick={(e) => e.stopPropagation()}>
                 <SlackIcon icon="ellipsis-vertical-filled" />
               </IconButton>
             </Box>
@@ -83,27 +106,30 @@ const ChannelList: FC<ChannelListProps> = ({ label, channels, addText, onClickAd
           </>
         )}
       </Box>
-      <Collapse in={!isCollapsed} timeout={0} unmountOnExit>
+
+      <Collapse ref={truncateContainerRef} in={!isCollapsed} timeout={0} unmountOnExit>
         <List component="div" disablePadding>
           {channels.map((channel) => {
-            const isSelected = channel.id === selectedChannel?.id;
+            const isSelected = channel.id === selectedId;
 
             return (
               <ListItemButton
                 key={channel.id}
                 selected={isSelected}
                 sx={{ p: 0, pl: 4 }}
-                onClick={() => !isSelected && navigate(`/${teamId}/${channel.id}`)}
+                onClick={() => handleSelectChannel(channel.id)}
               >
                 <ListItemIcon sx={{ minWidth: 28 }}>
-                  {!!channel.partner ? (
+                  {channel.type === "channel" && <SlackIcon icon="channel-pane-hash" />}
+                  {channel.type === "direct_message" && (
                     <UserAvatarStatus
                       sizes="small"
-                      src={channel.partner.avatar}
-                      isOnline={channel.partner.isOnline}
+                      src={channel.partner?.avatar}
+                      isOnline={channel.partner?.isOnline}
                     />
-                  ) : (
-                    <SlackIcon icon="channel-pane-hash" />
+                  )}
+                  {channel.type === "group_message" && (
+                    <UserAvatarLength src={channel.avatar} length={channel.users.length - 1} />
                   )}
                 </ListItemIcon>
                 <Box
@@ -113,7 +139,12 @@ const ChannelList: FC<ChannelListProps> = ({ label, channels, addText, onClickAd
                   width="100%"
                   pr={2}
                 >
-                  <Typography sx={{ lineHeight: "28px" }}>{channel.name}</Typography>
+                  <Box sx={{ lineHeight: "28px", width: "100%" }}>
+                    <Truncate ref={(ref) => (truncateRefs.current[channel.id] = ref)}>
+                      {channel.name}
+                    </Truncate>
+                  </Box>
+
                   {!!channel.unreadMessageCount && (
                     <Chip
                       color="error"
@@ -134,12 +165,18 @@ const ChannelList: FC<ChannelListProps> = ({ label, channels, addText, onClickAd
           </ListItemButton>
         </List>
       </Collapse>
-      {isCollapsed && selectedChannel && (
+
+      {isCollapsed && selectedChannel && types.includes(selectedChannel?.type) && (
         <ListItemButton selected={true} sx={{ p: 0, pl: 4 }}>
           <ListItemIcon sx={{ minWidth: 28 }}>
             <SlackIcon icon="channel-pane-hash" />
           </ListItemIcon>
-          <ListItemText primary={selectedChannel.name} />
+
+          <Box sx={{ lineHeight: "28px", width: "100%" }}>
+            <Truncate ref={(ref) => (truncateRefs.current[selectedChannel.id] = ref)}>
+              {selectedChannel.name}
+            </Truncate>
+          </Box>
         </ListItemButton>
       )}
     </>

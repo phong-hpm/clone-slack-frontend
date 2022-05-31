@@ -30,6 +30,11 @@ const DeleteMessageModal: FC<DeleteMessageModalProps> = ({
 }) => {
   const userOwner = useSelector(usersSelectors.getChannelUserById(message.user));
 
+  const handleSubmit = () => {
+    onClose && onClose();
+    onSubmit && onSubmit();
+  };
+
   return (
     <Modal
       isCloseBtn
@@ -47,7 +52,7 @@ const DeleteMessageModal: FC<DeleteMessageModalProps> = ({
         <Typography variant="h3">Delete message</Typography>
       </ModalHeader>
 
-      <ModalBody px={3} py={0}>
+      <ModalBody>
         <Typography>
           Are you sure you want to delete this message? This cannot be undone.
         </Typography>
@@ -69,7 +74,13 @@ const DeleteMessageModal: FC<DeleteMessageModalProps> = ({
           <Button variant="outlined" size="large" onClick={onClose}>
             Cancel
           </Button>
-          <Button variant="contained" color="error" size="large" sx={{ ml: 2 }} onClick={onSubmit}>
+          <Button
+            variant="contained"
+            color="error"
+            size="large"
+            sx={{ ml: 2 }}
+            onClick={handleSubmit}
+          >
             Delete
           </Button>
         </Box>

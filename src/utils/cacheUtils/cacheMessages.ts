@@ -23,7 +23,6 @@ export const addCachedMessage = ({
 }) => {
   try {
     const data = getCachedMessages(channelId);
-    console.log("addCachedMessage");
     data.messages.push(message);
 
     localStorage.setItem(channelId, JSON.stringify(data));

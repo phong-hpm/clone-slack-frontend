@@ -13,7 +13,7 @@ class RecorderManager {
   ratio = 720 / 1280;
 
   timeoutId?: NodeJS.Timeout;
-  dutaionTimeoutId?: NodeJS.Timeout;
+  durationTimeoutId?: NodeJS.Timeout;
   enableCamera = true;
   resolution: ResolutionType = resolutions[0];
   devices: MediaDeviceInfo[] = [];
@@ -109,19 +109,19 @@ class RecorderManager {
     this.duration += now - this.startDuration;
     this.startDuration = now;
     this.onDuration(Math.floor(this.duration / 1000));
-    this.dutaionTimeoutId = setTimeout(() => this.countDuration(), 100);
+    this.durationTimeoutId = setTimeout(() => this.countDuration(), 100);
   }
 
   startCountDuration() {
-    if (!this.dutaionTimeoutId) {
+    if (!this.durationTimeoutId) {
       this.startDuration = Date.now();
       this.countDuration();
     }
   }
 
   stopCountDuration() {
-    clearTimeout(this.dutaionTimeoutId!);
-    this.dutaionTimeoutId = undefined;
+    clearTimeout(this.durationTimeoutId!);
+    this.durationTimeoutId = undefined;
   }
 
   createRecorder(stream: MediaStream) {

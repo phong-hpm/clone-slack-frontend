@@ -27,9 +27,10 @@ export const authSlice = createSlice({
     setUser: (state, action: PayloadAction<UserType>) => {
       state.user = action.payload;
     },
-    setTokens: (state, action: PayloadAction<{ accessToken: string; refreshToken: string }>) => {
-      state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
+    setTokens: (state, action: PayloadAction<{ accessToken?: string; refreshToken?: string }>) => {
+      const { accessToken, refreshToken } = action.payload;
+      if (accessToken) state.accessToken = accessToken;
+      if (refreshToken) state.refreshToken = refreshToken;
       state.isAuth = true;
       state.isVerified = true;
     },

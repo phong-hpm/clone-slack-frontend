@@ -1,10 +1,19 @@
-import { FC, useMemo, useLayoutEffect, useState, useCallback, useRef } from "react";
+import React, {
+  FC,
+  useMemo,
+  useLayoutEffect,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+} from "react";
 import classnames from "classnames";
 
 // components
 import ReactModal from "react-modal";
 import { Box, IconButton, PopoverOrigin } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
+import ModalBody from "./ModalBody";
 
 // utils
 import {
@@ -15,6 +24,8 @@ import {
 
 // types
 import { Position, ReactModalProps } from "./_types";
+import ModalHeader from "./ModalHeader";
+import ModalFooter from "./ModalFooter";
 
 ReactModal.setAppElement("#root");
 
@@ -32,7 +43,6 @@ export interface ModalProps extends ReactModalProps {
   anchorOrigin?: PopoverOrigin;
   transformOrigin?: PopoverOrigin;
   transformExtra?: { horizontal?: number; vertical?: number };
-  children?: JSX.Element | JSX.Element[];
 }
 
 const Modal: FC<ModalProps> = ({
@@ -51,13 +61,16 @@ const Modal: FC<ModalProps> = ({
   anchorOrigin,
   transformOrigin,
   transformExtra,
-  children,
+  children: childrenProp,
   ...props
 }) => {
   const keepRef = useRef({ prevWidth: 0, prevHeight: 0 });
 
   const [contentEl, setContentEl] = useState<HTMLDivElement>();
   const [position, setPosition] = useState<Position>();
+  const [mappingChildren, setMappingChildren] = useState<typeof childrenProp>();
+  const [children, setChildren] = useState<typeof childrenProp>();
+  const [isBodyCanScroll, setBodyCanScroll] = useState(false);
 
   const style = useMemo(() => {
     const { content = {}, overlay = {} } = styleProp || {};
@@ -119,6 +132,39 @@ const Modal: FC<ModalProps> = ({
     };
   }, [contentEl, computePosition]);
 
+  // assign prop [onCanScroll] to ModalBody in [childrenProp]
+  useEffect(() => {
+    if (!isOpen || !childrenProp) return;
+    setMappingChildren(
+      React.Children.map(childrenProp, (child) => {
+        if (React.isValidElement(child) && child.type === ModalBody) {
+          return React.cloneElement(child, { onCanScroll: setBodyCanScroll });
+        }
+
+        return child;
+      })
+    );
+  }, [isOpen, childrenProp]);
+
+  // after assigned prop [onCanScroll] to ModalBody,
+  //   if [ModalBody] is scrolling, [onCanScroll] will be fired
+  //   [isBodyCanScroll] state will be updated
+  // now, assign prop [isUncontrolledBorder] to ModalHeader and ModalFooter in [mappingChildren]
+  useEffect(() => {
+    if (!isOpen || !mappingChildren) return;
+    setChildren(
+      React.Children.map(mappingChildren, (child) => {
+        if (React.isValidElement(child)) {
+          if (child.type === ModalHeader || child.type === ModalFooter) {
+            return React.cloneElement(child, { isUncontrolledBorder: isBodyCanScroll });
+          }
+        }
+
+        return child;
+      })
+    );
+  }, [isOpen, isBodyCanScroll, mappingChildren]);
+
   if (!isOpen) return <></>;
 
   return (
@@ -141,6 +187,7 @@ const Modal: FC<ModalProps> = ({
         {...props}
       >
         {children}
+
         {isCloseBtn && (
           <Box position="absolute" zIndex="1000" top="12px" right="12px">
             <IconButton onClick={onClose} sx={{ borderRadius: 1 }}>

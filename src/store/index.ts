@@ -23,7 +23,7 @@ import { setupAxios } from "utils/axios";
 import { middlewareAfterRegister } from "store/middlewareRegister";
 import messagesHandlers from "store/middlewareHandlers/messages.handler";
 import channelUsersHandlers from "./middlewareHandlers/channelUsers.handler";
-import logger from "redux-logger";
+import { createLogger } from "redux-logger";
 
 // types
 import { AppDispatch, RootState } from "store/_types";
@@ -40,7 +40,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({ serializableCheck: false }).concat([
       thunk,
-      logger,
+      createLogger({ collapsed: true, diff: true }),
       middlewareAfterRegister(messagesHandlers, channelUsersHandlers),
     ]);
   },

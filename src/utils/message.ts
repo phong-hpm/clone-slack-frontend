@@ -3,6 +3,7 @@ import { ContextLinkValueType } from "pages/ChatPage/Conversation/ChatBox/Messag
 
 // utils
 import { dayFormat, isToday, minuteDiffAbs } from "utils/dayjs";
+import { notifyMentions } from "./constants";
 
 // types
 import { DayMessageType, MessageType, UserType } from "store/slices/_types";
@@ -31,7 +32,11 @@ export const addNecessaryFields = (delta: Delta, channelUserList: UserType[], id
   const ops = delta.ops?.map((op) => {
     // mention operation
     if (op?.insert?.mention?.id) {
-      const user = channelUserList.find((usr) => usr.id === op.insert.mention.id);
+      const mentionId = op?.insert?.mention.id || "";
+
+      let user: UserType | undefined;
+      if (notifyMentions[mentionId]) user = notifyMentions[mentionId];
+      else user = channelUserList.find((usr) => usr.id === mentionId);
 
       if (!user) return op;
       return {
@@ -45,7 +50,8 @@ export const addNecessaryFields = (delta: Delta, channelUserList: UserType[], id
             email: user.email,
             realname: user.realname,
             value: user.name,
-            isOwner: !!id && op?.insert?.mention.id === id, // add mention owner
+            isHighlight: !!notifyMentions[mentionId] || mentionId === id,
+            isNotify: !!notifyMentions[mentionId],
           },
         },
       };

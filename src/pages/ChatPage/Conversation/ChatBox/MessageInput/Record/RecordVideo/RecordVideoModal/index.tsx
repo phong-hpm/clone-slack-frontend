@@ -149,6 +149,11 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
     recorderManager.setEnableVideoCamera(enabledDevice.video);
   }, [enabledDevice]);
 
+  // limit record times is 5 minutes
+  useEffect(() => {
+    if (duration >= 300) handleDone();
+  }, [duration, handleDone]);
+
   // init [recorderManager]
   useEffect(() => {
     keepRef.current.recorderManager = new RecorderManager(
@@ -159,11 +164,6 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
       setDuration
     );
   }, []);
-
-  // limit record times is 5 minutes
-  useEffect(() => {
-    if (duration >= 300) handleDone();
-  }, [duration, handleDone]);
 
   const isDisabledRecord =
     !keepRef.current.recorderManager?.recorder ||

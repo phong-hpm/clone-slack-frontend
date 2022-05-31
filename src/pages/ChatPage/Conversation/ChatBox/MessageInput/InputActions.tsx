@@ -187,15 +187,12 @@ const InputActions: FC<InputActionsProps> = ({
           )}
         </Box>
       </Box>
-
       {!!appState.configActions.cancel && (
         <Button variant="outlined" size="small" sx={{ px: 1.5 }} onClick={onCancel}>
           <Typography variant="h5">Cancel</Typography>
         </Button>
       )}
-
       {renderSendButton()}
-
       <Menu
         variant="menu"
         open={isShowMenu}
@@ -216,20 +213,24 @@ const InputActions: FC<InputActionsProps> = ({
         <MenuItem onClick={() => {}}>Custom time</MenuItem>
       </Menu>
 
-      <EmojiModal
-        isOpen={isShowEmojiModal}
-        anchorEl={emojiButtonRef.current}
-        onEmojiSelect={(emoji) => onSelectEmoji(emoji.native)}
-        onClose={() => setShowEmojiModal(false)}
-      />
-
-      <RecordAudioModal
-        isOpen={isShowAudioModal}
-        anchorEl={microButtonRef.current}
-        onClose={() => setShowAudioModal(false)}
-      />
-
-      <RecordVideo isStart={isShowVideoModal} onClose={() => setShowVideoModal(false)} />
+      {isShowEmojiModal && (
+        <EmojiModal
+          isOpen={isShowEmojiModal}
+          anchorEl={emojiButtonRef.current}
+          onEmojiSelect={(emoji) => onSelectEmoji(emoji.native)}
+          onClose={() => setShowEmojiModal(false)}
+        />
+      )}
+      {isShowAudioModal && (
+        <RecordAudioModal
+          isOpen={isShowAudioModal}
+          anchorEl={microButtonRef.current}
+          onClose={() => setShowAudioModal(false)}
+        />
+      )}
+      {isShowVideoModal && (
+        <RecordVideo isStart={isShowVideoModal} onClose={() => setShowVideoModal(false)} />
+      )}
     </Box>
   );
 };

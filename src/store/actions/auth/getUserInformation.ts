@@ -26,14 +26,7 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) =
       const { user } = action.payload.data;
 
       state.isAuth = true;
-      state.user = {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        realname: user.realname,
-        timeZone: user.timeZone,
-        avatar: user.avatar,
-      };
+      state.user = user;
       state.isLoading = false;
     })
     .addCase(getUserInformation.rejected, (state) => {

@@ -24,6 +24,10 @@ const messagesHandlers = (watcher: WatcherType) => {
       let channelUserList = getChannelUserList(state);
       let messageList = getMessageList(state);
 
+      if (!messageList.length) {
+        dispatch(setDayMessageList([]));
+      }
+
       if (messageList.length && channelUserList.length) {
         const dayMessageList = mapDayMessageList(messageList, channelUserList);
         dispatch(setDayMessageList(dayMessageList));

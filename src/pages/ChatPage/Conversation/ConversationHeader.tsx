@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 
 // images
 import defaultAvatar from "assets/images/default_avatar.png";
@@ -7,7 +7,8 @@ import defaultAvatar from "assets/images/default_avatar.png";
 import { useSelector } from "store";
 
 // redux selector
-import * as usersSelectors from "store/selectors/channelUsers.selector";
+import * as authSelectors from "store/selectors/auth.selector";
+import * as channelUsersSelectors from "store/selectors/channelUsers.selector";
 import * as channelsSelectors from "store/selectors/channels.selector";
 
 // components
@@ -19,16 +20,24 @@ import UserAvatarStatus from "components/UserAvatarStatus";
 import { color } from "utils/constants";
 
 const ConversationHeader: FC = () => {
-  const channelUserList = useSelector(usersSelectors.getChannelUserList);
+  const user = useSelector(authSelectors.getUser);
+  const channelUserList = useSelector(channelUsersSelectors.getChannelUserList);
   const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   const [isHovering, setHovering] = useState(false);
+
+  // set [user] in the last of list
+  const reOrderUserList = useMemo(() => {
+    const list = channelUserList.filter((channelUser) => channelUser.id !== user.id);
+    list.push(user);
+    return list;
+  }, [user, channelUserList]);
 
   return (
     <Box
       display="flex"
       justifyContent="space-between"
-      px={0.5}
+      px={2}
       py={1}
       borderBottom={1}
       color={color.PRIMARY}
@@ -60,7 +69,7 @@ const ConversationHeader: FC = () => {
       >
         <Box display="flex" alignItems="center">
           <Box display="flex" flexDirection="row-reverse">
-            {channelUserList.map((user) => {
+            {reOrderUserList.map((user) => {
               return (
                 <Box key={user.id} mr={-0.5}>
                   <Avatar
@@ -80,7 +89,7 @@ const ConversationHeader: FC = () => {
             })}
           </Box>
           <Typography variant="h5" color={color.HIGH} sx={{ ml: 1.5, mr: 0.75 }}>
-            {channelUserList.length}
+            {reOrderUserList.length}
           </Typography>
         </Box>
       </Button>

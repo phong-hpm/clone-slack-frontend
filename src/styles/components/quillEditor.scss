@@ -60,10 +60,15 @@
     }
   }
 
+  &.editor-limit-height {
+    .ql-editor {
+      max-height: calc(50vh - 80px);
+    }
+  }
+
   .ql-editor {
     font-size: 15px;
     line-height: 20px;
-    max-height: calc(60vh - 80px);
     padding: 8px 15px;
 
     &.ql-blank {
@@ -110,12 +115,17 @@
       border-radius: 4px;
       cursor: pointer;
 
-      &[data-is-owner="true"] {
+      &[data-is-highlight="true"] {
         background-color: rgba(232, 145, 45, 0.4);
         color: rgb(242, 199, 68);
       }
 
-      &[data-is-editable="true"] {
+      &[data-is-notify="true"] {
+        font-weight: 900;
+      }
+
+      &[data-is-editable="true"],
+      &[data-is-notify="true"] {
         cursor: auto;
       }
     }

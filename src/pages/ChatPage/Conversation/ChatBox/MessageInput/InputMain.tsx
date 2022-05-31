@@ -21,22 +21,26 @@ import { removeUnnecessaryFields } from "utils/message";
 import useQuillReact from "./useQuillReact";
 
 // types
-import { StringMap, Delta, RangeStatic } from "quill";
+import { StringMap, Delta, RangeStatic, Sources } from "quill";
 import { LinkCustomEventDetailType } from "./_types";
 import { MessageFileType } from "store/slices/_types";
 
 export interface InputMainProps {
+  className?: string;
   autoFocus?: boolean;
   defaultValue?: Delta;
   placeHolder?: string;
+  style?: React.CSSProperties;
   onCancel?: () => void;
   onBlur?: (delta: Delta) => void;
-  onSend: (delta: Delta, files: MessageFileType[]) => void;
+  onSend?: (delta: Delta, files: MessageFileType[]) => void;
 }
 
 const InputMain: FC<InputMainProps> = ({
+  className,
   autoFocus = false,
   placeHolder,
+  style,
   defaultValue,
   onCancel,
   onBlur,
@@ -67,14 +71,22 @@ const InputMain: FC<InputMainProps> = ({
   }, [isMounted, mentionModule]);
 
   const handleSend = () => {
+    // when [onSend] is undefined, that mean this [MainInput] is being used for typing only
+    if (!onSend) return;
+
     const textLength = quillReact?.getEditor().getText()?.trim()?.length;
     const inputDelta = quillReact?.getEditor()?.getContents();
+    let isValidText = !!textLength;
+
+    // when editor only contain mention tag, textLength will be 0
+    // so if the first [delta.ops] is mention, it is valid text
+    if (inputDelta?.ops?.length) {
+      isValidText = !!inputDelta.ops[0].insert.mention;
+    }
 
     if (appState.inputFiles.length || inputDelta) {
-      let uploadDelta = {} as Delta;
-      if (inputDelta) {
-        uploadDelta = textLength ? removeUnnecessaryFields(inputDelta) : ({} as Delta);
-      }
+      let uploadDelta =
+        isValidText && inputDelta ? removeUnnecessaryFields(inputDelta) : ({} as Delta);
       onSend(uploadDelta, appState.inputFiles);
     }
 
@@ -160,9 +172,13 @@ const InputMain: FC<InputMainProps> = ({
     quillReact?.getEditor().insertText(curIndex || 0, emojiNative);
   };
 
-  const handleBlur = () => {
+  const handleBlur = (_: RangeStatic, source: Sources) => {
+    // when user paste from clipboard, source will be "silent"
+    if (source === "silent") return;
     setFocus(false);
+  };
 
+  const handleBlurOutside = () => {
     if (onBlur) {
       const textLength = quillReact?.getEditor().getText()?.trim()?.length;
       const inputDelta = quillReact?.getEditor()?.getContents();
@@ -188,6 +204,7 @@ const InputMain: FC<InputMainProps> = ({
         border="1px solid"
         borderColor={appState.isFocus ? color.HIGH_SOLID : color.MID_SOLID}
         bgcolor={color.MIN_SOLID}
+        onBlur={handleBlurOutside}
       >
         <Box display={isShowToolbar ? "block" : "none"}>
           <InputToolbar
@@ -201,9 +218,10 @@ const InputMain: FC<InputMainProps> = ({
         {isMounted && (
           <ReactQuill
             ref={setQuillReact}
-            className="quill-editor"
+            className={`quill-editor ${className}`}
             modules={modules}
             formats={quillFormats}
+            style={style}
             defaultValue={defaultValue}
             onKeyDown={handleKeyDown}
             onChangeSelection={handleChangeSelection}

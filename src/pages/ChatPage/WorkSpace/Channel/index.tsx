@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { useState } from "react";
 
 // redux store
 import { useSelector } from "store";
@@ -12,13 +12,14 @@ import SlackIcon from "components/SlackIcon";
 import ChannelList from "./ChannelList";
 import CreateChannelModal from "./CreateChannelModal";
 
-export interface ChannelProps {}
-
-const ChannelContent: FC<ChannelProps> = () => {
+const ChannelContent = () => {
   const channelList = useSelector(channelsSelectors.getChannelList);
   const directMessagesList = useSelector(channelsSelectors.getDirectMessagesList);
+  const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   const [openModal, setOpenModal] = useState(false);
+
+  if (!selectedChannel?.id) return <></>;
 
   return (
     <Box mt={1.5}>
@@ -47,18 +48,22 @@ const ChannelContent: FC<ChannelProps> = () => {
 
       <ChannelList
         label="Channels"
+        types={["channel"]}
+        selectedChannel={selectedChannel}
         channels={channelList}
         onClickAdd={() => setOpenModal(true)}
         addText="Add channels"
       />
       <ChannelList
         label="Direct messages"
+        types={["dirrect_message", "group_message"]}
+        selectedChannel={selectedChannel}
         channels={directMessagesList}
         onClickAdd={() => setOpenModal(true)}
         addText="Add teammates"
       />
 
-      <CreateChannelModal isOpen={openModal} onClose={() => setOpenModal(false)} />
+      {openModal && <CreateChannelModal isOpen={openModal} onClose={() => setOpenModal(false)} />}
     </Box>
   );
 };

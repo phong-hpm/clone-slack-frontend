@@ -36,8 +36,10 @@ import TimeCard from "components/TimeCard";
 import UserNameCard from "components/UserNameCard";
 import DeleteMessageModal from "./DeleteMessageModal";
 import MessageShared from "../MessageShared";
+import UserDetailModal from "components/UserDetailModal";
 
 export interface MessageContentProps {
+  isPreventSharedMessage?: boolean;
   isReadOnly?: boolean;
   isMessageOnly?: boolean;
   isHideMessageTime?: boolean;
@@ -46,13 +48,16 @@ export interface MessageContentProps {
 }
 
 const MessageContent: FC<MessageContentProps> = ({
+  isPreventSharedMessage,
   isReadOnly,
   isMessageOnly,
   isHideMessageTime,
   userOwner,
-  message: messageProp,
+  message,
 }) => {
   const quillRef = useRef<ReactQuill>(null);
+  const avatarRef = useRef<HTMLDivElement>(null);
+  const keepRef = useRef<{ displayDelta?: Delta }>({});
 
   const { emitEditMessage, emitRemoveMessage } = useMessageSocket();
 
@@ -63,13 +68,11 @@ const MessageContent: FC<MessageContentProps> = ({
   // case: when user update 1 message, [MessageList] will re-render
   //       if not keep message re-ference,
   //       all [MessageContent] will be triggered re-render
-  const [message, setMessage] = useState(messageProp);
-  const [isShowShareMessageModal, setShowShareMessageModal] = useState(false);
-  const [isShowDeleteMessageModal, setShowDeleteMessageModal] = useState(false);
   const [isHovering, setHovering] = useState(false);
   const [isEditing, setEditing] = useState(false);
-
-  const isShowActions = isHovering && !isEditing;
+  const [isShowUserModal, setShowUserModal] = useState(false);
+  const [isShowShareMessageModal, setShowShareMessageModal] = useState(false);
+  const [isShowDeleteMessageModal, setShowDeleteMessageModal] = useState(false);
 
   const handleEdit = (id: string, delta: Delta) => {
     setEditing(false);
@@ -81,19 +84,14 @@ const MessageContent: FC<MessageContentProps> = ({
     emitRemoveMessage(message.id);
   };
 
-  // useEffect will help to increate performance
-  useEffect(() => {
-    const isOwner = messageProp.user === user.id;
-    const delta = addNecessaryFields(messageProp.delta, channelUserList, user.id);
-    setMessage({ ...messageProp, isOwner, delta });
-  }, [user.id, channelUserList, messageProp]);
-
   useEffect(() => {
     // wait for update user mention
-    if (!channelUserList?.length) return;
-    if (isEditing || !quillRef.current || !message.delta.ops?.length) return;
-    quillRef.current.getEditor().setContents(message.delta);
-  }, [isEditing, channelUserList, message.delta]);
+    if (!user.id || !quillRef.current || !channelUserList?.length) return;
+    if (!message.delta.ops?.length || keepRef.current.displayDelta) return;
+
+    keepRef.current.displayDelta = addNecessaryFields(message.delta, channelUserList, user.id);
+    quillRef.current.getEditor().setContents(keepRef.current.displayDelta);
+  }, [user.id, channelUserList, message.id, message.delta]);
 
   // after [isEditing] state change, we should reset [isHovering] state
   // 1: when user change status to editing, should remove hovering status
@@ -109,6 +107,13 @@ const MessageContent: FC<MessageContentProps> = ({
       ? "rgb(39, 36, 44)"
       : "";
 
+  const isDisplayMessageActions = isHovering && !isEditing;
+  const isDisplayStared = !isEditing && !isMessageOnly && message.isStared;
+  const isDisplayReaction = !isEditing && !isMessageOnly && !!Object.keys(message.reactions).length;
+
+  const isDisplayMessage = !isEditing && !!message.delta.ops?.length;
+  const isDisplayMessageShared = !isPreventSharedMessage && !isReadOnly && message.sharedMessage;
+
   return (
     <>
       <Box
@@ -121,7 +126,7 @@ const MessageContent: FC<MessageContentProps> = ({
         onMouseLeave={() => setHovering(false)}
       >
         {/* stared */}
-        {!isMessageOnly && message.isStared && (
+        {isDisplayStared && (
           <Box mt={0.5}>
             <Bookmark isStared={message.isStared} />
           </Box>
@@ -132,11 +137,17 @@ const MessageContent: FC<MessageContentProps> = ({
           <Box display="flex">
             <Box flexBasis={36} mr={1} color={color.MAX_SOLID}>
               {userOwner && (
-                <Avatar src={userOwner.avatar}>
-                  <img src={defaultAvatar} alt="" />
-                </Avatar>
+                <Box
+                  ref={avatarRef}
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => setShowUserModal(true)}
+                >
+                  <Avatar src={userOwner.avatar}>
+                    <img src={defaultAvatar} alt="" />
+                  </Avatar>
+                </Box>
               )}
-              {!isHideMessageTime && !userOwner && isHovering && (
+              {!userOwner && isHovering && (
                 <Link underline="hover" color={color.MAX_SOLID} textAlign="end">
                   <TimeCard
                     time={message.createdTime}
@@ -172,44 +183,42 @@ const MessageContent: FC<MessageContentProps> = ({
                 </Box>
               )}
 
-              {!!message.delta.ops && (
-                <>
-                  {isEditing ? (
-                    <Box py={0.5}>
-                      <MessageInput
-                        autoFocus
-                        defaultValue={updateEditableLinkField(message.delta, true)}
-                        configActions={{ emoji: true, cancel: true, send: true }}
-                        onCancel={() => setEditing(false)}
-                        onSend={(delta) => handleEdit(message.id, delta)}
-                      />
-                    </Box>
-                  ) : (
-                    <ReactQuill
-                      ref={quillRef}
-                      className="quill-editor"
-                      bounds={"#root"}
-                      modules={{ toolbar: false, clipboard: { matchVisual: false } }}
-                      readOnly
-                    />
-                  )}
-                </>
+              {isDisplayMessage && (
+                <ReactQuill
+                  ref={quillRef}
+                  className="quill-editor"
+                  bounds={"#root"}
+                  modules={{ toolbar: false, clipboard: { matchVisual: false } }}
+                  readOnly
+                />
+              )}
+              {isEditing && (
+                <Box py={0.5}>
+                  <MessageInput
+                    autoFocus
+                    defaultValue={updateEditableLinkField(message.delta, true)}
+                    configActions={{ emoji: true, cancel: true, send: true }}
+                    onCancel={() => setEditing(false)}
+                    onSend={(delta) => handleEdit(message.id, delta)}
+                  />
+                </Box>
               )}
 
               {/* shared message */}
-              {!isReadOnly && message.sharedMessage && (
+              {isDisplayMessageShared && (
                 <Box mt={0.75}>
                   <MessageShared
                     isMessageOnly
+                    isPreventSharedMessage
                     isHideMessageTime
                     userOwner={message.sharedMessageOwner}
-                    message={message.sharedMessage}
+                    message={message.sharedMessage!}
                   />
                 </Box>
               )}
 
               {/* MediaFileList */}
-              {!!message.files?.length && (
+              {!isEditing && !!message.files?.length && (
                 <MediaFileList
                   messageId={message.id}
                   messageUserId={message.user}
@@ -221,19 +230,19 @@ const MessageContent: FC<MessageContentProps> = ({
         </Box>
 
         {/* reactions */}
-        {!isMessageOnly && !!Object.keys(message.reactions).length && (
+        {isDisplayReaction && (
           <Box pb={0.75}>
             <Reactions messageId={message.id} reactions={message.reactions} />
           </Box>
         )}
 
         {/* action bar */}
-        {isShowActions && (
+        {isDisplayMessageActions && (
           <Box position="absolute" right={12} top={-20}>
             <MessageActions
               messageId={message.id}
               isStared={message.isStared}
-              isOwner={message.isOwner}
+              isOwner={message.user === user.id}
               isSystem={message.type === "channel_join"}
               onClickShare={() => setShowShareMessageModal(true)}
               onClickEdit={() => setEditing(true)}
@@ -245,19 +254,33 @@ const MessageContent: FC<MessageContentProps> = ({
       </Box>
 
       {/* share message modal */}
-      <ShareMessageModal
-        isOpen={isShowShareMessageModal}
-        message={message}
-        onClose={() => setShowShareMessageModal(false)}
-        onSubmit={() => {}}
-      />
+      {isShowShareMessageModal && (
+        <ShareMessageModal
+          isOpen={isShowShareMessageModal}
+          message={message}
+          onClose={() => setShowShareMessageModal(false)}
+        />
+      )}
+      {/* delete message modal */}
+      {isShowDeleteMessageModal && (
+        <DeleteMessageModal
+          isOpen={isShowDeleteMessageModal}
+          message={message}
+          onClose={() => setShowDeleteMessageModal(false)}
+          onSubmit={handleDelete}
+        />
+      )}
       {/* demete message modal */}
-      <DeleteMessageModal
-        isOpen={isShowDeleteMessageModal}
-        message={message}
-        onClose={() => setShowDeleteMessageModal(false)}
-        onSubmit={handleDelete}
-      />
+      {isShowUserModal && !!userOwner && (
+        <UserDetailModal
+          isOpen={isShowUserModal}
+          anchorEl={avatarRef.current}
+          anchorOrigin={{ horizontal: "right", vertical: "top" }}
+          transformOrigin={{ horizontal: "left", vertical: "top" }}
+          user={userOwner}
+          onClose={() => setShowUserModal(false)}
+        />
+      )}
     </>
   );
 };

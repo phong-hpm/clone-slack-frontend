@@ -17,6 +17,26 @@ const useMessageSocket = () => {
     socket?.emit(SocketEvent.EMIT_ADD_MESSAGE, { data: { delta } });
   };
 
+  const emitShareMessageToChannel = (
+    toChannelId: string,
+    delta: Delta,
+    sharedMessageId: string
+  ) => {
+    socket?.emit(SocketEvent.EMIT_SHARE_MESSAGE_TO_CHANNEL, {
+      data: { toChannelId, delta, sharedMessageId },
+    });
+  };
+
+  const emitShareMessageToGroupUsers = (
+    toUserIds: string[],
+    delta: Delta,
+    sharedMessageId: string
+  ) => {
+    socket?.emit(SocketEvent.EMIT_SHARE_MESSAGE_TO_GROUP_USERS, {
+      data: { toUserIds, delta, sharedMessageId },
+    });
+  };
+
   const emitEditMessage = (id: string, delta: Delta) => {
     socket?.emit(SocketEvent.EMIT_EDIT_MESSAGE, { data: { id, delta } });
   };
@@ -40,6 +60,8 @@ const useMessageSocket = () => {
   return {
     socket,
     emitAddMessage,
+    emitShareMessageToChannel,
+    emitShareMessageToGroupUsers,
     emitEditMessage,
     emitRemoveMessage,
     emitRemoveMessageFile,

@@ -17,6 +17,7 @@ import { color } from "utils/constants";
 import { MessageType, UserType } from "store/slices/_types";
 
 export interface MessageSharedProps {
+  isPreventSharedMessage?: boolean;
   isMessageOnly?: boolean;
   isHideMessageTime?: boolean;
   lineColor?: string;
@@ -25,6 +26,7 @@ export interface MessageSharedProps {
 }
 
 const MessageShared: FC<MessageSharedProps> = ({
+  isPreventSharedMessage,
   isMessageOnly,
   isHideMessageTime,
   lineColor,
@@ -46,6 +48,7 @@ const MessageShared: FC<MessageSharedProps> = ({
       />
       <MessageContent
         isReadOnly
+        isPreventSharedMessage={isPreventSharedMessage}
         isMessageOnly={isMessageOnly}
         isHideMessageTime={isHideMessageTime}
         message={message}

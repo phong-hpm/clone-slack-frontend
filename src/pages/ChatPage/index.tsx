@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 // redux store
@@ -25,6 +25,8 @@ export const ChatPage: FC = () => {
   const navigate = useNavigate();
   const params = useParams();
 
+  const keepRef = useRef<{ teamId?: string }>({});
+
   const selectedTeamId = useSelector(teamsSelectors.getSelectedTeamId);
 
   const [isCheckingPrams, setIsCheckingParams] = useState(true);
@@ -36,7 +38,10 @@ export const ChatPage: FC = () => {
     if (!teamIdRegExp.test(params.teamId)) {
       navigate(RouterPath.TEAM_PAGE);
     } else {
-      dispatch(setSelectedTeamId(params.teamId));
+      if (keepRef.current.teamId !== params.teamId) {
+        keepRef.current.teamId = params.teamId;
+        dispatch(setSelectedTeamId(params.teamId));
+      }
     }
   }, [params.teamId, navigate, dispatch]);
 

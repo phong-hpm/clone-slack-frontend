@@ -12,14 +12,16 @@ import * as usersSelectors from "store/selectors/channelUsers.selector";
 import InputContext, { initialQuillState } from "./InputContext";
 
 // components
-import MentionItem from "./InputMentionItem";
+import { Box, Typography } from "@mui/material";
+import UserMentionCard from "components/UserMentionCard";
+import SlackIcon from "components/SlackIcon";
 
 // types
 import { UserType } from "store/slices/_types";
 import { ContextLinkValueType, LinkCustomEventDetailType } from "./_types";
 
 // utils
-import { stateDefault } from "utils/constants";
+import { color, notifyMentions, stateDefault } from "utils/constants";
 import { searchUserMention } from "utils/quillUtils";
 
 export interface UseQuillReactProps {
@@ -38,12 +40,12 @@ export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
     ...initialQuillState,
     isMentioning: false,
     userId: "",
-    channelUserList: [] as UserType[],
+    userList: [] as UserType[],
   });
 
   const mentionModule = useMemo(() => {
     return {
-      dataAttributes: [...Object.keys(stateDefault.USER), "isOwner", "isEditable"],
+      dataAttributes: [...Object.keys(stateDefault.USER), "isHighlight", "isEditable"],
       allowedChars: /^[A-Za-z\s]*$/,
       mentionDenotationChars: ["@"],
       spaceAfterInsert: true,
@@ -53,23 +55,48 @@ export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
         // setTimeout will keep isMentioning is true when reactquill onKeydown is calling
         setTimeout(() => (keepRef.current.isMentioning = false), 1);
       },
-      onSelect: (userMention: UserType, insertItem: Function) => {
+      onSelect: (item: UserType, insertItem: Function) => {
+        const isHighlight = !!notifyMentions[item.id] || item.id === keepRef.current.userId;
         insertItem({
-          ...userMention,
-          id: userMention.id,
-          value: userMention.name,
-          isOwner: userMention.id === keepRef.current.userId,
+          ...item,
+          id: item.id,
+          value: item.name,
+          isHighlight,
           isEditable: true,
         });
       },
       source: (search: string, renderList: Function) => {
-        const { channelUserList = [] } = keepRef.current;
-        if (search.length === 0) return renderList(channelUserList, search);
-        renderList(searchUserMention(channelUserList, search), search);
+        let searchResult: UserType[] = [];
+        if (search.length === 0) {
+          searchResult = keepRef.current.userList;
+        } else {
+          searchResult = searchUserMention(keepRef.current.userList, search);
+        }
+        renderList([...searchResult, ...Object.values(notifyMentions)], search);
       },
-      renderItem: (userMention: UserType) => {
+      renderItem: (item: UserType) => {
+        if (notifyMentions[item.id]) {
+          return ReactDOMServer.renderToString(
+            <Box className="mention-item" display="flex" alignItems="center" color={color.PRIMARY}>
+              <Box p={0.5} mr={0.5}>
+                <SlackIcon icon="broadcast" fontSize="medium" />
+              </Box>
+              <Box p={0.5}>
+                <Typography fontWeight={700}>@{item.name}</Typography>
+              </Box>
+              <Box p={0.5}>
+                <Typography>{item.realname}</Typography>
+              </Box>
+            </Box>
+          );
+        }
+
         return ReactDOMServer.renderToString(
-          <MentionItem userId={keepRef.current.userId} userMention={userMention} />
+          <UserMentionCard
+            className="mention-item"
+            userId={keepRef.current.userId}
+            userMention={item}
+          />
         );
       },
     };
@@ -80,7 +107,7 @@ export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
   //    [selectMention] and [selectMention] can access new data in runtime
   useEffect(() => {
     keepRef.current.userId = userId;
-    keepRef.current.channelUserList = channelUserList;
+    keepRef.current.userList = [...channelUserList];
   }, [userId, channelUserList]);
 
   // listen event click link

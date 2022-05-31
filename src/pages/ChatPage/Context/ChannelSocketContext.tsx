@@ -4,7 +4,6 @@ import { createContext, FC, useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "store";
 
 // redux selectors
-import * as authSelectors from "store/selectors/auth.selector";
 import * as teamsSelectors from "store/selectors/teams.selector";
 
 // redux slices
@@ -24,8 +23,15 @@ import cacheUtils from "utils/cacheUtils";
 import { SocketEvent, SocketEventDefault } from "utils/constants";
 
 // types
-import { UserType, ChannelType } from "store/slices/_types";
-import { ChannelContextType } from "./_types";
+import { ChannelType } from "store/slices/_types";
+import {
+  AddNewChannelListener,
+  ChannelContextType,
+  LoadChannelsListener,
+  UpdateChannelUnreadMessageCountListener,
+  UpdateChannelUpdatedTimeListener,
+  UpdateChannelUserStatusListener,
+} from "./_types";
 import { setTeamUserList } from "store/slices/teamUsers.slice";
 
 const initialContext: ChannelContextType = {
@@ -41,23 +47,22 @@ export interface ChannelSocketProviderProps {
 export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children }) => {
   const dispatch = useDispatch();
 
-  const user = useSelector(authSelectors.getUser);
   const selectedTeamId = useSelector(teamsSelectors.getSelectedTeamId);
 
   const { socket, updateNamespace } = useSocket();
 
-  const handleAddNewChannel = useCallback(
-    (channel: ChannelType) => dispatch(addChannel(channel)),
+  const handleAddNewChannel: AddNewChannelListener = useCallback(
+    (channel) => dispatch(addChannel(channel)),
     [dispatch]
   );
 
-  const handleUpdateUserStatus = useCallback(
-    (id: string, isOnline: boolean) => dispatch(updateChannelUserOnline({ id, isOnline })),
+  const handleUpdateUserStatus: UpdateChannelUserStatusListener = useCallback(
+    (id, isOnline) => dispatch(updateChannelUserOnline({ id, isOnline })),
     [dispatch]
   );
 
-  const handleSetChannelList = useCallback(
-    ({ channels, users: teamUsers }: { channels: ChannelType[]; users: UserType[] }) => {
+  const handleSetChannelList: LoadChannelsListener = useCallback(
+    ({ channels, users: teamUsers }) => {
       dispatch(setTeamUserList(teamUsers));
 
       if (channels) {
@@ -66,10 +71,9 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
 
         // separate [channels] for each [channel.type]
         channels.forEach((channel: ChannelType) => {
-          channel.type === "direct_message"
+          ["direct_message", "group_message"].includes(channel.type)
             ? directMessagesList.push(channel)
             : channelsList.push(channel);
-
           // update cachedModify for channel
           cacheUtils.setChannelUpdatedTime(channel.id, { channel: channel.updatedTime });
         });
@@ -80,8 +84,8 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
     [dispatch]
   );
 
-  const handleUpdateChannelUpdatedTime = useCallback(
-    (channelId: string, updatedTime: number) => {
+  const handleUpdateChannelUpdatedTime: UpdateChannelUpdatedTimeListener = useCallback(
+    ({ channelId, updatedTime }) => {
       dispatch(updateChannel({ id: channelId, channel: { updatedTime } }));
       // update cachedModify for channel
       cacheUtils.setChannelUpdatedTime(channelId, { channel: updatedTime });
@@ -89,9 +93,10 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
     [dispatch]
   );
 
-  const handleUpdateChannelUnreadMessageCount = useCallback(
-    (channelId: string, unreadMessageCount: number) =>
-      dispatch(updateChannel({ id: channelId, channel: { unreadMessageCount } })),
+  const handleUpdateChannelUnreadCount: UpdateChannelUnreadMessageCountListener = useCallback(
+    ({ channelId, unreadMessageCount }) => {
+      dispatch(updateChannel({ id: channelId, channel: { unreadMessageCount } }));
+    },
     [dispatch]
   );
 
@@ -108,7 +113,7 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
       // Step 2: connecting socket
       .on(SocketEventDefault.CONNECT, () => {
         // Step 3: asking for channels data
-        socket.emit(SocketEvent.EMIT_LOAD_CHANNELS, { userId: user.id });
+        socket.emit(SocketEvent.EMIT_LOAD_CHANNELS);
       })
       .on(SocketEventDefault.DISCONNECT, () => {});
 
@@ -116,7 +121,7 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
       .on(SocketEvent.ON_CHANNELS, handleSetChannelList)
       .on(SocketEvent.ON_ADDED_CHANNEL, handleAddNewChannel)
       .on(SocketEvent.ON_EDITED_CHANNEL_UPDATED_TIME, handleUpdateChannelUpdatedTime)
-      .on(SocketEvent.ON_EDITED_CHANNEL_UNREAD_MESSAGE_COUNT, handleUpdateChannelUnreadMessageCount)
+      .on(SocketEvent.ON_EDITED_CHANNEL_UNREAD_MESSAGE_COUNT, handleUpdateChannelUnreadCount)
       .on(SocketEvent.ON_USER_ONLINE, (id: string) => handleUpdateUserStatus(id, true))
       .on(SocketEvent.ON_USER_OFFLINE, (id: string) => handleUpdateUserStatus(id, false));
 
@@ -127,11 +132,10 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
       socket.disconnect();
     };
   }, [
-    user,
     socket,
     handleSetChannelList,
     handleUpdateChannelUpdatedTime,
-    handleUpdateChannelUnreadMessageCount,
+    handleUpdateChannelUnreadCount,
     handleAddNewChannel,
     handleUpdateUserStatus,
   ]);

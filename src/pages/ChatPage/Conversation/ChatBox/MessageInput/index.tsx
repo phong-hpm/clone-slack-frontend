@@ -22,12 +22,18 @@ import { MessageFileType } from "store/slices/_types";
 import { ContextAppStateType } from "./_types";
 
 export interface MessageInputProps
-  extends Omit<InputMainProps, "onSend">,
+  extends InputMainProps,
     Pick<ContextAppStateType, "configActions"> {
-  onSend?: (delta: Delta, files: MessageFileType[]) => void;
+  isAutoSend?: boolean;
 }
 
-const MessageInput: FC<MessageInputProps> = ({ configActions, defaultValue, onSend, ...props }) => {
+const MessageInput: FC<MessageInputProps> = ({
+  isAutoSend,
+  configActions,
+  defaultValue,
+  onSend,
+  ...props
+}) => {
   const dispatch = useDispatch();
 
   const { emitAddMessage } = useMessageSocket();
@@ -48,12 +54,14 @@ const MessageInput: FC<MessageInputProps> = ({ configActions, defaultValue, onSe
     (delta: Delta, files: MessageFileType[]) => {
       // controlled
       if (onSend) return onSend(delta, files);
+      // prevent
+      if (!isAutoSend) return;
 
       // uncontrolled
       if (files.length) dispatch(uploadFiles({ files, delta }));
       else emitAddMessage(delta);
     },
-    [onSend, emitAddMessage, dispatch]
+    [isAutoSend, onSend, emitAddMessage, dispatch]
   );
 
   return (
@@ -62,7 +70,9 @@ const MessageInput: FC<MessageInputProps> = ({ configActions, defaultValue, onSe
         placeHolder={placeHolder}
         defaultValue={defaultValue}
         {...props}
-        onSend={handleSend}
+        // when [onSend] and [isAutoSend] are falsy,
+        //   that mean this [Input] is used as native input only
+        onSend={onSend || isAutoSend ? handleSend : undefined}
       />
     </MessageInputProvider>
   );

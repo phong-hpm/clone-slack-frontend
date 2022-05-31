@@ -4,24 +4,35 @@ import { FC } from "react";
 import defaultAvatar from "assets/images/default_avatar.png";
 
 // components
-import { Avatar, Box, Typography } from "@mui/material";
+import { Avatar, Box, BoxProps, Typography } from "@mui/material";
 import Status from "components/Status";
 
 // types
 import { UserType } from "store/slices/_types";
+import { color } from "utils/constants";
 
-export interface MentionItemProps {
+export interface UserMentionCardProps extends BoxProps {
   userId: string;
-  userMention: UserType;
+  userMention?: UserType;
+  avatarElement?: JSX.Element;
 }
 
-const MentionItem: FC<MentionItemProps> = ({ userId, userMention }) => {
+const UserMentionCard: FC<UserMentionCardProps> = ({
+  userId,
+  userMention,
+  avatarElement,
+  ...props
+}) => {
+  if (!userMention) return <></>;
+
   return (
-    <Box className="mention-item">
+    <Box display="flex" alignItems="center" color={color.PRIMARY} {...props}>
       <Box p={0.5}>
-        <Avatar sizes="small" src={userMention.avatar}>
-          <img src={defaultAvatar} alt="" />
-        </Avatar>
+        {avatarElement || (
+          <Avatar sizes="small" src={userMention.avatar}>
+            <img src={defaultAvatar} alt="" />
+          </Avatar>
+        )}
       </Box>
       <Box p={0.5}>
         <Typography fontWeight={700}>{userMention.name || "unknow"}</Typography>
@@ -31,7 +42,7 @@ const MentionItem: FC<MentionItemProps> = ({ userId, userMention }) => {
           <Typography fontWeight={700}>(you)</Typography>
         </Box>
       )}
-      <Box p={0.5}>
+      <Box>
         <Status isOnline={userMention.isOnline} fontSize="large" />
       </Box>
       {!!userMention.realname && (
@@ -43,4 +54,4 @@ const MentionItem: FC<MentionItemProps> = ({ userId, userMention }) => {
   );
 };
 
-export default MentionItem;
+export default UserMentionCard;

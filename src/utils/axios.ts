@@ -12,6 +12,7 @@ const axiosInstance = axios.create({
 });
 
 let isRefreshing = false;
+let retryTimes = 1;
 let queues: (() => void)[] = [];
 
 export const setupAxios = (store: EnhancedStore<any, AnyAction, MiddlewareArray<any>>) => {
@@ -37,34 +38,42 @@ export const setupAxios = (store: EnhancedStore<any, AnyAction, MiddlewareArray<
       const originalRequest = config;
 
       // handle error 401
-      if (status === 401) {
-        if (!isRefreshing) {
-          isRefreshing = true;
-          try {
-            const postData = { refreshToken: localStorage.getItem("refreshToken") };
-            const { data } = await axiosInstance.post("/auth/refresh-token", { postData });
-
-            isRefreshing = false;
-            originalRequest.headers["x-access-token"] = data.accessToken;
-
-            // update access token to localstorage
-            localStorage.setItem("accessToken", data.accessToken);
-
-            onRefreshed();
-
-            // update access token to redux
-            store.dispatch(setTokens(data));
-          } catch (refreshTokenError) {
-            return Promise.reject(refreshTokenError);
-          }
+      if (status === 401 && retryTimes) {
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            queues.push(() => {
+              resolve(axiosInstance(originalRequest));
+            });
+          });
         }
 
+        retryTimes--;
+        isRefreshing = true;
         return new Promise((resolve, reject) => {
-          queues.push(() => {
-            resolve(axiosInstance(originalRequest));
-          });
+          const refreshToken = localStorage.getItem("refreshToken") || "";
+          axiosInstance
+            .post("/auth/refresh-token", { postData: { refreshToken } })
+            .then(({ data }) => {
+              originalRequest.headers["x-access-token"] = data.accessToken;
+              // update access token to localstorage
+              localStorage.setItem("accessToken", data.accessToken);
+              console.log("data", data);
+              // update access token to redux
+              store.dispatch(setTokens({ accessToken: data.accessToken }));
+              resolve(axiosInstance(originalRequest));
+            })
+            .catch(() => {
+              localStorage.removeItem("accessToken");
+              store.dispatch(setTokens({ refreshToken: "", accessToken: "" }));
+            })
+            .then(() => {
+              onRefreshed();
+              isRefreshing = false;
+            });
         });
       }
+
+      return Promise.reject(error);
     }
   );
 };

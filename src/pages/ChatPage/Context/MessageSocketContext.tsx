@@ -24,8 +24,15 @@ import { SocketEvent, SocketEventDefault } from "utils/constants";
 import { useParams } from "react-router-dom";
 
 // types
-import { MessageType } from "store/slices/_types";
-import { MessageContextType } from "./_types";
+import {
+  AddNewMessageListener,
+  LoadMessagesListener,
+  MessageContextType,
+  RemoveMessageListener,
+  ShareMessageToChannelListener,
+  UploadMessageListener,
+} from "./_types";
+import { setSelectedChannelId } from "store/slices/channels.slice";
 
 const initialContext: MessageContextType = {
   updateNamespace: () => {},
@@ -51,35 +58,34 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
   keepRef.current.selectedChannelId = selectedChannelId;
   keepRef.current.unreadMessageCount = unreadMessageCount;
 
-  const handleAddNewMessage = useCallback(
-    ({
-      channelId,
-      message,
-      updatedTime,
-    }: {
-      channelId: string;
-      message: MessageType;
-      updatedTime: number;
-    }) => {
+  const handleAddNewMessage: AddNewMessageListener = useCallback(
+    ({ channelId, message, updatedTime }) => {
+      // this event will be listened on [MessageContentList],
+      //   and ask {react-window} sroll to bottom after rendered new list
+      // so, this event has to be dispatched before dispatch [addMessage]
+      window.dispatchEvent(new Event("message-list-will-scroll-to-bottom"));
+
       dispatch(addMessage(message));
       // add cached [messages]
       cacheUtils.addCachedMessage({ channelId, message });
       cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
-      window.dispatchEvent(new Event("scroll-message-list"));
     },
     [dispatch]
   );
 
-  const handleUpdateMessage = useCallback(
-    ({
-      channelId,
-      message,
-      updatedTime,
-    }: {
-      channelId: string;
-      message: MessageType;
-      updatedTime: number;
-    }) => {
+  const handleShareMessageToChannel: ShareMessageToChannelListener = useCallback(
+    ({ toChannelId, message, updatedTime }) => {
+      // add cached [messages]
+      cacheUtils.setChannelUpdatedTime(toChannelId, { message: updatedTime });
+      cacheUtils.addCachedMessage({ channelId: toChannelId, message });
+
+      dispatch(setSelectedChannelId(toChannelId));
+    },
+    [dispatch]
+  );
+
+  const handleUpdateMessage: UploadMessageListener = useCallback(
+    ({ channelId, message, updatedTime }) => {
       dispatch(updateMessage(message));
       // update cached [messages]
       cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
@@ -88,16 +94,8 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     [dispatch]
   );
 
-  const handleRemoveMessage = useCallback(
-    ({
-      channelId,
-      messageId,
-      updatedTime,
-    }: {
-      channelId: string;
-      messageId: string;
-      updatedTime: number;
-    }) => {
+  const handleRemoveMessage: RemoveMessageListener = useCallback(
+    ({ channelId, messageId, updatedTime }) => {
       dispatch(removeMessage(messageId));
       // update cached [messages]
       cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
@@ -106,16 +104,9 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     [dispatch]
   );
 
-  const handleSetMessageList = useCallback(
-    ({
-      channelId,
-      messages,
-      updatedTime,
-    }: {
-      channelId: string;
-      messages: MessageType[];
-      updatedTime: number;
-    }) => {
+  const handleSetMessageList: LoadMessagesListener = useCallback(
+    ({ channelId, messages, updatedTime }) => {
+      dispatch(setLoading(false));
       dispatch(setMessagesList(messages));
       // cache [messages] of this [channelId]
       cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
@@ -138,6 +129,7 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     if (!unreadMessageCount && isSameUpdatedTime) {
       // get cached messages data from localStorage
       const { messages } = cacheUtils.getCachedMessages(selectedChannelId);
+      dispatch(setLoading(false));
       dispatch(setMessagesList(messages));
     }
   }, [unreadMessageCount, selectedChannelId, dispatch]);
@@ -159,6 +151,7 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     socket
       .on(SocketEvent.ON_MESSAGES, handleSetMessageList)
       .on(SocketEvent.ON_ADDED_MESSAGE, handleAddNewMessage)
+      .on(SocketEvent.ON_SHARE_MESSAGE_TO_CHANNEL, handleShareMessageToChannel)
       .on(SocketEvent.ON_EDITED_MESSAGE, handleUpdateMessage)
       .on(SocketEvent.ON_REMOVED_MESSAGE, handleRemoveMessage)
       .on(SocketEvent.ON_REMOVED_MESSAGE_FILE, handleUpdateMessage);
@@ -171,6 +164,7 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     socket,
     handleSetMessageList,
     handleAddNewMessage,
+    handleShareMessageToChannel,
     handleUpdateMessage,
     handleRemoveMessage,
     dispatch,

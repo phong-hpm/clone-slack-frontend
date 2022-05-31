@@ -41,11 +41,9 @@ const FullScreenModal: FC<FullScreenModalProps> = ({
   const computeVideoSize = (containerEl: HTMLDivElement) => {
     if (!playerInstance.video.videoEl || !containerRef.current) return;
     const { width: containerWidth, height: containerHeight } = containerEl.getBoundingClientRect();
-    if (playerInstance.video.videoEl) {
-      playerInstance.video.videoEl.style.maxWidth = `${containerWidth}px`;
-      playerInstance.video.videoEl.style.maxHeight = `${containerHeight}px`;
-      playerInstance.video.videoEl.style.opacity = `1`;
-    }
+    playerInstance.video.videoEl.style.maxWidth = `${containerWidth}px`;
+    playerInstance.video.videoEl.style.maxHeight = `${containerHeight}px`;
+    playerInstance.video.videoEl.style.opacity = `1`;
   };
 
   const handleAfterOpen = () => {
@@ -91,7 +89,7 @@ const FullScreenModal: FC<FullScreenModalProps> = ({
       onClose={handleClose}
       {...props}
     >
-      <ModalBody height="100%" p={0}>
+      <ModalBody height="100%" p={0} overflow="hidden">
         <Box display="flex" height="100%">
           <Box
             position="relative"
