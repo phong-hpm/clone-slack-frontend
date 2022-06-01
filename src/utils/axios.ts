@@ -1,7 +1,7 @@
 import axios from "axios";
 import { AnyAction, EnhancedStore, MiddlewareArray } from "@reduxjs/toolkit";
 
-import { setTokens } from "store/slices/auth.slice";
+import { setTokens } from "store/slices/user.slice";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:8000",

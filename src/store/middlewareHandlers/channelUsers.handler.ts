@@ -1,6 +1,8 @@
+// redux selectors
+import channelsSelectors from "store/selectors/channels.selector";
+import teamUsersSelectors from "store/selectors/teamUsers.selector";
+
 // redux slices
-import { getSelectedChannel } from "store/selectors/channels.selector";
-import { getTeamUserList } from "store/selectors/teamUsers.selector";
 import {
   setChannelsList,
   setDirectMessagesList,
@@ -18,8 +20,8 @@ const channelUsersHandlers = (watcher: WatcherType) => {
   // these actions can be fired asynchonous, so we listen all of them
   watcher(
     (state, dispatch) => {
-      const selectedChannel = getSelectedChannel(state);
-      const teamUserList = getTeamUserList(state);
+      const selectedChannel = channelsSelectors.getSelectedChannel(state);
+      const teamUserList = teamUsersSelectors.getTeamUserList(state);
 
       if (selectedChannel && teamUserList.length) {
         const channelUserIds = selectedChannel.users;

@@ -4,7 +4,7 @@ import { FC, useMemo, useState } from "react";
 import { useSelector } from "store";
 
 // redux selectors
-import * as channelsSelector from "store/selectors/channels.selector";
+import channelsSelectors from "store/selectors/channels.selector";
 
 // components
 import VideoPlayer from "components/MediaPlayer/VideoPlayer";
@@ -31,7 +31,7 @@ export interface MediaFileProps {
 }
 
 const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
-  const selectedChannel = useSelector(channelsSelector.getSelectedChannel);
+  const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   const { emitRemoveMessageFile } = useMessageSocket();
 
@@ -110,7 +110,7 @@ const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
           height={24}
           p={0.25}
           borderRadius="50%"
-          bgcolor={color.SECONDARY_BACKGROUND}
+          bgcolor={color.MAX_DARK}
         >
           <CircularProgress color="secondary" size={24} />
         </Box>

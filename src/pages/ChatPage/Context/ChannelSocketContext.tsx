@@ -4,7 +4,7 @@ import { createContext, FC, useCallback, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "store";
 
 // redux selectors
-import * as teamsSelectors from "store/selectors/teams.selector";
+import teamsSelectors from "store/selectors/teams.selector";
 
 // redux slices
 import {

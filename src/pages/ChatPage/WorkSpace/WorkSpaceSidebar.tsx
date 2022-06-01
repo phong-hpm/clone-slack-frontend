@@ -4,7 +4,7 @@ import React, { FC, useRef, useState } from "react";
 import { useSelector } from "store";
 
 // redux selectors
-import * as authSelectors from "store/selectors/auth.selector";
+import userSelectors from "store/selectors/user.selector";
 
 // components
 import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
@@ -14,7 +14,7 @@ import SlackIcon from "components/SlackIcon";
 import { color } from "utils/constants";
 
 const WorkSpaceSidebar: FC = () => {
-  const user = useSelector(authSelectors.getUser);
+  const user = useSelector(userSelectors.getUser);
 
   const anchorRef = useRef<HTMLDivElement>();
 

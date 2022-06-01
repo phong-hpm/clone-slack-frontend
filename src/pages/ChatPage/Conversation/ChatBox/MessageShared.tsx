@@ -4,7 +4,7 @@ import { FC } from "react";
 import { useSelector } from "store";
 
 // redux selector
-import * as usersSelectors from "store/selectors/channelUsers.selector";
+import channelUsersSelectors from "store/selectors/channelUsers.selector";
 
 // components
 import { Box } from "@mui/material";
@@ -33,7 +33,7 @@ const MessageShared: FC<MessageSharedProps> = ({
   message,
   userOwner: userOwnerProp,
 }) => {
-  const userOwner = useSelector(usersSelectors.getChannelUserById(message.user));
+  const userOwner = useSelector(channelUsersSelectors.getChannelUserById(message.user));
 
   return (
     <Box position="relative" px={2}>

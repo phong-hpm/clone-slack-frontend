@@ -111,8 +111,8 @@ const FullScreenModal: FC<FullScreenModalProps> = ({
               p={2}
               sx={{
                 backgroundImage: `linear-gradient(
-                  ${rgba(color.SECONDARY_BACKGROUND, 0.6)},
-                  ${rgba(color.SECONDARY_BACKGROUND, 0)}
+                  ${rgba(color.MAX_DARK, 0.6)},
+                  ${rgba(color.MAX_DARK, 0)}
                 )`,
               }}
             >

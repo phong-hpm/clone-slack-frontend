@@ -1,5 +1,4 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
-import { AxiosResponse } from "axios";
 
 // utils
 import axios from "utils/axios";
@@ -7,9 +6,10 @@ import axios from "utils/axios";
 // types
 import { RootState } from "store/_types";
 import { AuthState } from "store/slices/_types";
-import { RenewAccessTokenResponseData } from "store/actions/auth/_types";
+import { RenewAccessTokenResponseData } from "store/actions/user/_types";
+import { AxiosResponseCustom } from "store/actions/_types";
 
-export const renewAccessToken = createAsyncThunk<AxiosResponse<RenewAccessTokenResponseData>>(
+export const renewAccessToken = createAsyncThunk<AxiosResponseCustom<RenewAccessTokenResponseData>>(
   "auth/refreshToken",
   async (_, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
@@ -25,12 +25,20 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) =
       state.isLoading = true;
     })
     .addCase(renewAccessToken.fulfilled, (state, action) => {
-      const { accessToken } = action.payload.data;
+      const { ok = false, accessToken } = action.payload.data;
 
-      localStorage.setItem("accessToken", accessToken);
+      if (ok) {
+        localStorage.setItem("accessToken", accessToken);
+        state.accessToken = accessToken;
+      } else {
+        localStorage.setItem("accessToken", "");
+        localStorage.setItem("refreshToken", "");
 
-      state.isAuth = true;
-      state.accessToken = accessToken;
+        state.accessToken = "";
+        state.refreshToken = "";
+      }
+
+      state.isAuth = ok;
       state.isLoading = false;
     })
     .addCase(renewAccessToken.rejected, (state) => {
@@ -39,6 +47,7 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) =
 
       state.accessToken = "";
       state.refreshToken = "";
+      state.isAuth = false;
       state.isLoading = false;
     });
 };

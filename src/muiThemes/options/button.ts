@@ -98,6 +98,40 @@ const components: Theme["components"] = {
           backgroundColor: color.DANGER,
         },
       },
+      {
+        props: { className: "purple-outlined" },
+        style: {
+          color: "rgb(97, 31, 105)",
+          borderColor: "rgb(97, 31, 105)",
+          backgroundColor: "transparent",
+          ":hover": { color: color.LIGHT, backgroundColor: "rgb(74, 21, 75)" },
+        },
+      },
+      {
+        props: { className: "purple-contained" },
+        style: {
+          color: color.LIGHT,
+          backgroundColor: "rgb(97, 31, 105)",
+          ":hover": { backgroundColor: "rgb(74, 21, 75)" },
+        },
+      },
+      {
+        props: { className: "light-outlined" },
+        style: {
+          color: color.LIGHT,
+          borderColor: color.LIGHT,
+          backgroundColor: "transparent",
+          ":hover": { borderColor: color.LIGHT, backgroundColor: "transparent" },
+        },
+      },
+      {
+        props: { className: "light-contained" },
+        style: {
+          color: "rgb(97, 31, 105)",
+          backgroundColor: color.LIGHT,
+          ":hover": { backgroundColor: color.LIGHT },
+        },
+      },
     ],
   },
 };

@@ -17,3 +17,25 @@ img {
   display: block;
   width: 100%;
 }
+
+.rotate-270-360 {
+  transform: rotate(270deg);
+  transition: transform 0.3s linear;
+  &.rotate {
+    transform: rotate(360deg);
+    transition: transform 0.3s linear;
+  }
+}
+
+.rotate-animation {
+  animation: rotation 3s linear infinite;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}

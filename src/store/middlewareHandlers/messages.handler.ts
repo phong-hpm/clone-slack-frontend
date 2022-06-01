@@ -8,8 +8,8 @@ import {
 } from "store/slices/messages.slice";
 
 // redux selectors
-import { getChannelUserList } from "store/selectors/channelUsers.selector";
-import { getDayMessageList, getMessageList } from "store/selectors/messages.selector";
+import channelUsersSelectors from "store/selectors/channelUsers.selector";
+import messagesSelectors from "store/selectors/messages.selector";
 
 // utils
 import { mapDayMessageList, pushDayMessage, removeDayMessage } from "utils/message";
@@ -21,8 +21,8 @@ const messagesHandlers = (watcher: WatcherType) => {
   // map [dayMessageList] when call [setMessagesList]
   watcher(
     (state, dispatch) => {
-      let channelUserList = getChannelUserList(state);
-      let messageList = getMessageList(state);
+      let channelUserList = channelUsersSelectors.getChannelUserList(state);
+      let messageList = messagesSelectors.getMessageList(state);
 
       if (!messageList.length) {
         dispatch(setDayMessageList([]));
@@ -40,8 +40,8 @@ const messagesHandlers = (watcher: WatcherType) => {
   // push [dayMessageList] when call [addMessage]
   watcher(
     (state, dispatch, action: ReturnType<typeof addMessage>) => {
-      let channelUserList = getChannelUserList(state);
-      let dayMessageList = getDayMessageList(state);
+      let channelUserList = channelUsersSelectors.getChannelUserList(state);
+      let dayMessageList = messagesSelectors.getDayMessageList(state);
 
       // all messages and day in [...messageList] will be keeped references
       // we can't use [mapDayMessageList] because [dayMessageList] can be very large
@@ -61,7 +61,7 @@ const messagesHandlers = (watcher: WatcherType) => {
     (state, dispatch, action: ReturnType<typeof removeMessage>) => {
       if (!action.payload) return;
 
-      let dayMessageList = getDayMessageList(state);
+      let dayMessageList = messagesSelectors.getDayMessageList(state);
 
       // all messages and day in [...messageList] will be keeped references
       const updatedDayMessageList = removeDayMessage([...dayMessageList], action.payload);

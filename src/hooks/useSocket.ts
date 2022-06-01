@@ -3,11 +3,13 @@ import io, { Socket } from "socket.io-client";
 
 // redux store
 import { useDispatch, useSelector } from "store";
-import { renewAccessToken } from "store/actions/auth/renewToken";
+import { renewAccessToken } from "store/actions/user/renewToken";
+
+// redux slices
+import { setIsAuth } from "store/slices/user.slice";
 
 // redux selector
-import { setIsAuth } from "store/slices/auth.slice";
-import * as authSelectors from "store/selectors/auth.selector";
+import userSelectors from "store/selectors/user.selector";
 
 // utils
 import { SocketEvent, SocketEventDefault } from "utils/constants";
@@ -15,9 +17,9 @@ import { SocketEvent, SocketEventDefault } from "utils/constants";
 const useSocket = () => {
   const dispatch = useDispatch();
 
-  const isAuth = useSelector(authSelectors.isAuth);
-  const user = useSelector(authSelectors.getUser);
-  const accessToken = useSelector(authSelectors.getAccessToken);
+  const isAuth = useSelector(userSelectors.isAuth);
+  const user = useSelector(userSelectors.getUser);
+  const accessToken = useSelector(userSelectors.getAccessToken);
 
   const socketRef = useRef<Socket>();
 

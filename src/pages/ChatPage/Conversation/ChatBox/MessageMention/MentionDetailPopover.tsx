@@ -7,7 +7,7 @@ import defaultAvatar from "assets/images/default_avatar.png";
 import { useSelector } from "store";
 
 // redux selectors
-import * as userSelectors from "store/selectors/channelUsers.selector";
+import channelUsersSelectors from "store/selectors/channelUsers.selector";
 
 // components
 import { Avatar, Box, Popover, Typography } from "@mui/material";
@@ -19,7 +19,7 @@ import { UserType } from "store/slices/_types";
 // quill-mention is using javascript event to trigger action
 // that why this component is working with javascript event only
 const MentionDetailPopover: FC = () => {
-  const channelUserList = useSelector(userSelectors.getChannelUserList);
+  const channelUserList = useSelector(channelUsersSelectors.getChannelUserList);
 
   // using ref, we can update anchorEl and user before component's rendering
   // it will make sure data were available when component re-render

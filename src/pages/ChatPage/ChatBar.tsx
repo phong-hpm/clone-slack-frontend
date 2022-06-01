@@ -4,7 +4,7 @@ import { FC } from "react";
 import { useSelector } from "store";
 
 // redux selector
-import * as authSelectors from "store/selectors/auth.selector";
+import userSelectors from "store/selectors/user.selector";
 
 // images
 import defaultAvatar from "assets/images/default_avatar.png";
@@ -17,7 +17,7 @@ import SlackIcon from "components/SlackIcon";
 import { color } from "utils/constants";
 
 const ChatBar: FC = () => {
-  const user = useSelector(authSelectors.getUser);
+  const user = useSelector(userSelectors.getUser);
 
   return (
     <Box

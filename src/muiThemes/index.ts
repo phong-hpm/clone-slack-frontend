@@ -32,6 +32,15 @@ import MuiTab from "./options/tab";
 import { color } from "utils/constants";
 
 const mainOptions: ThemeOptions = {
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1280,
+      xl: 1536,
+    },
+  },
   palette: {
     mode: "dark",
     text: {
@@ -39,7 +48,7 @@ const mainOptions: ThemeOptions = {
     },
   },
   typography: {
-    fontFamily: "Lato, sans-serif",
+    fontFamily: "inherit",
 
     allVariants: { fontSize: "15px", lineHeight: "20px", color: "inherit" },
     h1: { fontSize: "32px" },

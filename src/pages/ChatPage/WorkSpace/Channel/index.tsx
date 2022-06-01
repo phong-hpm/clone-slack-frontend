@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useSelector } from "store";
 
 // redux selector
-import * as channelsSelectors from "store/selectors/channels.selector";
+import channelsSelectors from "store/selectors/channels.selector";
 
 // components
 import { Box, List, ListItemButton, ListItemIcon, Typography } from "@mui/material";

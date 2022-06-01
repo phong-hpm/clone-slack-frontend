@@ -1,5 +1,4 @@
 import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
-import { AxiosResponse } from "axios";
 
 // utils
 import axios from "utils/axios";
@@ -7,15 +6,15 @@ import { stateDefault } from "utils/constants";
 
 // types
 import { AuthState, TeamsState } from "store/slices/_types";
-import { GetUserInformationResponseData } from "store/actions/auth/_types";
+import { GetUserInformationResponseData } from "store/actions/user/_types";
+import { AxiosResponseCustom } from "store/actions/_types";
 
-export const getUserInformation = createAsyncThunk<AxiosResponse<GetUserInformationResponseData>>(
-  "auth/getUserInformation",
-  async () => {
-    const response = await axios.get("auth/user");
-    return response;
-  }
-);
+export const getUserInformation = createAsyncThunk<
+  AxiosResponseCustom<GetUserInformationResponseData>
+>("auth/getUserInformation", async () => {
+  const response = await axios.get("auth/user");
+  return response;
+});
 
 export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
   builder
@@ -23,10 +22,12 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) =
       state.isLoading = true;
     })
     .addCase(getUserInformation.fulfilled, (state, action) => {
-      const { user } = action.payload.data;
+      const { ok = false, user } = action.payload.data;
+      if (ok) {
+        state.user = user;
+      }
 
-      state.isAuth = true;
-      state.user = user;
+      state.isAuth = ok;
       state.isLoading = false;
     })
     .addCase(getUserInformation.rejected, (state) => {
@@ -46,7 +47,6 @@ export const teamsExtraReducers = (builder: ActionReducerMapBuilder<TeamsState>)
       const { user } = action.payload.data;
 
       state.list = user.teams;
-      // state.selectedId = state.list[0].id || "";
       state.isLoading = false;
     })
     .addCase(getUserInformation.rejected, (state) => {

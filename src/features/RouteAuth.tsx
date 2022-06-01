@@ -4,7 +4,7 @@ import { FC } from "react";
 import { useSelector } from "store";
 
 // redux selectors
-import * as authSelectors from "store/selectors/auth.selector";
+import userSelectors from "store/selectors/user.selector";
 
 // hooks
 import useAuthenication from "hooks/useAuthenication";
@@ -19,7 +19,7 @@ export interface RouteAuthProps {}
 
 const RouteAuth: FC<RouteAuthProps> = ({ children }) => {
   useAuthenication();
-  const isAuth = useSelector(authSelectors.isAuth);
+  const isAuth = useSelector(userSelectors.isAuth);
 
   if (isAuth) return <>{children}</>;
 

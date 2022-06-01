@@ -5,14 +5,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "store";
 
 // redux selectors
-import * as teamsSelectors from "store/selectors/teams.selector";
+import teamsSelectors from "store/selectors/teams.selector";
 
 // redux slices
 import { setSelectedTeamId } from "store/slices/teams.slice";
 import { setSelectedChannelId } from "store/slices/channels.slice";
 
 // utils
-import { RouterPath, teamIdRegExp, channelIdRegExp } from "utils/constants";
+import { routePaths, teamIdRegExp, channelIdRegExp } from "utils/constants";
 
 // components
 import { Box } from "@mui/material";
@@ -36,7 +36,7 @@ export const ChatPage: FC = () => {
     if (!params.teamId) return;
 
     if (!teamIdRegExp.test(params.teamId)) {
-      navigate(RouterPath.TEAM_PAGE);
+      navigate(routePaths.TEAM_PAGE);
     } else {
       if (keepRef.current.teamId !== params.teamId) {
         keepRef.current.teamId = params.teamId;

@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 import { useSelector } from "store";
 
 // redux selectors
-import * as usersSelector from "store/selectors/channelUsers.selector";
+import channelUsersSelectors from "store/selectors/channelUsers.selector";
 
 // components
 import { Box, Collapse, Typography } from "@mui/material";
@@ -22,7 +22,7 @@ export interface MediaFileListProps {
 }
 
 const MediaFileList: FC<MediaFileListProps> = ({ messageId, messageUserId, files }) => {
-  const userOwner = useSelector(usersSelector.getChannelUserById(messageUserId));
+  const userOwner = useSelector(channelUsersSelectors.getChannelUserById(messageUserId));
 
   const [isCollapsed, setCollapsed] = useState(false);
 

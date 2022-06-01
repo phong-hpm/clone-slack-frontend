@@ -28,7 +28,7 @@ const PlayerMoreAction: FC<PlayerMoreActionProps> = (props) => {
         <IconButtonCustom
           ref={moreButtonRef}
           sx={{
-            background: state.isFullScreen ? "transparent" : rgba(color.SECONDARY_BACKGROUND, 0.8),
+            background: state.isFullScreen ? "transparent" : rgba(color.MAX_DARK, 0.8),
           }}
           onClick={() => setShowMoreMenu(true)}
         >

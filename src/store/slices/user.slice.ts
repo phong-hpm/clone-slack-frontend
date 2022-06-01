@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // redux actions
-import { authExtraReducers as loginExtraReducers } from "store/actions/auth/login";
-import { authExtraReducers as renewAccessTokenExtraReducers } from "store/actions/auth/renewToken";
-import { authExtraReducers as getUserInformationExtraReducers } from "store/actions/auth/getUserInformation";
+import { authExtraReducers as confirmEmailCodeExtraReducers } from "store/actions/user/confirmEmailCode";
+import { authExtraReducers as checkEmailExtraReducers } from "store/actions/user/checkEmail";
+import { authExtraReducers as renewAccessTokenExtraReducers } from "store/actions/user/renewToken";
+import { authExtraReducers as getUserInformationExtraReducers } from "store/actions/user/getUserInformation";
 
 // redux slices
 import { stateDefault } from "utils/constants";
@@ -16,8 +17,8 @@ const initialState: AuthState = {
   refreshToken: localStorage.getItem("refreshToken") || "",
   isLoading: false,
   isAuth: false,
-  isVerified: false,
   user: stateDefault.USER,
+  emailVerifying: "",
 };
 
 export const authSlice = createSlice({
@@ -27,30 +28,33 @@ export const authSlice = createSlice({
     setUser: (state, action: PayloadAction<UserType>) => {
       state.user = action.payload;
     },
+    setEmailVerifying: (state, action: PayloadAction<{ email: string }>) => {
+      const { email } = action.payload;
+      state.emailVerifying = email;
+    },
     setTokens: (state, action: PayloadAction<{ accessToken?: string; refreshToken?: string }>) => {
       const { accessToken, refreshToken } = action.payload;
       if (accessToken) state.accessToken = accessToken;
       if (refreshToken) state.refreshToken = refreshToken;
       state.isAuth = true;
-      state.isVerified = true;
     },
     clearTokens: (state) => {
       state.accessToken = "";
       state.refreshToken = "";
       state.isAuth = false;
-      state.isVerified = true;
     },
     setIsAuth: (state, action: PayloadAction<boolean>) => {
       state.isAuth = action.payload;
     },
   },
   extraReducers: (builder) => {
-    loginExtraReducers(builder);
+    checkEmailExtraReducers(builder);
+    confirmEmailCodeExtraReducers(builder);
     renewAccessTokenExtraReducers(builder);
     getUserInformationExtraReducers(builder);
   },
 });
 
-export const { setIsAuth, setUser, setTokens, clearTokens } = authSlice.actions;
+export const { setEmailVerifying, setIsAuth, setUser, setTokens, clearTokens } = authSlice.actions;
 
 export default authSlice.reducer;

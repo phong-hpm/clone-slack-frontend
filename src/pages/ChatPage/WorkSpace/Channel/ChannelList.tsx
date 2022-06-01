@@ -19,6 +19,7 @@ import UserAvatarLength from "components/UserAvatarLength";
 
 // types
 import { ChannelType } from "store/slices/_types";
+import { routePaths } from "utils/constants";
 
 export interface ChannelListProps {
   label: string;
@@ -57,7 +58,7 @@ const ChannelList: FC<ChannelListProps> = ({
   const handleSelectChannel = (id: string) => {
     setSelectedId(id);
     // [setTimeout] will ask [navigate] wait for this component re-render
-    setTimeout(() => navigate(`/${keepRef.current.teamId}/${id}`), 1);
+    setTimeout(() => navigate(`${routePaths.CHATBOX_PAGE}/${keepRef.current.teamId}/${id}`), 1);
   };
 
   useEffect(() => {

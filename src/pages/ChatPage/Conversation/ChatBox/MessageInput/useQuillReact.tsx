@@ -5,8 +5,8 @@ import * as ReactDOMServer from "react-dom/server";
 import { useSelector } from "store";
 
 // redux selectors
-import * as authSelectors from "store/selectors/auth.selector";
-import * as usersSelectors from "store/selectors/channelUsers.selector";
+import userSelectors from "store/selectors/user.selector";
+import channelUsersSelectors from "store/selectors/channelUsers.selector";
 
 // context
 import InputContext, { initialQuillState } from "./InputContext";
@@ -32,8 +32,8 @@ export interface UseQuillReactProps {
 export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
   const { quillReact, updateQuillState, updateAppState, setFocus } = useContext(InputContext);
 
-  const userId = useSelector(authSelectors.getUserId);
-  const channelUserList = useSelector(usersSelectors.getChannelUserList);
+  const userId = useSelector(userSelectors.getUserId);
+  const channelUserList = useSelector(channelUsersSelectors.getChannelUserList);
 
   // modules ref will keep the reference of modules, help QuillReact will not be broken
   const keepRef = useRef({

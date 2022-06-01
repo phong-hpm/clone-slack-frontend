@@ -29,8 +29,8 @@ export interface AuthState {
   refreshToken: string;
   isAuth: boolean;
   isLoading: boolean;
-  isVerified: boolean;
   user: UserType;
+  emailVerifying?: string;
 }
 
 // teams.slice.tsx -----------------

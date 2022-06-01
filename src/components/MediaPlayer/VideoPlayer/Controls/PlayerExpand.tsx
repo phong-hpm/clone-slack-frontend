@@ -20,7 +20,7 @@ const PlayerExpand: FC<PlayerExpandProps> = () => {
     <Tooltip title="Expand">
       <IconButtonCustom
         sx={{
-          background: state.isFullScreen ? "transparent" : rgba(color.SECONDARY_BACKGROUND, 0.8),
+          background: state.isFullScreen ? "transparent" : rgba(color.MAX_DARK, 0.8),
         }}
         onClick={() => updateState({ isFullScreen: true })}
       >

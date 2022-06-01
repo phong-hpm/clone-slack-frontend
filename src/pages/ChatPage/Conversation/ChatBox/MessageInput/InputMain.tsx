@@ -80,7 +80,7 @@ const InputMain: FC<InputMainProps> = ({
 
     // when editor only contain mention tag, textLength will be 0
     // so if the first [delta.ops] is mention, it is valid text
-    if (inputDelta?.ops?.length) {
+    if (!isValidText && inputDelta?.ops?.length) {
       isValidText = !!inputDelta.ops[0].insert.mention;
     }
 

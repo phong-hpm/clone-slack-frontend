@@ -4,7 +4,7 @@ import { FC, useRef, useState } from "react";
 import { useSelector } from "store";
 
 // redux selectors
-import * as authSelectors from "store/selectors/auth.selector";
+import userSelectors from "store/selectors/user.selector";
 
 // components
 import { Box, Chip, Tooltip, Typography } from "@mui/material";
@@ -28,7 +28,7 @@ const Reactions: FC<ReactionsProps> = ({ messageId, reactions }) => {
 
   const { emitReactionMessage } = useMessageSocket();
 
-  const user = useSelector(authSelectors.getUser);
+  const user = useSelector(userSelectors.getUser);
 
   const [isShowEmojiModal, setShowEmojiModal] = useState(false);
 

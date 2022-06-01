@@ -1,18 +1,18 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AxiosResponse } from "axios";
 
 // redux selectors
-import * as authSelector from "store/selectors/auth.selector";
-import * as teamsSelector from "store/selectors/teams.selector";
-import * as channelsSelector from "store/selectors/channels.selector";
+import userSelectors from "store/selectors/user.selector";
+import teamsSelectors from "store/selectors/teams.selector";
+import channelsSelectors from "store/selectors/channels.selector";
 
 // utils
 import axios from "utils/axios";
 
 // types
 import { RootState } from "store/_types";
-import { GetUserInformationResponseData } from "store/actions/auth/_types";
+import { GetUserInformationResponseData } from "store/actions/user/_types";
 import { MessageFilesPostData } from "./_types";
+import { AxiosResponseCustom } from "store/actions/_types";
 
 const getBlobFromUrl = async (url: string) => {
   const res = await fetch(url);
@@ -20,15 +20,15 @@ const getBlobFromUrl = async (url: string) => {
 };
 
 export const uploadFiles = createAsyncThunk<
-  AxiosResponse<GetUserInformationResponseData>,
+  AxiosResponseCustom<GetUserInformationResponseData>,
   MessageFilesPostData,
   {}
 >("message/uploadFiles", async (postData, thunkAPI) => {
   const formData = new FormData();
   const state: RootState = thunkAPI.getState() as RootState;
-  const userId = authSelector.getUserId(state);
-  const teamId = teamsSelector.getSelectedTeamId(state);
-  const channelId = channelsSelector.getSelectedChannelId(state);
+  const userId = userSelectors.getUserId(state);
+  const teamId = teamsSelectors.getSelectedTeamId(state);
+  const channelId = channelsSelectors.getSelectedChannelId(state);
 
   const files: { id: string; blob: Blob }[] = [];
   const thumbs: { id: string; blob: Blob }[] = [];

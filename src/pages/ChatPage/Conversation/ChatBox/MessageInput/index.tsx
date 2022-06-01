@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "store";
 import { uploadFiles } from "store/actions/message/uploadFiles";
 
 // redux selectors
-import * as channelsSelector from "store/selectors/channels.selector";
+import channelsSelectors from "store/selectors/channels.selector";
 
 // components
 import { MessageInputProvider } from "./InputContext";
@@ -38,7 +38,7 @@ const MessageInput: FC<MessageInputProps> = ({
 
   const { emitAddMessage } = useMessageSocket();
 
-  const selectedChannel = useSelector(channelsSelector.getSelectedChannel);
+  const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   const placeHolder = useMemo(() => {
     if (!selectedChannel?.name || !selectedChannel?.type) return "";

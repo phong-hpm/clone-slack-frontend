@@ -24,6 +24,14 @@ const components: Theme["components"] = {
         },
       },
     },
+    variants: [
+      {
+        props: { className: "light" },
+        style: {
+          ".MuiPaper-root.MuiMenu-paper": { backgroundColor: color.LIGHT },
+        },
+      },
+    ],
   },
 };
 

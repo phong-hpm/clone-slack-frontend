@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // redux actions
-import { teamsExtraReducers as getUserInformationExtraReducers } from "store/actions/auth/getUserInformation";
+import { teamsExtraReducers as getUserInformationExtraReducers } from "store/actions/user/getUserInformation";
 
 // types
 import { TeamsState, TeamType } from "store/slices/_types";

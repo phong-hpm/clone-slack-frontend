@@ -6,7 +6,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import { useSelector } from "store";
 
 // redux selectors
-import * as messagesSelectors from "store/selectors/messages.selector";
+import messagesSelectors from "store/selectors/messages.selector";
 
 // components
 import { Box, CircularProgress, List } from "@mui/material";

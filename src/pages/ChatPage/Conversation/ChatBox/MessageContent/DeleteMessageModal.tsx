@@ -4,7 +4,7 @@ import { FC } from "react";
 import { useSelector } from "store";
 
 // redux selectors
-import * as usersSelectors from "store/selectors/channelUsers.selector";
+import channelUsersSelectors from "store/selectors/channelUsers.selector";
 
 // components
 import { Modal, ModalHeader, ModalBody, ModalFooter, ModalProps } from "components/Modal";
@@ -28,7 +28,7 @@ const DeleteMessageModal: FC<DeleteMessageModalProps> = ({
   onSubmit,
   ...props
 }) => {
-  const userOwner = useSelector(usersSelectors.getChannelUserById(message.user));
+  const userOwner = useSelector(channelUsersSelectors.getChannelUserById(message.user));
 
   const handleSubmit = () => {
     onClose && onClose();

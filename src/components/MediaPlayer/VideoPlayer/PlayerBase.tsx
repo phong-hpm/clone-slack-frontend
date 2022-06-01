@@ -150,7 +150,7 @@ const PlayerBase = forwardRef<PlayerBaseInstance, PlayerBaseProps>(
           position={state.isFullScreen ? undefined : "relative"}
           width="100%"
           color={color.LIGHT}
-          bgcolor={state.isFullScreen ? undefined : color.SECONDARY_BACKGROUND}
+          bgcolor={state.isFullScreen ? undefined : color.MAX_DARK}
           style={style}
         >
           {/* 

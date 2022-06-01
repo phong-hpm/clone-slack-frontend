@@ -7,8 +7,8 @@ import defaultAvatar from "assets/images/default_avatar.png";
 import { useSelector } from "store";
 
 // redux selectors
-import * as authSelectors from "store/selectors/auth.selector";
-import * as usersSelectors from "store/selectors/channelUsers.selector";
+import userSelectors from "store/selectors/user.selector";
+import channelUsersSelectors from "store/selectors/channelUsers.selector";
 
 // components
 import ReactQuill from "react-quill";
@@ -61,8 +61,8 @@ const MessageContent: FC<MessageContentProps> = ({
 
   const { emitEditMessage, emitRemoveMessage } = useMessageSocket();
 
-  const user = useSelector(authSelectors.getUser);
-  const channelUserList = useSelector(usersSelectors.getChannelUserList);
+  const user = useSelector(userSelectors.getUser);
+  const channelUserList = useSelector(channelUsersSelectors.getChannelUserList);
 
   // [message] state will help to keep message reference
   // case: when user update 1 message, [MessageList] will re-render

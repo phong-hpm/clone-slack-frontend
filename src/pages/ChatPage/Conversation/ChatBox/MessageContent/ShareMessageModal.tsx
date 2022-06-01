@@ -7,8 +7,8 @@ import defaultAvatar from "assets/images/default_avatar.png";
 import { useSelector } from "store";
 
 // redux selector
-import * as authSelectors from "store/selectors/auth.selector";
-import * as channelsSelectors from "store/selectors/channels.selector";
+import userSelectors from "store/selectors/user.selector";
+import channelsSelectors from "store/selectors/channels.selector";
 
 // components
 import {
@@ -51,7 +51,7 @@ export interface ShareMessageModalProps {
 const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClose }) => {
   const { emitShareMessageToChannel, emitShareMessageToGroupUsers } = useMessageSocket();
 
-  const user = useSelector(authSelectors.getUser);
+  const user = useSelector(userSelectors.getUser);
   const channelList = useSelector(channelsSelectors.getChannelList);
   const directMessageList = useSelector(channelsSelectors.getDirectMessagesList);
 

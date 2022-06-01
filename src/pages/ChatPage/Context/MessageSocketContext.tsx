@@ -1,10 +1,11 @@
 import { createContext, FC, useCallback, useEffect, useMemo, useRef } from "react";
+import { useParams } from "react-router-dom";
 
 // redux store
 import { useDispatch, useSelector } from "store";
 
 // redux selectors
-import * as channelsSelector from "store/selectors/channels.selector";
+import channelsSelectors from "store/selectors/channels.selector";
 
 // redux slices
 import {
@@ -21,7 +22,6 @@ import useSocket from "hooks/useSocket";
 // utils
 import cacheUtils from "utils/cacheUtils";
 import { SocketEvent, SocketEventDefault } from "utils/constants";
-import { useParams } from "react-router-dom";
 
 // types
 import {
@@ -48,8 +48,8 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
   const dispatch = useDispatch();
   const { teamId } = useParams();
 
-  const selectedChannelId = useSelector(channelsSelector.getSelectedChannelId);
-  const unreadMessageCount = useSelector(channelsSelector.getUnreadMessageCount);
+  const selectedChannelId = useSelector(channelsSelectors.getSelectedChannelId);
+  const unreadMessageCount = useSelector(channelsSelectors.getUnreadMessageCount);
 
   const { socket, updateNamespace } = useSocket();
 

@@ -5,7 +5,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "store";
 
 // redux selectors
-import * as channelsSelectors from "store/selectors/channels.selector";
+import channelsSelectors from "store/selectors/channels.selector";
 
 // redux slices
 import { setSelectedChannelId } from "store/slices/channels.slice";

@@ -5,9 +5,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, ModalProps } from "componen
 import { Box, Button, Typography } from "@mui/material";
 import ReviewVideoCard from "../../MessageInput/Review/ReviewVideoCard";
 import SlackIcon from "components/SlackIcon";
-
-// icons
-import { ReactComponent as WaveSurferIcon } from "assets/icons/wavesurfer.svg";
+import SvgFileIcon from "components/SvgFileIcon";
 
 // utils
 import { color, rgba } from "utils/constants";
@@ -73,7 +71,7 @@ const MediaFileDeleteModal: FC<MediaFileDeleteModalProps> = ({
               border="1px solid"
               borderColor={color.BORDER}
             >
-              <WaveSurferIcon />
+              <SvgFileIcon icon="wavesurfer" />
               <Box
                 position="absolute"
                 top={0}

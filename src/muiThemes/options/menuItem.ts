@@ -17,6 +17,17 @@ const components: Theme["components"] = {
         },
       },
     },
+    variants: [
+      {
+        props: { className: "light" },
+        style: {
+          color: color.MAX_DARK,
+          "&:hover, &.Mui-selected, &.Mui-selected:hover": {
+            color: color.LIGHT,
+          },
+        },
+      },
+    ],
   },
 };
 

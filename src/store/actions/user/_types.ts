@@ -1,16 +1,16 @@
 import { UserType, TeamType } from "store/slices/_types";
 
 // login.tsx -----------------
-export interface LoginPostData {
+export interface CheckEmailResponseData {
+  status: "sending";
   email: string;
-  password: string;
 }
-
 export interface LoginResponseData {
-  accessToken: string;
-  refreshToken: string;
-  user: UserType;
-  teams: TeamType[];
+  isValid: boolean;
+  accessToken?: string;
+  refreshToken?: string;
+  // user: UserType;
+  // teams: TeamType[];
 }
 
 // renewToken.tsx -----------------

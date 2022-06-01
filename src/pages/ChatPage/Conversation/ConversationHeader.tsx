@@ -7,9 +7,9 @@ import defaultAvatar from "assets/images/default_avatar.png";
 import { useSelector } from "store";
 
 // redux selector
-import * as authSelectors from "store/selectors/auth.selector";
-import * as channelUsersSelectors from "store/selectors/channelUsers.selector";
-import * as channelsSelectors from "store/selectors/channels.selector";
+import userSelectors from "store/selectors/user.selector";
+import channelUsersSelectors from "store/selectors/channelUsers.selector";
+import channelsSelectors from "store/selectors/channels.selector";
 
 // components
 import { Avatar, Box, Button, Typography } from "@mui/material";
@@ -20,7 +20,7 @@ import UserAvatarStatus from "components/UserAvatarStatus";
 import { color } from "utils/constants";
 
 const ConversationHeader: FC = () => {
-  const user = useSelector(authSelectors.getUser);
+  const user = useSelector(userSelectors.getUser);
   const channelUserList = useSelector(channelUsersSelectors.getChannelUserList);
   const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
