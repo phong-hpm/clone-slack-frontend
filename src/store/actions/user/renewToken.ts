@@ -5,7 +5,7 @@ import axios from "utils/axios";
 
 // types
 import { RootState } from "store/_types";
-import { AuthState } from "store/slices/_types";
+import { UserState } from "store/slices/_types";
 import { RenewAccessTokenResponseData } from "store/actions/user/_types";
 import { AxiosResponseCustom } from "store/actions/_types";
 
@@ -13,13 +13,13 @@ export const renewAccessToken = createAsyncThunk<AxiosResponseCustom<RenewAccess
   "auth/refreshToken",
   async (_, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
-    const postData = { refreshToken: state.auth.refreshToken };
+    const postData = { refreshToken: state.user.refreshToken };
     const response = await axios.post("auth/refresh-token", { postData });
     return response;
   }
 );
 
-export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
+export const authExtraReducers = (builder: ActionReducerMapBuilder<UserState>) => {
   builder
     .addCase(renewAccessToken.pending, (state) => {
       state.isLoading = true;

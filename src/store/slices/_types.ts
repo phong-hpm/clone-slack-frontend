@@ -24,7 +24,7 @@ export interface ChannelUsersState {
 }
 
 // auth.slice.tsx -----------------
-export interface AuthState {
+export interface UserState {
   accessToken: string;
   refreshToken: string;
   isAuth: boolean;
@@ -84,8 +84,9 @@ export interface MessageType {
 }
 
 export type DayMessageType =
-  | { day: string; message?: MessageType; userOwner?: UserType }
-  | { day?: string; message: MessageType; userOwner?: UserType };
+  | { type: "panel"; day?: string; message?: MessageType; userOwner?: UserType }
+  | { type?: "panel"; day: string; message?: MessageType; userOwner?: UserType }
+  | { type?: "panel"; day?: string; message: MessageType; userOwner?: UserType };
 
 export interface MessagesState {
   isLoading: boolean;

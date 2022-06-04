@@ -5,8 +5,11 @@ import { Box, Divider, Menu, MenuItem, Tooltip, Typography } from "@mui/material
 import SlackIcon from "components/SlackIcon";
 import MoreRemindList, { MoreRemindListProps } from "./MoreRemindList";
 
+// hooks
+import useKeyboard from "hooks/keyboard/useKeyboard";
+
 // utils
-import { color } from "utils/constants";
+import { color, eventKeys } from "utils/constants";
 
 export interface MoreMenuProps extends MoreRemindListProps {
   messageId?: string;
@@ -30,6 +33,19 @@ const MoreMenu: FC<MoreMenuProps> = ({
   onClose,
   ...props
 }) => {
+  const isEditable = !isSystem && isOwner;
+  const isDeletable = !isSystem && isOwner;
+
+  const { handleKeyDown } = useKeyboard({
+    keyDownListener: {
+      [eventKeys.KEY_U]: () => {},
+      [eventKeys.KEY_P]: () => {},
+      [eventKeys.KEY_E]: () => isEditable && onClickEdit(),
+      [eventKeys.KEY_BACKSPACE]: () => isDeletable && onClickDelete(),
+      [eventKeys.KEY_DELETE]: () => isDeletable && onClickDelete(),
+    },
+  });
+
   const [isSelectRemind, setSelectRemind] = useState(false);
 
   return (
@@ -41,6 +57,7 @@ const MoreMenu: FC<MoreMenuProps> = ({
       transformOrigin={{ vertical: "top", horizontal: "right" }}
       sx={{ zIndex: 1500 }}
       MenuListProps={{ sx: { minWidth: 300 } }}
+      onKeyDown={handleKeyDown}
       onMouseDown={() => onClose && onClose()}
       onClose={onClose}
     >
@@ -91,7 +108,7 @@ const MoreMenu: FC<MoreMenuProps> = ({
 
       {isOwner && <Divider />}
 
-      {!isSystem && isOwner && (
+      {isEditable && (
         // mousedown → mouseup → click
         // tooltip which render MessageActions will be closed after mousedown
         // in this case, can't use onClick
@@ -103,7 +120,7 @@ const MoreMenu: FC<MoreMenuProps> = ({
         </MenuItem>
       )}
 
-      {!isSystem && isOwner && (
+      {isDeletable && (
         <MenuItem onMouseDown={onClickDelete}>
           <Box display="flex" justifyContent="space-between" width="100%">
             <Typography color={color.DANGER}>Delete message</Typography>

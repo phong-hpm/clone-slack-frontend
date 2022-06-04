@@ -5,7 +5,7 @@ import axios from "utils/axios";
 import { stateDefault } from "utils/constants";
 
 // types
-import { AuthState, TeamsState } from "store/slices/_types";
+import { UserState, TeamsState } from "store/slices/_types";
 import { GetUserInformationResponseData } from "store/actions/user/_types";
 import { AxiosResponseCustom } from "store/actions/_types";
 
@@ -16,7 +16,7 @@ export const getUserInformation = createAsyncThunk<
   return response;
 });
 
-export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
+export const authExtraReducers = (builder: ActionReducerMapBuilder<UserState>) => {
   builder
     .addCase(getUserInformation.pending, (state) => {
       state.isLoading = true;

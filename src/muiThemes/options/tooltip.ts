@@ -34,7 +34,7 @@ const components: Theme["components"] = {
         "&.tooltip-menu": {
           zIndex: 1500,
           ".MuiTooltip-tooltip": {
-            width: 200,
+            minWidth: 200,
             padding: "8px 0",
             backgroundColor: color.MIN_SOLID,
 

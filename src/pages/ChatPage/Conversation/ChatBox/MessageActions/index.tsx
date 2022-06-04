@@ -121,21 +121,25 @@ const MessageActions: FC<MessageActionsProps> = ({
         );
       })}
 
-      <MoreMenu
-        open={isShowMoreMenu}
-        messageId={messageId}
-        isSystem={isSystem}
-        anchorEl={moreButtonRef.current}
-        onClose={handleClose}
-        {...props}
-      />
+      {isShowMoreMenu && (
+        <MoreMenu
+          open={isShowMoreMenu}
+          messageId={messageId}
+          isSystem={isSystem}
+          anchorEl={moreButtonRef.current}
+          onClose={handleClose}
+          {...props}
+        />
+      )}
 
-      <EmojiModal
-        isOpen={isShowEmojiModal}
-        anchorEl={moreReactionButtonRef.current}
-        onEmojiSelect={(emoji) => handleReactionMessage(emoji.id)}
-        onClose={() => setShowEmojiModal(false)}
-      />
+      {isShowEmojiModal && (
+        <EmojiModal
+          isOpen={isShowEmojiModal}
+          anchorEl={moreReactionButtonRef.current}
+          onEmojiSelect={(emoji) => handleReactionMessage(emoji.id)}
+          onClose={() => setShowEmojiModal(false)}
+        />
+      )}
     </Box>
   );
 };

@@ -63,7 +63,6 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
       // this event will be listened on [MessageContentList],
       //   and ask {react-window} sroll to bottom after rendered new list
       // so, this event has to be dispatched before dispatch [addMessage]
-      window.dispatchEvent(new Event("message-list-will-scroll-to-bottom"));
 
       dispatch(addMessage(message));
       // add cached [messages]

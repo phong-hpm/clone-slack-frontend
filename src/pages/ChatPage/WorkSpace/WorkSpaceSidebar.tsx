@@ -7,8 +7,9 @@ import { useSelector } from "store";
 import userSelectors from "store/selectors/user.selector";
 
 // components
-import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
+import WorkSpaceMenu from "./WorkSpaceMenu";
 
 // utils
 import { color } from "utils/constants";
@@ -19,10 +20,6 @@ const WorkSpaceSidebar: FC = () => {
   const anchorRef = useRef<HTMLDivElement>();
 
   const [isShowMenu, setShowMenu] = useState(false);
-
-  const handleSelect = () => {
-    setShowMenu(false);
-  };
 
   const handleAddNewMessage = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -48,16 +45,13 @@ const WorkSpaceSidebar: FC = () => {
           </IconButton>
         </Box>
       </Box>
-      <Menu
-        variant="menu"
+
+      {/* Menu actions */}
+      <WorkSpaceMenu
         anchorEl={anchorRef.current}
         open={isShowMenu}
         onClose={() => setShowMenu(false)}
-      >
-        <MenuItem onClick={handleSelect}>Profile</MenuItem>
-        <MenuItem onClick={handleSelect}>My account</MenuItem>
-        <MenuItem onClick={handleSelect}>Logout</MenuItem>
-      </Menu>
+      />
     </Box>
   );
 };

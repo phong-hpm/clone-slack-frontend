@@ -43,7 +43,7 @@ const messagesHandlers = (watcher: WatcherType) => {
       let channelUserList = channelUsersSelectors.getChannelUserList(state);
       let dayMessageList = messagesSelectors.getDayMessageList(state);
 
-      // all messages and day in [...messageList] will be keeped references
+      // all messages and days in [...messageList] will be keeped references
       // we can't use [mapDayMessageList] because [dayMessageList] can be very large
       const updatedDayMessageList = pushDayMessage(
         [...dayMessageList],

@@ -64,10 +64,6 @@ const MessageContent: FC<MessageContentProps> = ({
   const user = useSelector(userSelectors.getUser);
   const channelUserList = useSelector(channelUsersSelectors.getChannelUserList);
 
-  // [message] state will help to keep message reference
-  // case: when user update 1 message, [MessageList] will re-render
-  //       if not keep message re-ference,
-  //       all [MessageContent] will be triggered re-render
   const [isHovering, setHovering] = useState(false);
   const [isEditing, setEditing] = useState(false);
   const [isShowUserModal, setShowUserModal] = useState(false);
@@ -111,7 +107,7 @@ const MessageContent: FC<MessageContentProps> = ({
   const isDisplayStared = !isEditing && !isMessageOnly && message.isStared;
   const isDisplayReaction = !isEditing && !isMessageOnly && !!Object.keys(message.reactions).length;
 
-  const isDisplayMessage = !isEditing && !!message.delta.ops?.length;
+  const isDisplayMessage = !!message.delta.ops?.length;
   const isDisplayMessageShared = !isPreventSharedMessage && !isReadOnly && message.sharedMessage;
 
   return (
@@ -190,6 +186,7 @@ const MessageContent: FC<MessageContentProps> = ({
                   bounds={"#root"}
                   modules={{ toolbar: false, clipboard: { matchVisual: false } }}
                   readOnly
+                  style={{ display: isEditing ? "none" : undefined }}
                 />
               )}
               {isEditing && (

@@ -4,7 +4,7 @@ import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "utils/axios";
 
 // types
-import { AuthState } from "store/slices/_types";
+import { UserState } from "store/slices/_types";
 import { CheckEmailResponseData } from "store/actions/user/_types";
 import { AxiosResponseCustom } from "store/actions/_types";
 
@@ -16,7 +16,7 @@ export const checkEmail = createAsyncThunk<
   return response;
 });
 
-export const authExtraReducers = (builder: ActionReducerMapBuilder<AuthState>) => {
+export const authExtraReducers = (builder: ActionReducerMapBuilder<UserState>) => {
   builder
     .addCase(checkEmail.pending, (state) => {
       state.isLoading = true;

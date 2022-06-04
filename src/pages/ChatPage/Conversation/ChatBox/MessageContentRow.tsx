@@ -2,6 +2,7 @@ import { FC, memo, useCallback, useEffect, useRef, useState } from "react";
 
 // components
 import { Box, Button, Divider, ListItemButton, Menu, MenuItem, Typography } from "@mui/material";
+import MessageContentPanel from "./MessageContentPanel";
 
 // images
 import MessageContent from "./MessageContent";
@@ -63,45 +64,48 @@ const MessageContentRow: FC<MessageContentRowProps> = ({
 
   return (
     <>
-      <Box style={style}>
-        {!dayMessage.message ? (
-          <Box
-            ref={rowRef}
-            key={dayMessage.day}
-            position="relative"
-            display="flex"
-            justifyContent="center"
-            py={1}
-          >
-            <Box position="absolute" width="100%" top="50%">
-              <Divider />
+      <Box style={{ ...style, transform: "rotateX(180deg)" }}>
+        <Box ref={rowRef}>
+          {dayMessage.type === "panel" && <MessageContentPanel />}
+
+          {dayMessage.day && (
+            <Box
+              key={dayMessage.day}
+              position="relative"
+              display="flex"
+              justifyContent="center"
+              py={1}
+            >
+              <Box position="absolute" width="100%" top="50%">
+                <Divider />
+              </Box>
+              <Box position="relative" bgcolor={color.PRIMARY_BACKGROUND}>
+                <Button
+                  sx={{ pl: 1.5, border: `1px solid ${color.BORDER}`, borderRadius: 4 }}
+                  // currentTarget is which element is handling onCLick event
+                  // in this case, currentTarget is button
+                  // Because this event can be trigger by clicking on Button, Typography, SlackIcon
+                  // that why we don't use e.target
+                  onClick={(e) => setAnchorJumpMenu(e.currentTarget as HTMLButtonElement)}
+                >
+                  <Typography variant="h5" fontWeight={700} mr={0.5}>
+                    {dayMessage.day}
+                  </Typography>
+                  <SlackIcon icon="chevron-down" fontSize="medium" />
+                </Button>
+              </Box>
             </Box>
-            <Box position="relative" bgcolor={color.PRIMARY_BACKGROUND}>
-              <Button
-                sx={{ pl: 1.5, border: `1px solid ${color.BORDER}`, borderRadius: 4 }}
-                // currentTarget is which element is handling onCLick event
-                // in this case, currentTarget is button
-                // Because this event can be trigger by clicking on Button, Typography, SlackIcon
-                // that why we don't use e.target
-                onClick={(e) => setAnchorJumpMenu(e.currentTarget as HTMLButtonElement)}
-              >
-                <Typography variant="h5" fontWeight={700} mr={0.5}>
-                  {dayMessage.day}
-                </Typography>
-                <SlackIcon icon="chevron-down" fontSize="medium" />
-              </Button>
-            </Box>
-          </Box>
-        ) : (
-          <ListItemButton
-            ref={rowRef}
-            key={dayMessage.message.id}
-            className="bg-hover-none"
-            sx={{ cursor: "auto", padding: "0" }}
-          >
-            <MessageContent userOwner={dayMessage.userOwner} message={dayMessage.message} />
-          </ListItemButton>
-        )}
+          )}
+          {dayMessage.message && (
+            <ListItemButton
+              key={dayMessage.message.id}
+              className="bg-hover-none"
+              sx={{ cursor: "auto", padding: "0" }}
+            >
+              <MessageContent userOwner={dayMessage.userOwner} message={dayMessage.message} />
+            </ListItemButton>
+          )}
+        </Box>
       </Box>
 
       {!!anchorJumpMenu && (

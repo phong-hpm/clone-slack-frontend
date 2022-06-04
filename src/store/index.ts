@@ -9,7 +9,7 @@ import {
 import thunk from "redux-thunk";
 
 // reducer
-import authReducer from "store/slices/user.slice";
+import userReducer from "store/slices/user.slice";
 import teamsReducer from "store/slices/teams.slice";
 import teamUsersReducer from "store/slices/teamUsers.slice";
 import channelsReducer from "store/slices/channels.slice";
@@ -30,7 +30,7 @@ import { AppDispatch, RootState } from "store/_types";
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    user: userReducer,
     teams: teamsReducer,
     teamUsers: teamUsersReducer,
     channels: channelsReducer,

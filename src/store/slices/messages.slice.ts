@@ -40,7 +40,7 @@ export const messagesSlice = createSlice({
     },
     setDayMessageList: (state, action: PayloadAction<DayMessageType[]>) => {
       const messages = action.payload;
-      state.dayMessageList = messages;
+      state.dayMessageList = [{ type: "panel" }, ...messages];
       state.isLoading = false;
     },
     resetMessageState: (state) => {

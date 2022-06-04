@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // redux actions
+import { userExtraReducers as signoutExtraReducer } from "store/actions/user/signout";
 import { authExtraReducers as confirmEmailCodeExtraReducers } from "store/actions/user/confirmEmailCode";
 import { authExtraReducers as checkEmailExtraReducers } from "store/actions/user/checkEmail";
 import { authExtraReducers as renewAccessTokenExtraReducers } from "store/actions/user/renewToken";
@@ -10,9 +11,9 @@ import { authExtraReducers as getUserInformationExtraReducers } from "store/acti
 import { stateDefault } from "utils/constants";
 
 // types
-import { AuthState, UserType } from "store/slices/_types";
+import { UserState, UserType } from "store/slices/_types";
 
-const initialState: AuthState = {
+const initialState: UserState = {
   accessToken: localStorage.getItem("accessToken") || "",
   refreshToken: localStorage.getItem("refreshToken") || "",
   isLoading: false,
@@ -21,8 +22,8 @@ const initialState: AuthState = {
   emailVerifying: "",
 };
 
-export const authSlice = createSlice({
-  name: "auth",
+export const userSlice = createSlice({
+  name: "user",
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<UserType>) => {
@@ -48,6 +49,7 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    signoutExtraReducer(builder);
     checkEmailExtraReducers(builder);
     confirmEmailCodeExtraReducers(builder);
     renewAccessTokenExtraReducers(builder);
@@ -55,6 +57,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setEmailVerifying, setIsAuth, setUser, setTokens, clearTokens } = authSlice.actions;
+export const { setEmailVerifying, setIsAuth, setUser, setTokens, clearTokens } = userSlice.actions;
 
-export default authSlice.reducer;
+export default userSlice.reducer;
