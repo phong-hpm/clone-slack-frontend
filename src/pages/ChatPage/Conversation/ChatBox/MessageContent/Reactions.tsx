@@ -1,19 +1,19 @@
 import { FC, useRef, useState } from "react";
 
 // redux store
-import { useSelector } from "store";
+import { useDispatch, useSelector } from "store";
 
 // redux selectors
 import userSelectors from "store/selectors/user.selector";
+
+// redux actions
+import { emitReactionMessage } from "store/actions/socket/messageSocket.action";
 
 // components
 import { Box, Chip, Tooltip, Typography } from "@mui/material";
 import EmojiIcon from "components/Emoji/EmojiIcon";
 import SlackIcon from "components/SlackIcon";
 import EmojiModal from "features/EmojiModal";
-
-// hooks
-import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 
 // types
 import { MessageType } from "store/slices/_types";
@@ -24,9 +24,9 @@ export interface ReactionsProps {
 }
 
 const Reactions: FC<ReactionsProps> = ({ messageId, reactions }) => {
-  const anchorEmojiModalRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
 
-  const { emitReactionMessage } = useMessageSocket();
+  const anchorEmojiModalRef = useRef<HTMLDivElement>(null);
 
   const user = useSelector(userSelectors.getUser);
 
@@ -53,7 +53,9 @@ const Reactions: FC<ReactionsProps> = ({ messageId, reactions }) => {
                 </Typography>
               </Box>
             }
-            onClick={() => emitReactionMessage(messageId, reaction.id)}
+            onClick={() =>
+              dispatch(emitReactionMessage({ id: messageId, reactionId: reaction.id }))
+            }
           />
         </Box>
       ))}
@@ -72,7 +74,9 @@ const Reactions: FC<ReactionsProps> = ({ messageId, reactions }) => {
       <EmojiModal
         isOpen={isShowEmojiModal}
         anchorEl={anchorEmojiModalRef.current}
-        onEmojiSelect={(emoji) => emitReactionMessage(messageId, emoji.id)}
+        onEmojiSelect={(emoji) =>
+          dispatch(emitReactionMessage({ id: messageId, reactionId: emoji.id }))
+        }
         onClose={() => setShowEmojiModal(false)}
       />
     </Box>

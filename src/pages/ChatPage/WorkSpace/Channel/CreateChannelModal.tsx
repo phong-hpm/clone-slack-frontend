@@ -1,6 +1,12 @@
 import { FC, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 
+// store
+import { useDispatch } from "store";
+
+// redux actions
+import { emitAddChannel } from "store/actions/socket/channelSocket.action";
+
 // components
 import {
   Box,
@@ -14,9 +20,6 @@ import {
 } from "@mui/material";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "components/Modal";
 import SlackIcon from "components/SlackIcon";
-
-// hooks
-import useChannelSocket from "pages/ChatPage/hooks/useChannelSocket";
 
 // utils
 import { color } from "utils/constants";
@@ -36,7 +39,7 @@ export interface CreateChannelModalProps {
 }
 
 const CreateChannelModal: FC<CreateChannelModalProps> = ({ isOpen, onClose }) => {
-  const { handleSendChannel } = useChannelSocket();
+  const dispatch = useDispatch();
 
   const [error, setError] = useState({ maxLength: false, minLength: false });
   const [isPrivate, setIsPrivate] = useState(false);
@@ -58,7 +61,7 @@ const CreateChannelModal: FC<CreateChannelModalProps> = ({ isOpen, onClose }) =>
   };
 
   const handleSubmit = () => {
-    handleSendChannel(channelName, desc);
+    dispatch(emitAddChannel({ name: channelName, desc }));
     onClose();
   };
 

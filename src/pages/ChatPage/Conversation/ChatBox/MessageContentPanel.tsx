@@ -1,5 +1,5 @@
 // redux store
-import { useSelector } from "store";
+import { useDispatch, useSelector } from "store";
 
 // components
 import ReactQuill from "react-quill";
@@ -12,14 +12,17 @@ import channelsSelectors from "store/selectors/channels.selector";
 // utils
 import { color } from "utils/constants";
 import SlackIcon from "components/SlackIcon";
+import { setOpenAddUserChannel } from "store/slices/globalModal.slice";
 
 const MessageContentPanel = () => {
+  const dispatch = useDispatch();
+
   const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   if (!selectedChannel) return <></>;
 
   return (
-    <Box px={2.5} py={1}>
+    <Box px={2.5} py={5}>
       <Box display="flex">
         <Box mr={1}>
           <SvgFileIcon
@@ -44,7 +47,7 @@ const MessageContentPanel = () => {
               <>This conversation is just between the two of you</>
             )}
 
-            {selectedChannel.type === "direct_message" && (
+            {selectedChannel.type === "group_message" && (
               <>This is the very beginning of your group conversation</>
             )}
           </Typography>
@@ -80,12 +83,20 @@ const MessageContentPanel = () => {
         </Box>
       </Box>
 
-      <Box>
-        <Link component="div" underline="none" px={5.5} py={3}>
-          <SlackIcon icon="add-user" style={{ marginRight: 12 }} />
-          Add people
-        </Link>
-      </Box>
+      {selectedChannel.type !== "direct_message" && (
+        <Box>
+          <Link
+            component="div"
+            underline="none"
+            px={5.5}
+            pt={3}
+            onClick={() => dispatch(setOpenAddUserChannel(true))}
+          >
+            <SlackIcon icon="add-user" style={{ marginRight: 12 }} />
+            Add people
+          </Link>
+        </Box>
+      )}
     </Box>
   );
 };

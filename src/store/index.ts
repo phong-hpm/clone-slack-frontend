@@ -15,6 +15,8 @@ import teamUsersReducer from "store/slices/teamUsers.slice";
 import channelsReducer from "store/slices/channels.slice";
 import channelUsersReducer from "store/slices/channelUsers.slice";
 import messagesReducer from "store/slices/messages.slice";
+import socketReducer from "store/slices/socket.slice";
+import globalModalReducer from "store/slices/globalModal.slice";
 
 // utils
 import { setupAxios } from "utils/axios";
@@ -36,6 +38,8 @@ export const store = configureStore({
     channels: channelsReducer,
     channelUsers: channelUsersReducer,
     messages: messagesReducer,
+    socket: socketReducer,
+    globalModal: globalModalReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({ serializableCheck: false }).concat([

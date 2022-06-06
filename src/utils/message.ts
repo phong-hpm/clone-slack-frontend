@@ -98,7 +98,7 @@ export const removeUnnecessaryFields = (delta: Delta) => {
   return { ...delta, ops } as Delta;
 };
 
-export const mapDayMessageList = (messageList: MessageType[], channelUserList: UserType[]) => {
+export const mapDayMessageList = (messageList: MessageType[], teamUserList: UserType[]) => {
   let previousUserId = "";
   let previousCreatedTime = 0;
   let prevCreatedDay = "";
@@ -122,7 +122,7 @@ export const mapDayMessageList = (messageList: MessageType[], channelUserList: U
     //  1: [message] was created after previous [message] over 5 minutes
     // [userOwner] will be used to render avatar of user
     if (userId !== previousUserId || minuteDiffAbs(createdTime, previousCreatedTime) > 5) {
-      curDayMessage.userOwner = channelUserList.find((user) => userId === user.id);
+      curDayMessage.userOwner = teamUserList.find((user) => userId === user.id);
     }
     dayMessageList.push(curDayMessage);
 

@@ -43,7 +43,7 @@ export const setChannelUpdatedTime = (
     message: message || channelUpdatedTime.message,
   };
 
-  localStorage.setItem("updatedTime", JSON.stringify(localStorageUpdatedTime));
+  // localStorage.setItem("updatedTime", JSON.stringify(localStorageUpdatedTime));
 };
 
 export const isSameUpdatedTime = (channelId: string) => {

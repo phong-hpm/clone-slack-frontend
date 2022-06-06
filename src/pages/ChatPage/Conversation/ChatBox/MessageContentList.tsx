@@ -1,9 +1,10 @@
 import { FC, memo, useCallback, useRef } from "react";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
+import InfiniteLoader from "react-window-infinite-loader";
 
 // redux store
-import { useSelector } from "store";
+import { useDispatch, useSelector } from "store";
 
 // redux selectors
 import messagesSelectors from "store/selectors/messages.selector";
@@ -14,16 +15,26 @@ import MessageContentRow from "./MessageContentRow";
 
 // types
 import { DayMessageType } from "store/slices/_types";
+import { emitLoadMoreMessages } from "store/actions/socket/messageSocket.action";
 
-const MessageContentList: FC = () => {
+export interface MessageContentListProps {}
+
+const MessageContentList: FC<MessageContentListProps> = () => {
+  const dispatch = useDispatch();
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   const isLoading = useSelector(messagesSelectors.isLoading);
+  const hasMore = useSelector(messagesSelectors.hasMore);
   const dayMessageList = useSelector(messagesSelectors.getDayMessageList);
 
   // References
-  const listRef = useRef<VariableSizeList<DayMessageType[]>>(null);
   const rowHeightsRef = useRef<Record<string, number>>({});
+  const keepRef = useRef<{
+    listRef?: VariableSizeList<DayMessageType[]> | null;
+    timeoutId?: NodeJS.Timer;
+    isRendered?: boolean;
+  }>({});
 
   // this function is very expensive
   // fire it as few as posible
@@ -33,10 +44,18 @@ const MessageContentList: FC = () => {
       // KEEP THIS LINE before [resetAfterIndex]
       rowHeightsRef.current[index] = height;
       // KEEP THIS LINE after set [rowHeights]
-      listRef.current?.resetAfterIndex(index);
+      keepRef.current.listRef?.resetAfterIndex(index);
     }
+
+    // keepRef.current.isRendered = false;
+    clearTimeout(keepRef.current.timeoutId!);
+
+    keepRef.current.timeoutId = setTimeout(() => {
+      keepRef.current.isRendered = true;
+    }, 100);
   }, []);
 
+  // isLoading will be true when emiting load data from server
   if (isLoading) {
     return (
       <Box flex="1" pb={2.5} display="flex" justifyContent="center" alignItems="end">
@@ -45,8 +64,7 @@ const MessageContentList: FC = () => {
     );
   }
 
-  // this condition will reduce [MessageContentRow]'s rendering times
-  if (!dayMessageList.length) return <></>;
+  console.log("render");
 
   return (
     <Box ref={containerRef} flex="1" pb={3}>
@@ -54,29 +72,51 @@ const MessageContentList: FC = () => {
         <AutoSizer>
           {({ width, height }) => {
             return (
-              <VariableSizeList
-                ref={listRef}
-                direction="vertical"
-                width={width}
-                height={height}
-                itemKey={(index, data) => data[index].day || data[index].message?.id || index}
-                // 32 is height of single message without userOwner
-                itemSize={(index) => rowHeightsRef.current[index] || 32}
-                itemData={[...dayMessageList].reverse()}
-                itemCount={dayMessageList.length}
-                onScroll={(e) => console.log(e.scrollDirection)}
+              <InfiniteLoader
+                isItemLoaded={(index) => index < dayMessageList.length}
+                threshold={0}
+                minimumBatchSize={10}
+                itemCount={dayMessageList.length + (hasMore ? 1 : 0)}
+                loadMoreItems={() => {
+                  dispatch(emitLoadMoreMessages({ limit: 10 }));
+                  console.log("loadMoreItems");
+                }}
               >
-                {({ index, data, style }) => {
+                {({ ref: setListRef, onItemsRendered }) => {
                   return (
-                    <MessageContentRow
-                      dayMessage={data[index]}
-                      setRowHeight={setRowHeight}
-                      index={index}
-                      style={style}
-                    />
+                    <VariableSizeList
+                      ref={(ref) => {
+                        setListRef(ref);
+                        keepRef.current.listRef = ref;
+                      }}
+                      direction="vertical"
+                      width={width}
+                      height={height}
+                      itemKey={(index, data) =>
+                        data[index]?.day || data[index]?.message?.id || index
+                      }
+                      // 32 is height of single message without userOwner
+                      itemSize={(index) => rowHeightsRef.current[index] || 32}
+                      itemData={[...dayMessageList].reverse()}
+                      // (+ 1) to render 1 more row, which will display [loading] or [panel]
+                      itemCount={dayMessageList.length + 1}
+                      onItemsRendered={onItemsRendered}
+                    >
+                      {({ index, data, style }) => {
+                        return (
+                          <MessageContentRow
+                            dayMessage={data[index]}
+                            setRowHeight={setRowHeight}
+                            index={index}
+                            style={style}
+                            hasMore={hasMore}
+                          />
+                        );
+                      }}
+                    </VariableSizeList>
                   );
                 }}
-              </VariableSizeList>
+              </InfiniteLoader>
             );
           }}
         </AutoSizer>

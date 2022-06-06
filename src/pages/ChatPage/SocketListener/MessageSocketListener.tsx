@@ -13,8 +13,9 @@ import {
   updateMessage,
   removeMessage,
   setMessagesList,
-  setLoading,
+  pushMoreMessagesList,
 } from "store/slices/messages.slice";
+import { setMessageSocket } from "store/slices/socket.slice";
 
 // hooks
 import useSocket from "hooks/useSocket";
@@ -40,9 +41,7 @@ const initialContext: MessageContextType = {
 
 export const MessageSocketContext = createContext<MessageContextType>(initialContext);
 
-export interface MessageSocketProviderProps {
-  children: React.ReactNode;
-}
+export interface MessageSocketProviderProps {}
 
 export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children }) => {
   const dispatch = useDispatch();
@@ -60,14 +59,11 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
 
   const handleAddNewMessage: AddNewMessageListener = useCallback(
     ({ channelId, message, updatedTime }) => {
-      // this event will be listened on [MessageContentList],
-      //   and ask {react-window} sroll to bottom after rendered new list
-      // so, this event has to be dispatched before dispatch [addMessage]
-
-      dispatch(addMessage(message));
       // add cached [messages]
       cacheUtils.addCachedMessage({ channelId, message });
       cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
+
+      dispatch(addMessage(message));
     },
     [dispatch]
   );
@@ -85,31 +81,40 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
 
   const handleUpdateMessage: UploadMessageListener = useCallback(
     ({ channelId, message, updatedTime }) => {
-      dispatch(updateMessage(message));
       // update cached [messages]
       cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
       cacheUtils.updateCachedMessage({ channelId, message });
+
+      dispatch(updateMessage(message));
     },
     [dispatch]
   );
 
   const handleRemoveMessage: RemoveMessageListener = useCallback(
     ({ channelId, messageId, updatedTime }) => {
-      dispatch(removeMessage(messageId));
       // update cached [messages]
       cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
       cacheUtils.removeCachedMessage({ channelId, messageId });
+
+      dispatch(removeMessage(messageId));
     },
     [dispatch]
   );
 
   const handleSetMessageList: LoadMessagesListener = useCallback(
-    ({ channelId, messages, updatedTime }) => {
-      dispatch(setLoading(false));
-      dispatch(setMessagesList(messages));
+    ({ channelId, messages, updatedTime, hasMore }) => {
       // cache [messages] of this [channelId]
       cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
-      cacheUtils.setCachedMessages({ channelId, messages });
+      cacheUtils.setCachedMessages({ channelId, messages, hasMore });
+
+      dispatch(setMessagesList({ hasMore, messages }));
+    },
+    [dispatch]
+  );
+
+  const handleMoreMessages: LoadMessagesListener = useCallback(
+    ({ channelId, messages, hasMore, updatedTime }) => {
+      dispatch(pushMoreMessagesList({ hasMore, messages }));
     },
     [dispatch]
   );
@@ -127,28 +132,31 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
 
     if (!unreadMessageCount && isSameUpdatedTime) {
       // get cached messages data from localStorage
-      const { messages } = cacheUtils.getCachedMessages(selectedChannelId);
-      dispatch(setLoading(false));
-      dispatch(setMessagesList(messages));
+      const { messages, hasMore } = cacheUtils.getCachedMessages(selectedChannelId);
+      // because we didn't store [loadMOreMessages] in [localstorage]
+      //   when [messages] were loaded from [localstorage], hasMore have to be true
+      dispatch(setMessagesList({ messages, hasMore }));
     }
   }, [unreadMessageCount, selectedChannelId, dispatch]);
 
   // setup socket
   useEffect(() => {
     if (!socket) return;
+    dispatch(setMessageSocket(socket));
+
     socket
       .on(SocketEventDefault.CONNECT, () => {
         const { selectedChannelId, unreadMessageCount } = keepRef.current;
         const isSameUpdatedTime = cacheUtils.isSameUpdatedTime(selectedChannelId);
         if (unreadMessageCount || !isSameUpdatedTime) {
-          dispatch(setLoading(true));
-          socket.emit(SocketEvent.EMIT_LOAD_MESSAGES, {});
+          socket.emit(SocketEvent.EMIT_LOAD_MESSAGES, { data: { limit: 20 } });
         }
       })
       .on(SocketEventDefault.DISCONNECT, () => {});
 
     socket
       .on(SocketEvent.ON_MESSAGES, handleSetMessageList)
+      .on(SocketEvent.ON_MORE_MESSAGES, handleMoreMessages)
       .on(SocketEvent.ON_ADDED_MESSAGE, handleAddNewMessage)
       .on(SocketEvent.ON_SHARE_MESSAGE_TO_CHANNEL, handleShareMessageToChannel)
       .on(SocketEvent.ON_EDITED_MESSAGE, handleUpdateMessage)
@@ -163,19 +171,14 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     socket,
     handleSetMessageList,
     handleAddNewMessage,
+    handleMoreMessages,
     handleShareMessageToChannel,
     handleUpdateMessage,
     handleRemoveMessage,
     dispatch,
   ]);
 
-  const value = useMemo(
-    () => ({
-      socket,
-      updateNamespace,
-    }),
-    [socket, updateNamespace]
-  );
+  const value = useMemo(() => ({ socket, updateNamespace }), [socket, updateNamespace]);
 
   return <MessageSocketContext.Provider value={value}>{children}</MessageSocketContext.Provider>;
 };

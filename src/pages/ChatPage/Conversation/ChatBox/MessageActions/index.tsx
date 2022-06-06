@@ -1,5 +1,11 @@
 import { FC, useRef, useState } from "react";
 
+// redux store
+import { useDispatch } from "store";
+
+// redux actions
+import { emitReactionMessage, emitStarMessage } from "store/actions/socket/messageSocket.action";
+
 // components
 import { Box, IconButton, Tooltip } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
@@ -11,7 +17,6 @@ import EmojiModal from "features/EmojiModal";
 import { color, css } from "utils/constants";
 
 // hooks
-import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 
 export interface MessageActionsProps extends Omit<MoreMenuProps, "open" | "anchorEl"> {
   isStared?: boolean;
@@ -26,20 +31,20 @@ const MessageActions: FC<MessageActionsProps> = ({
   onClose,
   ...props
 }) => {
+  const dispatch = useDispatch();
+
   const moreButtonRef = useRef<HTMLButtonElement>(null);
   const moreReactionButtonRef = useRef<HTMLButtonElement>(null);
-
-  const { emitStarMessage, emitReactionMessage } = useMessageSocket();
 
   const [isShowMoreMenu, setShowMoreMenu] = useState(false);
   const [isShowEmojiModal, setShowEmojiModal] = useState(false);
 
   const handleStarMessage = () => {
-    messageId && emitStarMessage(messageId);
+    messageId && dispatch(emitStarMessage({ id: messageId }));
   };
 
   const handleReactionMessage = (emojiId: string) => {
-    messageId && emitReactionMessage(messageId, emojiId);
+    messageId && dispatch(emitReactionMessage({ id: messageId, reactionId: emojiId }));
   };
 
   const handleClose = () => {

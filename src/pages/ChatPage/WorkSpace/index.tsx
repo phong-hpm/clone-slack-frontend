@@ -19,7 +19,7 @@ import Channels from "./Channel";
 import WorkSpaceSidebar from "pages/ChatPage/WorkSpace/WorkSpaceSidebar";
 
 // contexts
-import ChannelSocketProvider from "pages/ChatPage/Context/ChannelSocketContext";
+import ChannelSocketProvider from "pages/ChatPage/SocketListener/ChannelSocketListener";
 
 const WorkSpace = () => {
   const dispatch = useDispatch();
@@ -48,12 +48,11 @@ const WorkSpace = () => {
       borderRight={1}
       borderColor={color.BORDER}
     >
-      <ChannelSocketProvider>
-        <WorkSpaceSidebar />
-        <Routes>
-          <Route path="/:channelId" element={<Channels />} />
-        </Routes>
-      </ChannelSocketProvider>
+      <WorkSpaceSidebar />
+      <Routes>
+        <Route path="/:channelId" element={<Channels />} />
+      </Routes>
+      <ChannelSocketProvider />
     </Box>
   );
 };

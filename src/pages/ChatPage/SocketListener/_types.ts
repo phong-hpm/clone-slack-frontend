@@ -2,15 +2,14 @@ import { Socket } from "socket.io-client";
 import { ChannelType, MessageType, UserType } from "store/slices/_types";
 
 // ChannelSocketContext.tsx -----------------
-export interface ChannelContextType {
-  socket?: Socket;
-  updateNamespace: (name: string) => void;
-}
-
 export type LoadChannelsListener = (data: { channels: ChannelType[]; users: UserType[] }) => void;
-
 export type AddNewChannelListener = (channel: ChannelType) => void;
-
+export type UpdatedChannelListener = (channel: ChannelType) => void;
+export type UpdatedChannelUsersListener = (data: {
+  channelId: string;
+  userId: string[];
+  users: UserType[];
+}) => void;
 export type UpdateChannelUserStatusListener = (channelId: string, isOnline: boolean) => void;
 
 export type UpdateChannelUpdatedTimeListener = (data: {
@@ -30,6 +29,7 @@ export interface MessageContextType {
 }
 
 export type LoadMessagesListener = (data: {
+  hasMore: boolean;
   channelId: string;
   messages: MessageType[];
   updatedTime: number;

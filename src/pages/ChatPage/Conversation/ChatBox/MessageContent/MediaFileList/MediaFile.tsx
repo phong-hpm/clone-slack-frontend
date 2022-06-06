@@ -1,7 +1,10 @@
 import { FC, useMemo, useState } from "react";
 
 // redux
-import { useSelector } from "store";
+import { useDispatch, useSelector } from "store";
+
+// redux actions
+import { emitRemoveMessageFile } from "store/actions/socket/messageSocket.action";
 
 // redux selectors
 import channelsSelectors from "store/selectors/channels.selector";
@@ -13,9 +16,6 @@ import MediaFileDeleteModal from "./MediaFileDeleteModal";
 
 // utils
 import { color } from "utils/constants";
-
-// hooks
-import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 
 // types
 import { MessageFileType, UserType } from "store/slices/_types";
@@ -31,9 +31,9 @@ export interface MediaFileProps {
 }
 
 const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
-  const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
+  const dispatch = useDispatch();
 
-  const { emitRemoveMessageFile } = useMessageSocket();
+  const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   const [isShowDeleteModal, setShowDeleteModal] = useState(false);
   const [isShowThumbnailModal, setShowThumbnailModal] = useState(false);
@@ -62,7 +62,7 @@ const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
   };
 
   const handleDelete = () => {
-    emitRemoveMessageFile(messageId, file.id);
+    dispatch(emitRemoveMessageFile({ id: messageId, fileId: file.id }));
     setShowDeleteModal(false);
   };
 

@@ -4,7 +4,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import defaultAvatar from "assets/images/default_avatar.png";
 
 // redux store
-import { useSelector } from "store";
+import { useDispatch, useSelector } from "store";
 
 // redux selectors
 import userSelectors from "store/selectors/user.selector";
@@ -21,9 +21,6 @@ import Reactions from "./Reactions";
 import MediaFileList from "./MediaFileList";
 import ShareMessageModal from "./ShareMessageModal";
 
-// hooks
-import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
-
 // utils
 import { dayFormat } from "utils/dayjs";
 import { color } from "utils/constants";
@@ -37,6 +34,7 @@ import UserNameCard from "components/UserNameCard";
 import DeleteMessageModal from "./DeleteMessageModal";
 import MessageShared from "../MessageShared";
 import UserDetailModal from "components/UserDetailModal";
+import { emitEditMessage, emitRemoveMessage } from "store/actions/socket/messageSocket.action";
 
 export interface MessageContentProps {
   isPreventSharedMessage?: boolean;
@@ -55,11 +53,11 @@ const MessageContent: FC<MessageContentProps> = ({
   userOwner,
   message,
 }) => {
+  const dispatch = useDispatch();
+
   const quillRef = useRef<ReactQuill>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
   const keepRef = useRef<{ displayDelta?: Delta }>({});
-
-  const { emitEditMessage, emitRemoveMessage } = useMessageSocket();
 
   const user = useSelector(userSelectors.getUser);
   const channelUserList = useSelector(channelUsersSelectors.getChannelUserList);
@@ -72,12 +70,12 @@ const MessageContent: FC<MessageContentProps> = ({
 
   const handleEdit = (id: string, delta: Delta) => {
     setEditing(false);
-    emitEditMessage(id, delta);
+    dispatch(emitEditMessage({ id, delta }));
   };
 
   const handleDelete = () => {
     setHovering(false);
-    emitRemoveMessage(message.id);
+    dispatch(emitRemoveMessage({ id: message.id }));
   };
 
   useEffect(() => {
@@ -102,7 +100,7 @@ const MessageContent: FC<MessageContentProps> = ({
       : isHovering
       ? "rgb(39, 36, 44)"
       : "";
-
+  if (!message.reactions) console.log("message.reactions", message);
   const isDisplayMessageActions = isHovering && !isEditing;
   const isDisplayStared = !isEditing && !isMessageOnly && message.isStared;
   const isDisplayReaction = !isEditing && !isMessageOnly && !!Object.keys(message.reactions).length;

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "store";
 
 // redux actions
 import { uploadFiles } from "store/actions/message/uploadFiles";
+import { emitAddMessage } from "store/actions/socket/messageSocket.action";
 
 // redux selectors
 import channelsSelectors from "store/selectors/channels.selector";
@@ -12,9 +13,6 @@ import channelsSelectors from "store/selectors/channels.selector";
 // components
 import { MessageInputProvider } from "./InputContext";
 import InputMain, { InputMainProps } from "./InputMain";
-
-// hooks
-import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
 
 // types
 import { Delta } from "quill";
@@ -35,8 +33,6 @@ const MessageInput: FC<MessageInputProps> = ({
   ...props
 }) => {
   const dispatch = useDispatch();
-
-  const { emitAddMessage } = useMessageSocket();
 
   const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
@@ -59,9 +55,9 @@ const MessageInput: FC<MessageInputProps> = ({
 
       // uncontrolled
       if (files.length) dispatch(uploadFiles({ files, delta }));
-      else emitAddMessage(delta);
+      else dispatch(emitAddMessage({ delta }));
     },
-    [isAutoSend, onSend, emitAddMessage, dispatch]
+    [isAutoSend, onSend, dispatch]
   );
 
   return (

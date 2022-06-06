@@ -1,3 +1,4 @@
+import { Socket } from "socket.io-client";
 import { Delta } from "quill";
 import { TranScriptType } from "components/MediaPlayer/VideoPlayer/_types";
 
@@ -49,6 +50,11 @@ export interface TeamsState {
   selectedId: string;
 }
 
+export interface SocketState {
+  channelSocket?: Socket;
+  messageSocket?: Socket;
+}
+
 // messages.slice.tsx -----------------
 export interface MessageFileType {
   id: string;
@@ -84,13 +90,29 @@ export interface MessageType {
 }
 
 export type DayMessageType =
-  | { type: "panel"; day?: string; message?: MessageType; userOwner?: UserType }
-  | { type?: "panel"; day: string; message?: MessageType; userOwner?: UserType }
-  | { type?: "panel"; day?: string; message: MessageType; userOwner?: UserType };
+  | {
+      type: "panel" | "loading" | "day" | "message";
+      day?: string;
+      message?: MessageType;
+      userOwner?: UserType;
+    }
+  | {
+      type?: "panel" | "loading" | "day" | "message";
+      day: string;
+      message?: MessageType;
+      userOwner?: UserType;
+    }
+  | {
+      type?: "panel" | "loading" | "day" | "message";
+      day?: string;
+      message: MessageType;
+      userOwner?: UserType;
+    };
 
 export interface MessagesState {
   isLoading: boolean;
   list: MessageType[];
+  hasMore: boolean;
   dayMessageList: DayMessageType[];
 }
 
@@ -113,4 +135,8 @@ export interface ChannelsState {
   list: ChannelType[];
   directMessages: ChannelType[];
   selectedId: string;
+}
+// modal.slice.tsx -----------------
+export interface ModalState {
+  isOpenAddUserChannel: boolean;
 }

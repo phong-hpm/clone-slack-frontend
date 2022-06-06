@@ -4,11 +4,17 @@ import React, { FC, Fragment, useMemo, useState } from "react";
 import defaultAvatar from "assets/images/default_avatar.png";
 
 // redux store
-import { useSelector } from "store";
+import { useDispatch, useSelector } from "store";
 
 // redux selector
 import userSelectors from "store/selectors/user.selector";
 import channelsSelectors from "store/selectors/channels.selector";
+
+// redux actions
+import {
+  emitShareMessageToChannel,
+  emitShareMessageToGroupUsers,
+} from "store/actions/socket/messageSocket.action";
 
 // components
 import {
@@ -30,9 +36,7 @@ import SlackIcon from "components/SlackIcon";
 import UserMentionCard from "components/UserMentionCard";
 import MessageInput from "../MessageInput";
 import MessageShared from "../MessageShared";
-
-// hooks
-import useMessageSocket from "pages/ChatPage/hooks/useMessageSocket";
+import UserAvatarLength from "components/UserAvatarLength";
 
 // utils
 import { color } from "utils/constants";
@@ -40,7 +44,6 @@ import { color } from "utils/constants";
 // types
 import { Delta } from "quill";
 import { ChannelType, MessageType } from "store/slices/_types";
-import UserAvatarLength from "components/UserAvatarLength";
 
 export interface ShareMessageModalProps {
   isOpen: boolean;
@@ -49,7 +52,7 @@ export interface ShareMessageModalProps {
 }
 
 const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClose }) => {
-  const { emitShareMessageToChannel, emitShareMessageToGroupUsers } = useMessageSocket();
+  const dispatch = useDispatch();
 
   const user = useSelector(userSelectors.getUser);
   const channelList = useSelector(channelsSelectors.getChannelList);
@@ -94,10 +97,22 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
     if (!selectedList.length) return;
 
     if (selectedList.length === 1) {
-      emitShareMessageToChannel(selectedList[0].id, messageDelta, message.id);
+      dispatch(
+        emitShareMessageToChannel({
+          toChannelId: selectedList[0].id,
+          delta: messageDelta,
+          sharedMessageId: message.id,
+        })
+      );
     } else if (selectingType === "direct_message") {
       const toUserIds = selectedList.map((c) => c.partner!.id);
-      emitShareMessageToGroupUsers(toUserIds, messageDelta, message.id);
+      dispatch(
+        emitShareMessageToGroupUsers({
+          toUserIds,
+          delta: messageDelta,
+          sharedMessageId: message.id,
+        })
+      );
     }
   };
 

@@ -13,23 +13,19 @@ const getMessageList = createSelector([getList], (list) =>
   [...list].sort((a, b) => a.createdTime - b.createdTime)
 );
 
+const hasMore = createSelector([getMessages], (messages) => messages.hasMore);
 const getDayMessageList = createSelector([getMessages], (messages) => messages.dayMessageList);
 
 const getDayMessageByIndex = (index: number) =>
   createSelector([getMessages], (messages) => messages.dayMessageList[index]);
-
-const getDayMessageListLength = createSelector(
-  [getMessages],
-  (messages) => messages.dayMessageList.length
-);
 
 const messagesSelectors = {
   isLoading,
   getList,
   getMessageList,
   getDayMessageList,
+  hasMore,
   getDayMessageByIndex,
-  getDayMessageListLength,
 };
 
 export default messagesSelectors;

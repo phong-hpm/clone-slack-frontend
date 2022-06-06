@@ -5,6 +5,7 @@ import { DayMessageType, MessagesState, MessageType } from "store/slices/_types"
 
 const initialState: MessagesState = {
   isLoading: true,
+  hasMore: true,
   list: [],
   dayMessageList: [],
 };
@@ -33,19 +34,31 @@ export const messagesSlice = createSlice({
       const id = action.payload;
       state.list = state.list.filter((mes) => mes.id !== id);
     },
-    setMessagesList: (state, action: PayloadAction<MessageType[]>) => {
-      const messages = action.payload;
+    setMessagesList: (
+      state,
+      action: PayloadAction<{ hasMore: boolean; messages: MessageType[] }>
+    ) => {
+      const { messages } = action.payload;
       state.list = messages;
-      state.isLoading = false;
     },
-    setDayMessageList: (state, action: PayloadAction<DayMessageType[]>) => {
-      const messages = action.payload;
-      state.dayMessageList = [{ type: "panel" }, ...messages];
-      state.isLoading = false;
+    pushMoreMessagesList: (
+      state,
+      action: PayloadAction<{ hasMore: boolean; messages: MessageType[] }>
+    ) => {
+      const { messages } = action.payload;
+      state.list = [...messages, ...state.list];
     },
-    resetMessageState: (state) => {
-      state.list = [];
-      state.isLoading = true;
+    setDayMessageList: (
+      state,
+      action: PayloadAction<{ hasMore?: boolean; dayMessages: DayMessageType[] }>
+    ) => {
+      const { hasMore, dayMessages } = action.payload;
+      state.dayMessageList = dayMessages;
+      // when [hasMore] is undefined, that mean [setDayMessageList] was dispatched after
+      //   new message was added or removed
+      //   we will not update [hasMore] state
+      if (hasMore !== undefined) state.hasMore = hasMore;
+      state.isLoading = false;
     },
   },
 });
@@ -53,11 +66,11 @@ export const messagesSlice = createSlice({
 export const {
   setLoading,
   setMessagesList,
+  pushMoreMessagesList,
   setDayMessageList,
   addMessage,
   updateMessage,
   removeMessage,
-  resetMessageState,
 } = messagesSlice.actions;
 
 export default messagesSlice.reducer;

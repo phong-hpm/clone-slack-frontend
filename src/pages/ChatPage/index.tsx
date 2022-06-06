@@ -19,6 +19,7 @@ import { Box } from "@mui/material";
 import WorkSpace from "./WorkSpace";
 import Conversation from "./Conversation";
 import ChatBar from "./ChatBar";
+import GlobalModals from "./GlobalModal";
 
 export const ChatPage: FC = () => {
   const dispatch = useDispatch();
@@ -71,6 +72,8 @@ export const ChatPage: FC = () => {
         <WorkSpace />
         <Conversation />
       </Box>
+
+      <GlobalModals />
     </Box>
   );
 };

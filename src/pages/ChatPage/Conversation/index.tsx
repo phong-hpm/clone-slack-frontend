@@ -1,7 +1,7 @@
 import { FC, memo } from "react";
 
 // context
-import MessageSocketProvider from "pages/ChatPage/Context/MessageSocketContext";
+import MessageSocketProvider from "pages/ChatPage/SocketListener/MessageSocketListener";
 
 // components
 import { Box, Link, Typography } from "@mui/material";
@@ -18,24 +18,23 @@ const Conversation: FC = () => {
     <Box flex="1" display="flex" flexDirection="column" bgcolor={color.PRIMARY_BACKGROUND}>
       <ConversationHeader />
       <ConversationToolBar />
-      <MessageSocketProvider>
-        <ChatBox />
-        <Box px={2.5}>
-          <MessageInput
-            className="editor-limit-height"
-            isAutoSend
-            configActions={{
-              more: true,
-              recordVideo: true,
-              recordAudio: true,
-              emoji: true,
-              mention: true,
-              send: true,
-              schedule: true,
-            }}
-          />
-        </Box>
-      </MessageSocketProvider>
+      <ChatBox />
+      <Box px={2.5}>
+        <MessageInput
+          className="editor-limit-height"
+          isAutoSend
+          configActions={{
+            more: true,
+            recordVideo: true,
+            recordAudio: true,
+            emoji: true,
+            mention: true,
+            send: true,
+            schedule: true,
+          }}
+        />
+      </Box>
+      <MessageSocketProvider />
       <Box display="flex" justifyContent="end" pr={3} py={0.5}>
         <Link component="button" underline="hover" color={color.HIGHLIGHT}>
           <Typography variant="h6" fontSize={10.5}>

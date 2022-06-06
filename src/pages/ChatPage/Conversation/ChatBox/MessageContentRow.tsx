@@ -1,12 +1,21 @@
 import { FC, memo, useCallback, useEffect, useRef, useState } from "react";
 
 // components
-import { Box, Button, Divider, ListItemButton, Menu, MenuItem, Typography } from "@mui/material";
-import MessageContentPanel from "./MessageContentPanel";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  ListItemButton,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 
 // images
 import MessageContent from "./MessageContent";
 import SlackIcon from "components/SlackIcon";
+import MessageContentPanel from "./MessageContentPanel";
 
 // utils
 import { color } from "utils/constants";
@@ -15,15 +24,17 @@ import { color } from "utils/constants";
 import { DayMessageType } from "store/slices/_types";
 
 export interface MessageContentRowProps {
-  dayMessage: DayMessageType;
+  hasMore?: boolean;
+  dayMessage?: DayMessageType;
   index: number;
   style: React.CSSProperties;
   setRowHeight: (index: number, clientHeight: number) => void;
 }
 
 const MessageContentRow: FC<MessageContentRowProps> = ({
-  index,
+  hasMore,
   dayMessage,
+  index,
   style,
   setRowHeight,
 }) => {
@@ -66,9 +77,19 @@ const MessageContentRow: FC<MessageContentRowProps> = ({
     <>
       <Box style={{ ...style, transform: "rotateX(180deg)" }}>
         <Box ref={rowRef}>
-          {dayMessage.type === "panel" && <MessageContentPanel />}
+          {!dayMessage && (
+            <Box>
+              {hasMore ? (
+                <Box p={3} textAlign="center">
+                  <CircularProgress />
+                </Box>
+              ) : (
+                <MessageContentPanel />
+              )}
+            </Box>
+          )}
 
-          {dayMessage.day && (
+          {dayMessage?.day && (
             <Box
               key={dayMessage.day}
               position="relative"
@@ -96,7 +117,8 @@ const MessageContentRow: FC<MessageContentRowProps> = ({
               </Box>
             </Box>
           )}
-          {dayMessage.message && (
+
+          {dayMessage?.message && (
             <ListItemButton
               key={dayMessage.message.id}
               className="bg-hover-none"

@@ -1,4 +1,4 @@
-import { createContext, FC, useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 
 // redux store
 import { useDispatch, useSelector } from "store";
@@ -13,7 +13,9 @@ import {
   addChannel,
   updateChannel,
 } from "store/slices/channels.slice";
-import { updateChannelUserOnline } from "store/slices/channelUsers.slice";
+import { setChannelUserList, updateChannelUserOnline } from "store/slices/channelUsers.slice";
+import { setChannelSocket } from "store/slices/socket.slice";
+import { setTeamUserList } from "store/slices/teamUsers.slice";
 
 // hooks
 import useSocket from "hooks/useSocket";
@@ -26,40 +28,20 @@ import { SocketEvent, SocketEventDefault } from "utils/constants";
 import { ChannelType } from "store/slices/_types";
 import {
   AddNewChannelListener,
-  ChannelContextType,
   LoadChannelsListener,
   UpdateChannelUnreadMessageCountListener,
   UpdateChannelUpdatedTimeListener,
   UpdateChannelUserStatusListener,
+  UpdatedChannelListener,
+  UpdatedChannelUsersListener,
 } from "./_types";
-import { setTeamUserList } from "store/slices/teamUsers.slice";
 
-const initialContext: ChannelContextType = {
-  updateNamespace: () => {},
-};
-
-export const ChannelSocketContext = createContext<ChannelContextType>(initialContext);
-
-export interface ChannelSocketProviderProps {
-  children: React.ReactNode;
-}
-
-export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children }) => {
+export const ChannelSocketProvider = () => {
   const dispatch = useDispatch();
 
   const selectedTeamId = useSelector(teamsSelectors.getSelectedTeamId);
 
   const { socket, updateNamespace } = useSocket();
-
-  const handleAddNewChannel: AddNewChannelListener = useCallback(
-    (channel) => dispatch(addChannel(channel)),
-    [dispatch]
-  );
-
-  const handleUpdateUserStatus: UpdateChannelUserStatusListener = useCallback(
-    (id, isOnline) => dispatch(updateChannelUserOnline({ id, isOnline })),
-    [dispatch]
-  );
 
   const handleSetChannelList: LoadChannelsListener = useCallback(
     ({ channels, users: teamUsers }) => {
@@ -81,6 +63,29 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
         dispatch(setDirectMessagesList(directMessagesList));
       }
     },
+    [dispatch]
+  );
+
+  const handleAddNewChannel: AddNewChannelListener = useCallback(
+    (channel) => dispatch(addChannel(channel)),
+    [dispatch]
+  );
+
+  const handleUpdatedChannel: UpdatedChannelListener = useCallback(
+    (channel) => dispatch(updateChannel({ id: channel.id, channel })),
+    [dispatch]
+  );
+
+  const handleUpdatedChannelUsers: UpdatedChannelUsersListener = useCallback(
+    ({ channelId, userId, users }) => {
+      dispatch(updateChannel({ id: channelId, channel: { users: userId } }));
+      dispatch(setChannelUserList(users));
+    },
+    [dispatch]
+  );
+
+  const handleUpdateUserStatus: UpdateChannelUserStatusListener = useCallback(
+    (id, isOnline) => dispatch(updateChannelUserOnline({ id, isOnline })),
     [dispatch]
   );
 
@@ -108,6 +113,7 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
 
   useEffect(() => {
     if (!socket) return;
+    dispatch(setChannelSocket(socket));
 
     socket
       // Step 2: connecting socket
@@ -120,6 +126,8 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
     socket
       .on(SocketEvent.ON_CHANNELS, handleSetChannelList)
       .on(SocketEvent.ON_ADDED_CHANNEL, handleAddNewChannel)
+      .on(SocketEvent.ON_EDITED_CHANNEL, handleUpdatedChannel)
+      .on(SocketEvent.ON_EDITED_CHANNEL_USERS, handleUpdatedChannelUsers)
       .on(SocketEvent.ON_EDITED_CHANNEL_UPDATED_TIME, handleUpdateChannelUpdatedTime)
       .on(SocketEvent.ON_EDITED_CHANNEL_UNREAD_MESSAGE_COUNT, handleUpdateChannelUnreadCount)
       .on(SocketEvent.ON_USER_ONLINE, (id: string) => handleUpdateUserStatus(id, true))
@@ -133,22 +141,17 @@ export const ChannelSocketProvider: FC<ChannelSocketProviderProps> = ({ children
     };
   }, [
     socket,
+    dispatch,
     handleSetChannelList,
+    handleUpdatedChannel,
+    handleUpdatedChannelUsers,
     handleUpdateChannelUpdatedTime,
     handleUpdateChannelUnreadCount,
     handleAddNewChannel,
     handleUpdateUserStatus,
   ]);
 
-  const value = useMemo(
-    () => ({
-      socket,
-      updateNamespace,
-    }),
-    [socket, updateNamespace]
-  );
-
-  return <ChannelSocketContext.Provider value={value}>{children}</ChannelSocketContext.Provider>;
+  return <></>;
 };
 
 export default ChannelSocketProvider;

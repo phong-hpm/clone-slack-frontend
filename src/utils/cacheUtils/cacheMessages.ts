@@ -1,7 +1,7 @@
 import { MessageType } from "store/slices/_types";
 
 export const getCachedMessages = (channelId: string) => {
-  const result = { channelId: "", messages: [] as MessageType[] };
+  const result = { hasMore: false, channelId: "", messages: [] as MessageType[] };
   try {
     const dataString = localStorage.getItem(channelId);
     const data = JSON.parse(dataString || "{}");
@@ -14,61 +14,43 @@ export const getCachedMessages = (channelId: string) => {
   }
 };
 
-export const addCachedMessage = ({
-  channelId,
-  message,
-}: {
-  channelId: string;
-  message: MessageType;
-}) => {
+export const addCachedMessage = (data: { channelId: string; message: MessageType }) => {
   try {
-    const data = getCachedMessages(channelId);
-    data.messages.push(message);
+    const { channelId, message } = data;
+    const cachedData = getCachedMessages(channelId);
+    cachedData.messages.push(message);
 
-    localStorage.setItem(channelId, JSON.stringify(data));
+    localStorage.setItem(channelId, JSON.stringify(cachedData));
   } catch {}
 };
 
-export const updateCachedMessage = ({
-  channelId,
-  message,
-}: {
-  channelId: string;
-  message: MessageType;
-}) => {
+export const updateCachedMessage = (data: { channelId: string; message: MessageType }) => {
   try {
-    const data = getCachedMessages(channelId);
+    const { channelId, message } = data;
+    const cachedData = getCachedMessages(channelId);
 
-    const index = data.messages.findIndex(({ id }) => id === message.id);
-    data.messages[index] = message;
+    const index = cachedData.messages.findIndex(({ id }) => id === message.id);
+    cachedData.messages[index] = message;
 
-    localStorage.setItem(channelId, JSON.stringify(data));
+    localStorage.setItem(channelId, JSON.stringify(cachedData));
   } catch {}
 };
 
-export const removeCachedMessage = ({
-  channelId,
-  messageId,
-}: {
-  channelId: string;
-  messageId: string;
-}) => {
+export const removeCachedMessage = (data: { channelId: string; messageId: string }) => {
   try {
-    const data = getCachedMessages(channelId);
+    const { channelId, messageId } = data;
+    const cachedData = getCachedMessages(channelId);
 
-    data.messages = data.messages.filter(({ id }) => id !== messageId);
+    cachedData.messages = cachedData.messages.filter(({ id }) => id !== messageId);
 
-    localStorage.setItem(channelId, JSON.stringify(data));
+    localStorage.setItem(channelId, JSON.stringify(cachedData));
   } catch {}
 };
 
-export const setCachedMessages = ({
-  channelId,
-  messages,
-}: {
+export const setCachedMessages = (data: {
+  hasMore: boolean;
   channelId: string;
   messages: MessageType[];
 }) => {
-  const data = { channelId, messages };
-  localStorage.setItem(channelId, JSON.stringify(data));
+  localStorage.setItem(data.channelId, JSON.stringify(data));
 };
