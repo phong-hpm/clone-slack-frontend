@@ -5,7 +5,13 @@ import { useSelector } from "store";
 import globalModalSelectors from "store/selectors/globalModal.selector";
 
 // components
-import AddUserChannelChannel from "./AddUserChannelModal";
+import AddUserChannelModal from "./AddUserChannelModal";
+import CreateChannelModal from "./CreateChannelModal";
+import ChannelDetailModal from "./ChannelDetailModal";
+import EditChanelNameModal from "./EditChanelNameModal";
+import EditChanelTopicModal from "./EditChanelTopicModal";
+import EditChanelDescriptionModal from "./EditChanelDescriptionModal";
+import ArchiveChannelModal from "./ArchiveChannelModal";
 
 /**
  * This component is existing for 2 purposes
@@ -14,9 +20,19 @@ import AddUserChannelChannel from "./AddUserChannelModal";
  *      prevent those [useEffect] fired its callback until Modal open
  */
 const GlobalModals = () => {
-  const isOpenAddUserChannel = useSelector(globalModalSelectors.isOpenAddUserChannel);
+  const globalModalState = useSelector(globalModalSelectors.getGlobalModalState);
 
-  return <>{isOpenAddUserChannel && <AddUserChannelChannel />}</>;
+  return (
+    <>
+      {globalModalState.isOpenAddUserChannel && <AddUserChannelModal />}
+      {globalModalState.isOpenCreateChannel && <CreateChannelModal />}
+      {globalModalState.isOpenChannelDetail && <ChannelDetailModal />}
+      {globalModalState.isOpenEditChannelNameModal && <EditChanelNameModal />}
+      {globalModalState.isOpenEditChannelTopicModal && <EditChanelTopicModal />}
+      {globalModalState.isOpenEditChannelDescriptionModal && <EditChanelDescriptionModal />}
+      {globalModalState.isOpenArchiveChannelModal && <ArchiveChannelModal />}
+    </>
+  );
 };
 
 export default GlobalModals;

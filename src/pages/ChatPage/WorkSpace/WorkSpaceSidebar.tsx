@@ -7,7 +7,7 @@ import { useSelector } from "store";
 import userSelectors from "store/selectors/user.selector";
 
 // components
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 import WorkSpaceMenu from "./WorkSpaceMenu";
 
@@ -40,9 +40,11 @@ const WorkSpaceSidebar: FC = () => {
           <SlackIcon icon="chevron-down" />
         </Box>
         <Box>
-          <IconButton color="secondary" onClick={handleAddNewMessage}>
-            <SlackIcon icon="compose" fontSize="large" />
-          </IconButton>
+          <Tooltip placement="bottom" title="Add new message">
+            <IconButton size="large" color="secondary" onClick={handleAddNewMessage}>
+              <SlackIcon icon="compose" fontSize="large" />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Box>
 

@@ -6,7 +6,6 @@ import { ChannelsState, ChannelType } from "store/slices/_types";
 const initialState: ChannelsState = {
   isLoading: false,
   list: [],
-  directMessages: [],
   selectedId: "",
 };
 
@@ -15,9 +14,7 @@ export const channelsSlice = createSlice({
   initialState,
   reducers: {
     addChannel: (state, action: PayloadAction<ChannelType>) => {
-      const channel = action.payload;
-      if (channel.type === "channel") state.list.push(action.payload);
-      else state.directMessages.push(action.payload);
+      state.list.push(action.payload);
     },
     updateChannel: (
       state,
@@ -26,37 +23,30 @@ export const channelsSlice = createSlice({
       const { id, channel: updatedChannel } = action.payload;
       let channels = state.list;
       let index = channels.findIndex((channel) => channel.id === id);
-
-      if (index === -1) {
-        channels = state.directMessages;
-        index = channels.findIndex((channel) => channel.id === id);
-      }
-      if (index === -1) return;
-
-      channels[index] = { ...channels[index], ...updatedChannel };
+      if (index > -1) channels[index] = { ...channels[index], ...updatedChannel };
+    },
+    removeChannel: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
+      state.list = state.list.filter((channel) => channel.id !== id);
+      state.selectedId = state.list[0].id;
     },
     updateChannelParterOnline: (state, action: PayloadAction<{ id: string; online: boolean }>) => {
       const { id, online } = action.payload;
 
-      const index = state.directMessages.findIndex((channel) => channel.partner?.id === id);
+      const index = state.list.findIndex((channel) => channel.partner?.id === id);
 
-      if (index > -1 && state.directMessages[index].partner) {
-        const partner = state.directMessages[index].partner!;
-        partner.isOnline = online;
+      if (index > -1 && state.list[index].partner) {
+        state.list[index].partner!.isOnline = online;
       }
     },
     setChannelsList: (state, action: PayloadAction<ChannelType[]>) => {
       state.list = action.payload;
-    },
-    setDirectMessagesList: (state, action: PayloadAction<ChannelType[]>) => {
-      state.directMessages = action.payload;
     },
     setSelectedChannelId: (state, action: PayloadAction<string>) => {
       state.selectedId = action.payload;
     },
     resetState: (state) => {
       state.list = [];
-      state.directMessages = [];
     },
   },
 });
@@ -66,8 +56,8 @@ export const {
   setChannelsList,
   addChannel,
   updateChannel,
+  removeChannel,
   updateChannelParterOnline,
-  setDirectMessagesList,
   resetState,
 } = channelsSlice.actions;
 

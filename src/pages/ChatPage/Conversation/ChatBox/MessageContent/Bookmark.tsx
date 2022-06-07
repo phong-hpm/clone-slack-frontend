@@ -8,11 +8,11 @@ import SlackIcon from "components/SlackIcon";
 import { color, rgba } from "utils/constants";
 
 export interface BookmarkProps {
-  isStared?: boolean;
+  isStarred?: boolean;
 }
 
-const Bookmark: FC<BookmarkProps> = ({ isStared }) => {
-  if (!isStared) return <></>;
+const Bookmark: FC<BookmarkProps> = ({ isStarred }) => {
+  if (!isStarred) return <></>;
   return (
     <Box display="flex">
       <Box flexBasis={36} mr={1} display="flex" justifyContent="end">

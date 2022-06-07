@@ -9,7 +9,9 @@ const components: Theme["components"] = {
       placement: "top",
       arrow: true,
       TransitionProps: { timeout: 0 },
-      componentsProps: { tooltip: { style: { marginBottom: 8 } } },
+      componentsProps: {
+        tooltip: { style: { marginBottom: 8, maxWidth: 200 } },
+      },
       disableInteractive: true,
     },
     styleOverrides: {
@@ -19,6 +21,7 @@ const components: Theme["components"] = {
         borderRadius: 8,
         fontSize: 13,
         padding: "8px 10px",
+        textAlign: "center",
 
         "& .MuiTooltip-arrow": {
           "&:before": {

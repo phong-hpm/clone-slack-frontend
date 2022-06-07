@@ -6,7 +6,6 @@ import { Box, BoxProps } from "@mui/material";
 export interface ModalBodyProps extends BoxProps {
   // this prop will be set by [Modal] component
   onCanScroll?: (bol: boolean) => void;
-  children: string | JSX.Element | JSX.Element[];
 }
 
 const ModalBody = forwardRef<HTMLDivElement, ModalBodyProps>(

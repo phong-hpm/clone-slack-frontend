@@ -1,11 +1,13 @@
-import { FC, useState } from "react";
-import Autocomplete from "@mui/material/Autocomplete";
+import { useState } from "react";
 
 // store
-import { useDispatch } from "store";
+import { useSelector, useDispatch } from "store";
 
 // redux actions
 import { emitAddChannel } from "store/actions/socket/channelSocket.action";
+
+// redux selector
+import globalModalSelectors from "store/selectors/globalModal.selector";
 
 // components
 import {
@@ -17,12 +19,14 @@ import {
   Typography,
   TextField,
   Link,
+  Autocomplete,
 } from "@mui/material";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "components/Modal";
 import SlackIcon from "components/SlackIcon";
 
 // utils
 import { color } from "utils/constants";
+import { setOpenCreateChannelModal } from "store/slices/globalModal.slice";
 
 const learnMoreUrl =
   "https://slack.com/help/articles/360017938993-What-is-a-channel?utm_medium=in-prod&utm_source=in-prod&utm_campaign=cd_in-prod_in-prod_all_en_sharedchannels-betterinvites_cr-create-channel_ym-201911";
@@ -33,13 +37,10 @@ const nameSuggestions = [
   { label: "team", desc: "For updates and work from a department or team" },
 ];
 
-export interface CreateChannelModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const CreateChannelModal: FC<CreateChannelModalProps> = ({ isOpen, onClose }) => {
+const CreateChannelModal = () => {
   const dispatch = useDispatch();
+
+  const isOpen = useSelector(globalModalSelectors.isOpenCreateChannel);
 
   const [error, setError] = useState({ maxLength: false, minLength: false });
   const [isPrivate, setIsPrivate] = useState(false);
@@ -62,11 +63,15 @@ const CreateChannelModal: FC<CreateChannelModalProps> = ({ isOpen, onClose }) =>
 
   const handleSubmit = () => {
     dispatch(emitAddChannel({ name: channelName, desc }));
-    onClose();
+    handleClose();
+  };
+
+  const handleClose = () => {
+    dispatch(setOpenCreateChannelModal(false));
   };
 
   return (
-    <Modal isOpen={isOpen} isCloseBtn onClose={onClose}>
+    <Modal isOpen={isOpen} isCloseBtn onClose={handleClose}>
       <ModalHeader>
         <Typography variant="h2">
           {isPrivate ? "Create a private channel" : "Create a channel"}

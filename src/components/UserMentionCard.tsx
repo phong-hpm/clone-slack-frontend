@@ -4,7 +4,7 @@ import { FC } from "react";
 import defaultAvatar from "assets/images/default_avatar.png";
 
 // components
-import { Avatar, Box, BoxProps, Typography } from "@mui/material";
+import { Avatar, AvatarProps, Box, BoxProps, Typography } from "@mui/material";
 import Status from "components/Status";
 
 // types
@@ -15,12 +15,14 @@ export interface UserMentionCardProps extends BoxProps {
   userId: string;
   userMention?: UserType;
   avatarElement?: JSX.Element;
+  AvatarProps?: AvatarProps;
 }
 
 const UserMentionCard: FC<UserMentionCardProps> = ({
   userId,
   userMention,
   avatarElement,
+  AvatarProps,
   ...props
 }) => {
   if (!userMention) return <></>;
@@ -29,7 +31,7 @@ const UserMentionCard: FC<UserMentionCardProps> = ({
     <Box display="flex" alignItems="center" color={color.PRIMARY} {...props}>
       <Box p={0.5}>
         {avatarElement || (
-          <Avatar sizes="small" src={userMention.avatar}>
+          <Avatar sizes="small" src={userMention.avatar} {...AvatarProps}>
             <img src={defaultAvatar} alt="" />
           </Avatar>
         )}

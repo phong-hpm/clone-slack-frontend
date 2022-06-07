@@ -3,8 +3,9 @@ import { ChannelType, MessageType, UserType } from "store/slices/_types";
 
 // ChannelSocketContext.tsx -----------------
 export type LoadChannelsListener = (data: { channels: ChannelType[]; users: UserType[] }) => void;
-export type AddNewChannelListener = (channel: ChannelType) => void;
-export type UpdatedChannelListener = (channel: ChannelType) => void;
+export type AddNewChannelListener = (data: { channel: ChannelType }) => void;
+export type UpdatedChannelListener = (data: { channel: ChannelType }) => void;
+export type UpdatedRemovedListener = (data: { channelId: string }) => void;
 export type UpdatedChannelUsersListener = (data: {
   channelId: string;
   userId: string[];

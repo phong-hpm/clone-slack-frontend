@@ -11,7 +11,7 @@ import classnames from "classnames";
 
 // components
 import ReactModal from "react-modal";
-import { Box, IconButton, PopoverOrigin } from "@mui/material";
+import { Box, IconButton, PopoverOrigin, BoxProps } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 import ModalBody from "./ModalBody";
 
@@ -26,6 +26,8 @@ import {
 import { Position, ReactModalProps } from "./_types";
 import ModalHeader from "./ModalHeader";
 import ModalFooter from "./ModalFooter";
+import useKeyboard from "hooks/keyboard/useKeyboard";
+import { eventKeys } from "utils/constants";
 
 ReactModal.setAppElement("#root");
 
@@ -36,6 +38,7 @@ export interface ModalProps extends ReactModalProps {
   isArrow?: boolean;
   shouldCloseOnEsc?: boolean;
   shouldCloseOnOverlayClick?: boolean;
+  onEnter?: () => void;
   onClose: () => void;
   anchorEl?: Element | null | undefined;
   autoWidth?: boolean;
@@ -43,6 +46,7 @@ export interface ModalProps extends ReactModalProps {
   anchorOrigin?: PopoverOrigin;
   transformOrigin?: PopoverOrigin;
   transformExtra?: { horizontal?: number; vertical?: number };
+  IconCloseProps?: BoxProps;
 }
 
 const Modal: FC<ModalProps> = ({
@@ -57,14 +61,22 @@ const Modal: FC<ModalProps> = ({
   anchorEl,
   style: styleProp,
   className,
+  onEnter,
   onClose,
   anchorOrigin,
   transformOrigin,
   transformExtra,
   children: childrenProp,
+  IconCloseProps,
   ...props
 }) => {
   const keepRef = useRef({ prevWidth: 0, prevHeight: 0 });
+
+  const { handleKeyDown } = useKeyboard({
+    keyDownListener: {
+      [eventKeys.KEY_ENTER]: () => onEnter?.(),
+    },
+  });
 
   const [contentEl, setContentEl] = useState<HTMLDivElement>();
   const [position, setPosition] = useState<Position>();
@@ -168,7 +180,7 @@ const Modal: FC<ModalProps> = ({
   if (!isOpen) return <></>;
 
   return (
-    <div>
+    <Box onKeyDown={handleKeyDown}>
       <ReactModal
         contentRef={setContentEl}
         isOpen={isOpen}
@@ -189,21 +201,21 @@ const Modal: FC<ModalProps> = ({
         {children}
 
         {isCloseBtn && (
-          <Box position="absolute" zIndex="1000" top="12px" right="12px">
+          <Box position="absolute" zIndex="1000" top="12px" right="12px" {...IconCloseProps}>
             <IconButton onClick={onClose} sx={{ borderRadius: 1 }}>
               <SlackIcon icon="close" />
             </IconButton>
           </Box>
         )}
         {isCloseBtnCorner && (
-          <Box position="absolute" zIndex="1000" top={-10} right={-10}>
+          <Box position="absolute" zIndex="1000" top={-10} right={-10} {...IconCloseProps}>
             <IconButton color="secondary" onClick={onClose} size="medium">
               <SlackIcon fontSize="small" icon="close" />
             </IconButton>
           </Box>
         )}
       </ReactModal>
-    </div>
+    </Box>
   );
 };
 

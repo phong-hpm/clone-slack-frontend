@@ -47,6 +47,13 @@ export const removeCachedMessage = (data: { channelId: string; messageId: string
   } catch {}
 };
 
+export const removeCachedMessages = (data: { channelId: string }) => {
+  try {
+    const { channelId } = data;
+    localStorage.removeItem(channelId);
+  } catch {}
+};
+
 export const setCachedMessages = (data: {
   hasMore: boolean;
   channelId: string;

@@ -34,6 +34,8 @@ import { color } from "utils/constants";
 
 // images
 import defaultAvatar from "assets/images/default_avatar.png";
+import { setOpenCreateChannelModal } from "store/slices/globalModal.slice";
+
 export interface WorkSpaceMenuProps extends MenuProps {}
 
 const WorkSpaceMenu: FC<WorkSpaceMenuProps> = ({ onClose, ...props }) => {
@@ -42,6 +44,11 @@ const WorkSpaceMenu: FC<WorkSpaceMenuProps> = ({ onClose, ...props }) => {
   const user = useSelector(userSelectors.getUser);
 
   const [selected, setSelected] = useState("");
+
+  const handleCreateChannel = () => {
+    dispatch(setOpenCreateChannelModal(true));
+    handleClose();
+  };
 
   const handleClose = () => {
     onClose && onClose({}, "backdropClick");
@@ -88,7 +95,12 @@ const WorkSpaceMenu: FC<WorkSpaceMenuProps> = ({ onClose, ...props }) => {
 
       <Divider />
 
-      <MenuItem onClick={handleClose} sx={{ py: 1, whiteSpace: "normal" }}>
+      <MenuItem
+        sx={{ py: 1, whiteSpace: "normal" }}
+        onClick={() => {
+          window.open("https://app.slack.com/plans/T03C86ABPDX?entry_point=team_menu_plan_info");
+        }}
+      >
         <Typography variant="h5">
           Your workspace is currently on the free version of Slack.
           <Link underline="hover" ml={0.5}>
@@ -100,7 +112,7 @@ const WorkSpaceMenu: FC<WorkSpaceMenuProps> = ({ onClose, ...props }) => {
       <Divider />
 
       <MenuItem onClick={handleClose}>Invite people to {user.name}</MenuItem>
-      <MenuItem onClick={handleClose}>Create a channel</MenuItem>
+      <MenuItem onClick={handleCreateChannel}>Create a channel</MenuItem>
 
       <Divider />
 

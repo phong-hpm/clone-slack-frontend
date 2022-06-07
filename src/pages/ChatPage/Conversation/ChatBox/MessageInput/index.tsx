@@ -39,7 +39,7 @@ const MessageInput: FC<MessageInputProps> = ({
   const placeHolder = useMemo(() => {
     if (!selectedChannel?.name || !selectedChannel?.type) return "";
 
-    if (selectedChannel?.type === "channel") {
+    if (["public_channel", "private_channel"].includes(selectedChannel?.type)) {
       return `Send a message to #${selectedChannel.name}`;
     } else {
       return `Send a message to ${selectedChannel.name}`;

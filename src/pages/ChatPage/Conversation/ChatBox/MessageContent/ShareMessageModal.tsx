@@ -56,7 +56,6 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
 
   const user = useSelector(userSelectors.getUser);
   const channelList = useSelector(channelsSelectors.getChannelList);
-  const directMessageList = useSelector(channelsSelectors.getDirectMessagesList);
 
   const [selectedList, setSelectedList] = useState<ChannelType[]>([]);
   const [messageDelta, setMessageDelta] = useState<Delta>({} as Delta);
@@ -65,23 +64,13 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
   const channelOptions = useMemo(() => {
     let options: ChannelType[] = [];
 
-    if (selectingType === "direct_message") {
-      if (directMessageList.length === selectedList.length) {
-        options = [];
-      } else {
-        options = directMessageList.filter((item) => item.type === "direct_message");
-      }
-    } else if (selectingType === "channel" || selectingType === "group_message") {
-      options = [
-        {
-          id: "warning",
-          name: `Can't share with more than 1 ${
-            selectingType === "group_message" ? "group message" : "channel"
-          }`,
-        } as ChannelType,
-      ];
+    if (!selectingType) {
+      options = channelList;
+    } else if (selectingType === "direct_message") {
+      options = channelList.filter((item) => item.type === "direct_message");
+      if (selectedList.length === options.length) options = [];
     } else {
-      options = [...channelList, ...directMessageList];
+      options = [{ id: "warning", name: `Can't share with more than 1 channel` } as ChannelType];
     }
 
     if (!options?.length) {
@@ -89,7 +78,7 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
     }
 
     return options;
-  }, [selectingType, selectedList, directMessageList, channelList]);
+  }, [selectingType, selectedList, channelList]);
 
   const handleSubmit = () => {
     onClose();
@@ -151,19 +140,35 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
                 height: "auto !important",
               }}
             >
-              {option.type === "channel" ? (
+              {option.type === "public_channel" && (
                 <Box m={0.25}>
                   <SlackIcon icon="hash-medium" color={color.LIGHT} />
                 </Box>
-              ) : (
+              )}
+              {option.type === "private_channel" && (
+                <Box m={0.25}>
+                  <SlackIcon icon="lock-o" color={color.LIGHT} />
+                </Box>
+              )}
+              {option.type === "direct_message" && (
                 <Avatar sizes="medium" src={avatar}>
                   <img src={defaultAvatar} alt="" />
                 </Avatar>
               )}
+
+              {option.type === "group_message" && (
+                <Box color={color.PRIMARY}>
+                  <UserAvatarLength
+                    src={option.avatar}
+                    length={option.users.length - 1}
+                    sizes="small"
+                  />
+                </Box>
+              )}
             </Box>
           }
           label={
-            <Typography fontWeight={700} ml={option.type === "channel" ? -0.5 : 0.5}>
+            <Typography fontWeight={700} ml={option.type === "public_channel" ? -0.5 : 0.5}>
               {option.name}
             </Typography>
           }

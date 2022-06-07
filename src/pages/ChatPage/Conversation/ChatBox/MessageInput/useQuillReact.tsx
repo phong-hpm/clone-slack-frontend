@@ -22,7 +22,7 @@ import { ContextLinkValueType, LinkCustomEventDetailType } from "./_types";
 
 // utils
 import { color, notifyMentions, stateDefault } from "utils/constants";
-import { searchUserMention } from "utils/quillUtils";
+import { searchUser } from "utils/searchUser";
 
 export interface UseQuillReactProps {
   autoFocus?: boolean;
@@ -70,7 +70,7 @@ export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
         if (search.length === 0) {
           searchResult = keepRef.current.userList;
         } else {
-          searchResult = searchUserMention(keepRef.current.userList, search);
+          searchResult = searchUser(keepRef.current.userList, search);
         }
         renderList([...searchResult, ...Object.values(notifyMentions)], search);
       },

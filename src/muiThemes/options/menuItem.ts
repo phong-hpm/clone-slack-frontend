@@ -11,6 +11,7 @@ const components: Theme["components"] = {
         color: "inherit",
         transitionDuration: "0ms",
         padding: "4px 24px",
+        whiteSpace: "normal",
 
         "&:hover, &.Mui-selected, &.Mui-selected:hover": {
           backgroundColor: color.HOVER_ITEM,

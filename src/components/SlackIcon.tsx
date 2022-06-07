@@ -34,7 +34,7 @@ const SlackIcon: FC<SlackIconProps> = ({
     return (
       <i
         className={classnames("c-icon", icon && `c-icon--${icon}`, classes)}
-        style={{ ...style, color, cursor }}
+        style={{ color, cursor, ...style }}
       >
         {children}
       </i>
@@ -46,7 +46,7 @@ const SlackIcon: FC<SlackIconProps> = ({
       role="img"
       className={classnames("c-icon-img", classes)}
       data-ndw={icon}
-      style={{ ...style, color }}
+      style={{ color, ...style }}
     >
       {children}
     </span>

@@ -6,15 +6,13 @@ import { useSelector } from "store";
 // redux selector
 import userSelectors from "store/selectors/user.selector";
 
-// images
-import defaultAvatar from "assets/images/default_avatar.png";
-
 // components
-import { Box, Avatar } from "@mui/material";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 
 // utils
 import { color } from "utils/constants";
+import UserAvatarStatus from "components/UserAvatarStatus";
 
 const ChatBar: FC = () => {
   const user = useSelector(userSelectors.getUser);
@@ -28,17 +26,27 @@ const ChatBar: FC = () => {
       borderColor={color.BORDER}
     >
       <Box flexBasis={220} display="flex" justifyContent="flex-end" alignItems="center" px={2.5}>
-        <SlackIcon fontSize="large" icon="clock" />
+        <Tooltip placement="bottom" title="History">
+          <IconButton sx={{ borderRadius: 1 }}>
+            <SlackIcon fontSize="large" icon="clock" />
+          </IconButton>
+        </Tooltip>
       </Box>
       <Box flex="1" display="flex">
         <div style={{ background: "#ccc", height: "26px", width: "100%" }}></div>
       </Box>
       <Box flexBasis={230} display="flex" justifyContent="flex-end" alignItems="center" px={2}>
-        <SlackIcon fontSize="large" icon="help" />
+        <Tooltip placement="bottom" title="Help">
+          <IconButton sx={{ borderRadius: 1 }}>
+            <SlackIcon fontSize="large" icon="help" />
+          </IconButton>
+        </Tooltip>
         <Box ml={2}>
-          <Avatar sizes="medium" src={user.avatar}>
-            <img src={defaultAvatar} alt="" />
-          </Avatar>
+          <Tooltip placement="bottom" title={user.name}>
+            <IconButton sx={{ borderRadius: 1, p: 0 }}>
+              <UserAvatarStatus sizes="medium" src={user.avatar} isOnline={true} />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Box>
     </Box>

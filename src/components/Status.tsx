@@ -10,12 +10,13 @@ export interface StatusProps extends Omit<SlackIconProps, "icon"> {
   isOnline?: boolean;
 }
 
-const Status: FC<StatusProps> = ({ isOnline, fontSize = "small" }) => {
+const Status: FC<StatusProps> = ({ isOnline, fontSize = "small", ...props }) => {
   return (
     <SlackIcon
       color={isOnline ? color.SUCCESS : color.MAX_SOLID}
       fontSize={fontSize}
       icon={isOnline ? "presence-online" : "presence-offline"}
+      {...props}
     />
   );
 };

@@ -18,6 +18,7 @@ import channelsSelectors from "store/selectors/channels.selector";
 
 // redux actions
 import { emitAddUserToChannel } from "store/actions/socket/channelSocket.action";
+import { setOpenAddUserChannelModal } from "store/slices/globalModal.slice";
 
 // components
 import {
@@ -38,13 +39,13 @@ import {
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "components/Modal";
 import SlackIcon from "components/SlackIcon";
 import UserMentionCard from "components/UserMentionCard";
+import ProTag from "features/ProTag";
 
 // utils
 import { color, rgba } from "utils/constants";
 
 // types
 import { UserType } from "store/slices/_types";
-import { setOpenAddUserChannel } from "store/slices/globalModal.slice";
 
 interface OptionType {
   type?: "warning";
@@ -85,14 +86,18 @@ const AddUserChannelChannel = () => {
   );
 
   const handleSubmit = () => {
-    if (!selectedChannel?.id) return;
+    if (!selectedChannel?.id || !selectedList.length) return;
     dispatch(
       emitAddUserToChannel({
         id: selectedChannel.id,
         userIds: selectedList.map((option) => option.user.id),
       })
     );
-    dispatch(setOpenAddUserChannel(false));
+    handleClose();
+  };
+
+  const handleClose = () => {
+    dispatch(setOpenAddUserChannelModal(false));
   };
 
   const renderTags = (getTagProps: AutocompleteRenderGetTagProps) => {
@@ -162,10 +167,10 @@ const AddUserChannelChannel = () => {
   };
 
   return (
-    <Modal isOpen={isOpen} isCloseBtn onClose={() => dispatch(setOpenAddUserChannel(false))}>
+    <Modal isOpen={isOpen} isCloseBtn onClose={handleClose} onEnter={handleSubmit}>
       <ModalHeader>
         <Typography variant="h3">
-          Add people to <SlackIcon icon="hash-medium" />
+          Add people to <SlackIcon icon="hash-medium-bold" style={{ fontSize: 22 }} />
           {selectedChannel?.name}
         </Typography>
       </ModalHeader>
@@ -210,19 +215,7 @@ const AddUserChannelChannel = () => {
           <Typography fontWeight={700} color={color.HIGH}>
             Try Slack Connect
           </Typography>
-          <Typography
-            ml={1}
-            py={0.25}
-            px={0.375}
-            fontSize={10}
-            fontWeight={700}
-            lineHeight={1.2}
-            color={color.PRIMARY_BACKGROUND}
-            bgcolor={color.PRIMARY}
-            borderRadius={1}
-          >
-            PRO
-          </Typography>
+          <ProTag ml={1} />
         </Box>
 
         <Typography>

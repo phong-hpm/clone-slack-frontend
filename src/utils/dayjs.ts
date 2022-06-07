@@ -29,6 +29,7 @@ dayFormat.time = (time: number) => dayjs(time).format("h:mm");
 dayFormat.timeA = (time: number) => dayjs(time).format("h:mm A");
 dayFormat.fullTimeA = (time: number) => dayjs(time).format("h:mm:ss A");
 dayFormat.day = (time: number) => dayjs(time).format("MMM DD");
+dayFormat.fullDay = (time: number) => dayjs(time).format("MMM DD, YYYY");
 dayFormat.dayO = (time: number) => dayjs(time).format("MMM Do");
 
 export { dayFormat };

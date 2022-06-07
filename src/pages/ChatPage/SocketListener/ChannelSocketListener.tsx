@@ -9,9 +9,9 @@ import teamsSelectors from "store/selectors/teams.selector";
 // redux slices
 import {
   setChannelsList,
-  setDirectMessagesList,
   addChannel,
   updateChannel,
+  removeChannel,
 } from "store/slices/channels.slice";
 import { setChannelUserList, updateChannelUserOnline } from "store/slices/channelUsers.slice";
 import { setChannelSocket } from "store/slices/socket.slice";
@@ -25,7 +25,6 @@ import cacheUtils from "utils/cacheUtils";
 import { SocketEvent, SocketEventDefault } from "utils/constants";
 
 // types
-import { ChannelType } from "store/slices/_types";
 import {
   AddNewChannelListener,
   LoadChannelsListener,
@@ -34,6 +33,7 @@ import {
   UpdateChannelUserStatusListener,
   UpdatedChannelListener,
   UpdatedChannelUsersListener,
+  UpdatedRemovedListener,
 } from "./_types";
 
 export const ChannelSocketProvider = () => {
@@ -46,33 +46,28 @@ export const ChannelSocketProvider = () => {
   const handleSetChannelList: LoadChannelsListener = useCallback(
     ({ channels, users: teamUsers }) => {
       dispatch(setTeamUserList(teamUsers));
-
-      if (channels) {
-        const channelsList: ChannelType[] = [];
-        const directMessagesList: ChannelType[] = [];
-
-        // separate [channels] for each [channel.type]
-        channels.forEach((channel: ChannelType) => {
-          ["direct_message", "group_message"].includes(channel.type)
-            ? directMessagesList.push(channel)
-            : channelsList.push(channel);
-          // update cachedModify for channel
-          cacheUtils.setChannelUpdatedTime(channel.id, { channel: channel.updatedTime });
-        });
-        dispatch(setChannelsList(channelsList));
-        dispatch(setDirectMessagesList(directMessagesList));
-      }
+      dispatch(setChannelsList(channels));
     },
     [dispatch]
   );
 
   const handleAddNewChannel: AddNewChannelListener = useCallback(
-    (channel) => dispatch(addChannel(channel)),
+    ({ channel }) => dispatch(addChannel(channel)),
     [dispatch]
   );
 
   const handleUpdatedChannel: UpdatedChannelListener = useCallback(
-    (channel) => dispatch(updateChannel({ id: channel.id, channel })),
+    ({ channel }) => {
+      dispatch(updateChannel({ id: channel.id, channel }));
+    },
+    [dispatch]
+  );
+
+  const handleRemovedChannel: UpdatedRemovedListener = useCallback(
+    ({ channelId }) => {
+      cacheUtils.removeCachedMessages({ channelId });
+      dispatch(removeChannel(channelId));
+    },
     [dispatch]
   );
 
@@ -127,6 +122,7 @@ export const ChannelSocketProvider = () => {
       .on(SocketEvent.ON_CHANNELS, handleSetChannelList)
       .on(SocketEvent.ON_ADDED_CHANNEL, handleAddNewChannel)
       .on(SocketEvent.ON_EDITED_CHANNEL, handleUpdatedChannel)
+      .on(SocketEvent.ON_REMOVED_CHANNEL, handleRemovedChannel)
       .on(SocketEvent.ON_EDITED_CHANNEL_USERS, handleUpdatedChannelUsers)
       .on(SocketEvent.ON_EDITED_CHANNEL_UPDATED_TIME, handleUpdateChannelUpdatedTime)
       .on(SocketEvent.ON_EDITED_CHANNEL_UNREAD_MESSAGE_COUNT, handleUpdateChannelUnreadCount)
@@ -144,6 +140,7 @@ export const ChannelSocketProvider = () => {
     dispatch,
     handleSetChannelList,
     handleUpdatedChannel,
+    handleRemovedChannel,
     handleUpdatedChannelUsers,
     handleUpdateChannelUpdatedTime,
     handleUpdateChannelUnreadCount,

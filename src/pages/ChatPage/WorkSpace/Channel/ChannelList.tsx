@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Truncate from "react-truncate";
 
@@ -23,16 +23,14 @@ import { routePaths } from "utils/constants";
 
 export interface ChannelListProps {
   label: string;
-  types: string[];
   selectedChannel?: ChannelType;
   channels: ChannelType[];
   onClickAdd: () => void;
-  addText: string;
+  addText?: string;
 }
 
 const ChannelList: FC<ChannelListProps> = ({
   label,
-  types,
   selectedChannel,
   channels,
   addText,
@@ -49,6 +47,10 @@ const ChannelList: FC<ChannelListProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMouseEnter, setIsMouseEnter] = useState(false);
   const [selectedId, setSelectedId] = useState("");
+
+  const hasSelectedChannel = useMemo(() => {
+    return !!channels.find(({ id }) => id === selectedChannel?.id);
+  }, [selectedChannel, channels]);
 
   const handleClickAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -73,6 +75,50 @@ const ChannelList: FC<ChannelListProps> = ({
 
     observer.observe(truncateContainerRef.current!);
   }, []);
+
+  const renderItem = (channel: ChannelType, isSelected: boolean) => {
+    return (
+      <ListItemButton
+        key={channel.id}
+        selected={isSelected}
+        sx={{ p: 0, pl: 4 }}
+        onClick={() => handleSelectChannel(channel.id)}
+      >
+        <ListItemIcon sx={{ minWidth: 28 }}>
+          {["public_channel", "general"].includes(channel.type) && (
+            <SlackIcon icon="channel-pane-hash" />
+          )}
+          {channel.type === "private_channel" && <SlackIcon icon="lock-o" />}
+          {channel.type === "direct_message" && (
+            <UserAvatarStatus
+              sizes="small"
+              src={channel.partner?.avatar}
+              isOnline={channel.partner?.isOnline}
+            />
+          )}
+          {channel.type === "group_message" && (
+            <UserAvatarLength src={channel.avatar} length={channel.users.length - 1} />
+          )}
+        </ListItemIcon>
+        <Box display="flex" justifyContent="space-between" alignItems="center" width="100%" pr={2}>
+          <Box sx={{ lineHeight: "28px", width: "100%" }}>
+            <Truncate ref={(ref) => (truncateRefs.current[channel.id] = ref)}>
+              {channel.name}
+            </Truncate>
+          </Box>
+
+          {!!channel.unreadMessageCount && (
+            <Chip
+              color="error"
+              size="small"
+              label={channel.unreadMessageCount}
+              sx={{ height: 18 }}
+            />
+          )}
+        </Box>
+      </ListItemButton>
+    );
+  };
 
   return (
     <>
@@ -113,73 +159,20 @@ const ChannelList: FC<ChannelListProps> = ({
           {channels.map((channel) => {
             const isSelected = channel.id === selectedId;
 
-            return (
-              <ListItemButton
-                key={channel.id}
-                selected={isSelected}
-                sx={{ p: 0, pl: 4 }}
-                onClick={() => handleSelectChannel(channel.id)}
-              >
-                <ListItemIcon sx={{ minWidth: 28 }}>
-                  {channel.type === "channel" && <SlackIcon icon="channel-pane-hash" />}
-                  {channel.type === "direct_message" && (
-                    <UserAvatarStatus
-                      sizes="small"
-                      src={channel.partner?.avatar}
-                      isOnline={channel.partner?.isOnline}
-                    />
-                  )}
-                  {channel.type === "group_message" && (
-                    <UserAvatarLength src={channel.avatar} length={channel.users.length - 1} />
-                  )}
-                </ListItemIcon>
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  width="100%"
-                  pr={2}
-                >
-                  <Box sx={{ lineHeight: "28px", width: "100%" }}>
-                    <Truncate ref={(ref) => (truncateRefs.current[channel.id] = ref)}>
-                      {channel.name}
-                    </Truncate>
-                  </Box>
-
-                  {!!channel.unreadMessageCount && (
-                    <Chip
-                      color="error"
-                      size="small"
-                      label={channel.unreadMessageCount}
-                      sx={{ height: 18 }}
-                    />
-                  )}
-                </Box>
-              </ListItemButton>
-            );
+            return renderItem(channel, isSelected);
           })}
-          <ListItemButton sx={{ p: 0, pl: 4 }} onClick={handleClickAdd}>
-            <ListItemIcon sx={{ minWidth: 28 }}>
-              <SlackIcon icon="plus-small" />
-            </ListItemIcon>
-            <Typography sx={{ lineHeight: "28px" }}>{addText}</Typography>
-          </ListItemButton>
+          {addText && (
+            <ListItemButton sx={{ p: 0, pl: 4 }} onClick={handleClickAdd}>
+              <ListItemIcon sx={{ minWidth: 28 }}>
+                <SlackIcon icon="plus-small" />
+              </ListItemIcon>
+              <Typography sx={{ lineHeight: "28px" }}>{addText}</Typography>
+            </ListItemButton>
+          )}
         </List>
       </Collapse>
 
-      {isCollapsed && selectedChannel && types.includes(selectedChannel?.type) && (
-        <ListItemButton selected={true} sx={{ p: 0, pl: 4 }}>
-          <ListItemIcon sx={{ minWidth: 28 }}>
-            <SlackIcon icon="channel-pane-hash" />
-          </ListItemIcon>
-
-          <Box sx={{ lineHeight: "28px", width: "100%" }}>
-            <Truncate ref={(ref) => (truncateRefs.current[selectedChannel.id] = ref)}>
-              {selectedChannel.name}
-            </Truncate>
-          </Box>
-        </ListItemButton>
-      )}
+      {isCollapsed && selectedChannel && hasSelectedChannel && renderItem(selectedChannel, true)}
     </>
   );
 };

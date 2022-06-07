@@ -2,6 +2,17 @@ import { Socket } from "socket.io-client";
 import { Delta } from "quill";
 import { TranScriptType } from "components/MediaPlayer/VideoPlayer/_types";
 
+// modal.slice.tsx -----------------
+export interface ModalState {
+  isOpenAddUserChannel: boolean;
+  isOpenCreateChannel: boolean;
+  isOpenChannelDetail: boolean;
+  isOpenEditChannelNameModal: boolean;
+  isOpenEditChannelTopicModal: boolean;
+  isOpenEditChannelDescriptionModal: boolean;
+  isOpenArchiveChannelModal: boolean;
+}
+
 // channelUsers.slice.tsx -----------------
 export interface TeamUsersState {
   isLoading: boolean;
@@ -81,7 +92,7 @@ export interface MessageType {
   team: string;
   user: string;
   isEdited?: boolean;
-  isStared?: boolean;
+  isStarred?: boolean;
   reactions: Record<string, { id: string; users: string[]; count: number }>;
   files?: MessageFileType[];
   sharedMessageId?: string;
@@ -119,24 +130,23 @@ export interface MessagesState {
 // channels.slice.tsx -----------------
 export interface ChannelType {
   id: string;
-  type: "direct_message" | "channel" | "group_message";
+  type: "general" | "public_channel" | "private_channel" | "direct_message" | "group_message";
   name: string;
   users: string[];
-  creater: string;
+  creator: string;
   createdTime: number;
   unreadMessageCount: number;
   updatedTime: number;
+  desc?: string;
   partner?: UserType;
   avatar?: string;
+  topic?: string;
+  notification?: "all" | "mention" | "off" | "muted";
+  isStarred?: boolean;
 }
 
 export interface ChannelsState {
   isLoading: boolean;
   list: ChannelType[];
-  directMessages: ChannelType[];
   selectedId: string;
-}
-// modal.slice.tsx -----------------
-export interface ModalState {
-  isOpenAddUserChannel: boolean;
 }

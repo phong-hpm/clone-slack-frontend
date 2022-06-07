@@ -5,7 +5,6 @@ import teamUsersSelectors from "store/selectors/teamUsers.selector";
 // redux slices
 import {
   setChannelsList,
-  setDirectMessagesList,
   setSelectedChannelId,
   updateChannelParterOnline,
 } from "store/slices/channels.slice";
@@ -19,7 +18,7 @@ const firedMap = new Map<string, any>();
 const channelUsersHandlers = (watcher: WatcherType) => {
   // [setSelectedChannelId], [setChannelsList], [setDirectMessagesList]
   // we have to add [setChannelsList], [setDirectMessagesList] as dependences
-  //    because [selectedChannel] will be got from [channelList] or [directMessagesList]
+  //    because [selectedChannel] will be got from [channelList]
   // these actions can be fired asynchonous, so we listen all of them
   watcher(
     (state, dispatch, action) => {
@@ -27,14 +26,14 @@ const channelUsersHandlers = (watcher: WatcherType) => {
       const teamUserList = teamUsersSelectors.getTeamUserList(state);
 
       firedMap.set(action.type, action.payload);
-      // wait for 4 dependences were fired at least 1 time
-      if (selectedChannel && firedMap.size === 4) {
+      // wait for 3 dependences were fired at least 1 time
+      if (selectedChannel && firedMap.size === 3) {
         const channelUserIds = selectedChannel.users;
         const channelUserList = teamUserList.filter((user) => channelUserIds.includes(user.id));
         dispatch(setChannelUserList(channelUserList));
       }
     },
-    [setTeamUserList, setSelectedChannelId, setChannelsList, setDirectMessagesList]
+    [setTeamUserList, setSelectedChannelId, setChannelsList]
   );
 
   watcher(

@@ -29,7 +29,7 @@ const components: Theme["components"] = {
       {
         props: { color: "secondary" },
         style: {
-          backgroundColor: "rgba(29, 155, 209, 0.1)",
+          backgroundColor: rgba(color.HIGHLIGHT, 0.1),
           color: color.PRIMARY,
         },
       },

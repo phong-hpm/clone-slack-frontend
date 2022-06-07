@@ -1,9 +1,9 @@
 const videoExtensions = ["mp4"];
 
-const mapMarketingSources = (file: string) => {
+const mapMarketingSources = (file: string, page = "homepage") => {
   const [fileName, extension] = file.split(".");
   const type = videoExtensions.includes(extension) ? "video" : "image";
-  const url = `http://localhost:8000/files/marketing/homepage/${type}/${fileName}`;
+  const url = `http://localhost:8000/files/marketing/${page}/${type}/${fileName}`;
 
   const src = `${url}.${extension}`;
   if (type === "video") return { src };

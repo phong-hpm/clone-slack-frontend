@@ -4,7 +4,7 @@ import { FC, useRef, useState } from "react";
 import { useDispatch } from "store";
 
 // redux actions
-import { emitReactionMessage, emitStarMessage } from "store/actions/socket/messageSocket.action";
+import { emitReactionMessage, emitStarredMessage } from "store/actions/socket/messageSocket.action";
 
 // components
 import { Box, IconButton, Tooltip } from "@mui/material";
@@ -19,13 +19,13 @@ import { color, css } from "utils/constants";
 // hooks
 
 export interface MessageActionsProps extends Omit<MoreMenuProps, "open" | "anchorEl"> {
-  isStared?: boolean;
+  isStarred?: boolean;
   onClickShare: () => void;
 }
 
 const MessageActions: FC<MessageActionsProps> = ({
   isSystem,
-  isStared,
+  isStarred,
   messageId,
   onClickShare,
   onClose,
@@ -40,7 +40,7 @@ const MessageActions: FC<MessageActionsProps> = ({
   const [isShowEmojiModal, setShowEmojiModal] = useState(false);
 
   const handleStarMessage = () => {
-    messageId && dispatch(emitStarMessage({ id: messageId }));
+    messageId && dispatch(emitStarredMessage({ id: messageId }));
   };
 
   const handleReactionMessage = (emojiId: string) => {
@@ -86,8 +86,8 @@ const MessageActions: FC<MessageActionsProps> = ({
     },
     {
       tooltip: "Add to saved item",
-      slackIcon: isStared ? "bookmark-filled" : "bookmark",
-      iconColor: isStared ? color.DANGER : undefined,
+      slackIcon: isStarred ? "bookmark-filled" : "bookmark",
+      iconColor: isStarred ? color.DANGER : undefined,
       onClick: handleStarMessage,
     },
     {

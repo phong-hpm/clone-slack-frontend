@@ -61,12 +61,12 @@ export const emitRemoveMessage = createAsyncThunk<{}, { id: string }>(
   }
 );
 
-export const emitStarMessage = createAsyncThunk<{}, { id: string }>(
-  "socket/emitStarMessage",
+export const emitStarredMessage = createAsyncThunk<{}, { id: string }>(
+  "socket/emitStarredMessage",
   async (data, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const messageSocket = state.socket.messageSocket;
-    messageSocket?.emit(SocketEvent.EMIT_STAR_MESSAGE, { data });
+    messageSocket?.emit(SocketEvent.EMIT_STARRED_MESSAGE, { data });
   }
 );
 

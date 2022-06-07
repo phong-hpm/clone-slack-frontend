@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useMemo } from "react";
 
 // redux store
-import { useSelector } from "store";
+import { useSelector, useDispatch } from "store";
 
 // redux selector
 import channelsSelectors from "store/selectors/channels.selector";
@@ -10,14 +10,27 @@ import channelsSelectors from "store/selectors/channels.selector";
 import { Box, List, ListItemButton, ListItemIcon, Typography } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 import ChannelList from "./ChannelList";
-import CreateChannelModal from "./CreateChannelModal";
+import { setOpenCreateChannelModal } from "store/slices/globalModal.slice";
+
+// types
+import { ChannelType } from "store/slices/_types";
 
 const ChannelContent = () => {
+  const dispatch = useDispatch();
+
   const channelList = useSelector(channelsSelectors.getChannelList);
-  const directMessagesList = useSelector(channelsSelectors.getDirectMessagesList);
   const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
-  const [openModal, setOpenModal] = useState(false);
+  const channelData = useMemo(() => {
+    const result: Record<string, ChannelType[]> = { starred: [], direct: [], normal: [] };
+    channelList.forEach((channel) => {
+      if (channel.isStarred) result.starred.push(channel);
+      else if (["private_channel", "public_channel", "general"].includes(channel.type))
+        result.normal.push(channel);
+      else result.direct.push(channel);
+    });
+    return result;
+  }, [channelList]);
 
   if (!selectedChannel?.id) return <></>;
 
@@ -46,24 +59,30 @@ const ChannelContent = () => {
         </ListItemButton>
       </List>
 
+      {!!channelData.starred.length && (
+        <ChannelList
+          label="Starred"
+          selectedChannel={selectedChannel}
+          channels={channelData.starred}
+          onClickAdd={() => dispatch(setOpenCreateChannelModal(true))}
+        />
+      )}
+
       <ChannelList
         label="Channels"
-        types={["channel"]}
         selectedChannel={selectedChannel}
-        channels={channelList}
-        onClickAdd={() => setOpenModal(true)}
+        channels={channelData.normal}
+        onClickAdd={() => dispatch(setOpenCreateChannelModal(true))}
         addText="Add channels"
       />
+
       <ChannelList
         label="Direct messages"
-        types={["dirrect_message", "group_message"]}
         selectedChannel={selectedChannel}
-        channels={directMessagesList}
-        onClickAdd={() => setOpenModal(true)}
+        channels={channelData.direct}
+        onClickAdd={() => dispatch(setOpenCreateChannelModal(true))}
         addText="Add teammates"
       />
-
-      {openModal && <CreateChannelModal isOpen={openModal} onClose={() => setOpenModal(false)} />}
     </Box>
   );
 };

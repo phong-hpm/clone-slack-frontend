@@ -12,28 +12,47 @@ import { color } from "utils/constants";
 
 export interface UserAvatarStatusProps extends AvatarProps {
   isOnline?: boolean;
+  statusSize?: "small" | "medium" | "large";
 }
 
-const UserAvatarStatus: FC<UserAvatarStatusProps> = ({ isOnline, ...props }) => {
+const UserAvatarStatus: FC<UserAvatarStatusProps> = ({ isOnline, statusSize, sizes, ...props }) => {
+  let statusBackSize = 11;
+  let statusFontSize = 15;
+
+  if (sizes === "medium") {
+    statusBackSize = 14;
+    statusFontSize = 18;
+  }
+
+  if (sizes === "large") {
+    statusBackSize = 15;
+    statusFontSize = 22;
+  }
+
   return (
     <Box position="relative">
       <Box position="relative" overflow="hidden">
         <Box
           position="absolute"
           zIndex={1}
-          right={-4}
-          bottom={-3}
-          width={11}
-          height={11}
+          right={-(statusBackSize / 2.5)}
+          bottom={-(statusBackSize / 3)}
+          width={statusBackSize}
+          height={statusBackSize}
           borderRadius={5}
           bgcolor={color.BG_WORK_SPACE}
         />
-        <Avatar {...props}>
+        <Avatar sizes={sizes} {...props}>
           <img src={defaultAvatar} alt="" />
         </Avatar>
       </Box>
-      <Box position="absolute" zIndex={2} right={-6} bottom={-5}>
-        <Status isOnline={isOnline} fontSize="medium" />
+      <Box
+        position="absolute"
+        zIndex={2}
+        right={-(statusFontSize / 2.5)}
+        bottom={-(statusFontSize / 3)}
+      >
+        <Status isOnline={isOnline} style={{ fontSize: statusFontSize }} />
       </Box>
     </Box>
   );

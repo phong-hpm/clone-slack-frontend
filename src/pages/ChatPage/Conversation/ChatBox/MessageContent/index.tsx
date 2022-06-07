@@ -95,14 +95,14 @@ const MessageContent: FC<MessageContentProps> = ({
   const bgcolor =
     isEditing || isShowDeleteMessageModal
       ? "rgba(242, 199, 68, 0.2)"
-      : message.isStared && !isMessageOnly
+      : message.isStarred && !isMessageOnly
       ? "rgba(242, 199, 68, 0.1)"
       : isHovering
       ? "rgb(39, 36, 44)"
       : "";
   if (!message.reactions) console.log("message.reactions", message);
   const isDisplayMessageActions = isHovering && !isEditing;
-  const isDisplayStared = !isEditing && !isMessageOnly && message.isStared;
+  const isDisplayStared = !isEditing && !isMessageOnly && message.isStarred;
   const isDisplayReaction = !isEditing && !isMessageOnly && !!Object.keys(message.reactions).length;
 
   const isDisplayMessage = !!message.delta.ops?.length;
@@ -122,7 +122,7 @@ const MessageContent: FC<MessageContentProps> = ({
         {/* stared */}
         {isDisplayStared && (
           <Box mt={0.5}>
-            <Bookmark isStared={message.isStared} />
+            <Bookmark isStarred={message.isStarred} />
           </Box>
         )}
 
@@ -236,7 +236,7 @@ const MessageContent: FC<MessageContentProps> = ({
           <Box position="absolute" right={12} top={-20}>
             <MessageActions
               messageId={message.id}
-              isStared={message.isStared}
+              isStarred={message.isStarred}
               isOwner={message.user === user.id}
               isSystem={message.type === "channel_join"}
               onClickShare={() => setShowShareMessageModal(true)}
