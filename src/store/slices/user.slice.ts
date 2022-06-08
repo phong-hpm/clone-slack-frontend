@@ -29,9 +29,9 @@ export const userSlice = createSlice({
     setUser: (state, action: PayloadAction<UserType>) => {
       state.user = action.payload;
     },
-    setEmailVerifying: (state, action: PayloadAction<{ email: string }>) => {
-      const { email } = action.payload;
-      state.emailVerifying = email;
+    // this method will support for testing
+    setEmailVerifying: (state, action: PayloadAction<string>) => {
+      state.emailVerifying = action.payload;
     },
     setTokens: (state, action: PayloadAction<{ accessToken?: string; refreshToken?: string }>) => {
       const { accessToken, refreshToken } = action.payload;

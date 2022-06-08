@@ -28,7 +28,7 @@ const BetterTomorrowSection: FC<BetterTomorrowSectionProps> = ({ onPlay }) => {
       flexDirection={{ xs: "column", md: "row" }}
     >
       {/* video thumbnail */}
-      <Box position="relative">
+      <Box position="relative" onClick={() => onPlay("ZDs056YM4fc")}>
         <img loading="lazy" {...mapMarketingSources("video-thumbnail.jpeg")} alt="" />
 
         <Box position="absolute" top={0} bottom={0} left={0} right={0}>
@@ -38,7 +38,6 @@ const BetterTomorrowSection: FC<BetterTomorrowSectionProps> = ({ onPlay }) => {
             alignItems="center"
             height="100%"
             sx={{ cursor: "pointer", ":hover": { div: { bgcolor: color.SELECTED_ITEM } } }}
-            onClick={() => onPlay("ZDs056YM4fc")}
           >
             <Box px={4} py={2.5} borderRadius={1} bgcolor="rgb(54, 197, 240)">
               <SlackIcon color={color.LIGHT} icon="play-filled" />

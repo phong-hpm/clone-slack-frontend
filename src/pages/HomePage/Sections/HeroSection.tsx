@@ -5,7 +5,6 @@ import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material"
 
 // utils
 import { routePaths } from "utils/constants";
-import { getPlatform } from "utils/detectplatform";
 import mapMarketingSources from "utils/mapMarketingSources";
 
 // data
@@ -39,7 +38,7 @@ const HeroSection = () => {
             className="purple-contained"
             fullWidth={!isUpMD}
             sx={{ px: 4, py: 2.5 }}
-            onClick={() => navigate(`${routePaths.DOWNLOAD_PAGE}/${getPlatform()}`)}
+            onClick={() => navigate(routePaths.SIGNUP_PAGE)}
           >
             TRY FOR FREE
           </Button>

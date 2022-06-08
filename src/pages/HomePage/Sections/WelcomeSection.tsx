@@ -1,13 +1,17 @@
+import { useNavigate } from "react-router-dom";
+
 // components
 import { Box, Button, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 // utils
-import { color } from "utils/constants";
+import { color, routePaths } from "utils/constants";
 
 // constants
 import homepageConstants from "pages/HomePage/_homepage.constants";
 
 const WelcomeSection = () => {
+  const navigate = useNavigate();
+
   const theme = useTheme();
   const isUpMd = useMediaQuery(theme.breakpoints.up("md"));
 
@@ -31,6 +35,7 @@ const WelcomeSection = () => {
           variant="outlined"
           fullWidth={!isUpMd}
           sx={{ mt: 2, mx: 1, px: 5, py: 2.5 }}
+          onClick={() => navigate(routePaths.SIGNUP_PAGE)}
         >
           TRY FOR FREE
         </Button>

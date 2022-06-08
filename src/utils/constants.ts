@@ -2,6 +2,13 @@
 import { UserType } from "store/slices/_types";
 import { ResolutionType } from "./_types";
 
+export const apiUrl = {
+  auth: {
+    checkEmail: "auth/check-email",
+    confirmEmailCode: "auth/confirm-email-code",
+  },
+};
+
 export const SocketEventDefault = {
   CONNECT: "connect",
   DISCONNECT: "disconnect",

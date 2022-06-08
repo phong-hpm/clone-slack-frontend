@@ -1,0 +1,6 @@
+{
+  "plugins": ["testing-library"],
+  "rules": {
+    "testing-library/no-node-access": "off"
+  }
+}

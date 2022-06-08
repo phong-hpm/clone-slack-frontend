@@ -72,6 +72,7 @@ const FeatureSection: FC<FeatureSectionProps> = ({
                 key={item.youtubeId}
                 flexBasis={{ xs: "100%", sm: "45%" }}
                 mt={{ xs: index === 1 ? 2 : 0, sm: 0 }}
+                onClick={() => onPlay(item.youtubeId)}
               >
                 <Box position="relative">
                   <img
@@ -90,7 +91,6 @@ const FeatureSection: FC<FeatureSectionProps> = ({
                         cursor: "pointer",
                         ":hover": { div: { bgcolor: color.SELECTED_ITEM } },
                       }}
-                      onClick={() => onPlay(item.youtubeId)}
                     >
                       <Box px={3} py={1.5} borderRadius={1} bgcolor="rgb(54, 197, 240)">
                         <SlackIcon color={color.LIGHT} icon="play-filled" />

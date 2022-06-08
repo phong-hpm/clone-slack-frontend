@@ -2,6 +2,7 @@ import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 
 // utils
 import axios from "utils/axios";
+import { apiUrl } from "utils/constants";
 
 // types
 import { UserState } from "store/slices/_types";
@@ -12,13 +13,8 @@ export const confirmEmailCode = createAsyncThunk<
   AxiosResponseCustom<LoginResponseData>,
   { email: string; verifyCode: string }
 >("auth/confirmEmailCode", async (postData, thunkAPI) => {
-  try {
-    const response = await axios.post("auth/confirm-email-code", { postData });
-    return response;
-  } catch (error: any) {
-    const response = error.response;
-    return thunkAPI.rejectWithValue(response);
-  }
+  const response = await axios.post(apiUrl.auth.confirmEmailCode, { postData });
+  return response;
 });
 
 export const authExtraReducers = (builder: ActionReducerMapBuilder<UserState>) => {

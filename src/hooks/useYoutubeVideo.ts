@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 
+/* istanbul ignore next */
 const useYoutubeVideo = (elementId: string) => {
   const keepRef = useRef<{
     ytPlayer?: any;

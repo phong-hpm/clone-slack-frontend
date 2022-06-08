@@ -3,7 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useGoogleLogin } from "react-google-login";
 
 // redux store
-import { useDispatch } from "store";
+import { useDispatch, useSelector } from "store";
+
+// redux selectors
+import userSelectors from "store/selectors/user.selector";
 
 // redux actions
 import { checkEmail } from "store/actions/user/checkEmail";
@@ -59,8 +62,10 @@ const Signin = () => {
   const params = useParams();
   const navigate = useNavigate();
 
+  const emailVerifying = useSelector(userSelectors.getEmailVerifying);
+
   const { signIn } = useGoogleLogin({
-    clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID || "",
+    clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID!,
     cookiePolicy: "single_host_origin",
     uxMode: "redirect",
     scope: "profile",
@@ -69,18 +74,23 @@ const Signin = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSignin = () => {
-    dispatch(checkEmail({ email: inputRef.current?.value || "" })).then((res) => {
-      if (res.type === checkEmail.fulfilled.type) {
-        navigate(routePaths.CONFIRM_CODE_PAGE);
-      }
-    });
+    if (!inputRef.current?.value) return;
+    dispatch(checkEmail({ email: inputRef.current?.value }));
   };
+
+  // after [checkEmail] api success, [emailVerifying] will be set
+  // auto navigate after [emailVerifying] has value
+  useEffect(() => {
+    if (!emailVerifying) return;
+    navigate(routePaths.CONFIRM_CODE_PAGE);
+  }, [emailVerifying, navigate]);
 
   // login by Google account hadn't supported yet from server
   useEffect(() => {
     let currentURL = window.location.href;
     const searches = new URLSearchParams(currentURL);
     const idToken = searches.get("id_token");
+    /* istanbul ignore next */
     if (idToken)
       setTimeout(() => {
         alert(`id_token: ${idToken}`);
@@ -121,7 +131,6 @@ const Signin = () => {
             inputRef={inputRef}
             fullWidth
             placeholder="name@work-email.com"
-            defaultValue={"phonghophamminh@gmail.com"}
             InputProps={{ sx: sx.emailInput }}
             sx={sx.emailTextField}
           />

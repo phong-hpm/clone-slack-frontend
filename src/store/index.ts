@@ -30,25 +30,32 @@ import { createLogger } from "redux-logger";
 // types
 import { AppDispatch, RootState } from "store/_types";
 
-export const store = configureStore({
-  reducer: {
-    user: userReducer,
-    teams: teamsReducer,
-    teamUsers: teamUsersReducer,
-    channels: channelsReducer,
-    channelUsers: channelUsersReducer,
-    messages: messagesReducer,
-    socket: socketReducer,
-    globalModal: globalModalReducer,
-  },
-  middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware({ serializableCheck: false }).concat([
-      thunk,
-      createLogger({ collapsed: true, diff: true }),
-      middlewareAfterRegister(messagesHandlers, channelUsersHandlers),
-    ]);
-  },
-});
+const middleware = [thunk, middlewareAfterRegister(messagesHandlers, channelUsersHandlers)];
+
+/* istanbul ignore next */
+if (process.env.NODE_ENV === "development") {
+  middleware.push(createLogger({ collapsed: true, diff: true }));
+}
+
+// this function will support for testing
+export const setupStore = () =>
+  configureStore({
+    reducer: {
+      user: userReducer,
+      teams: teamsReducer,
+      teamUsers: teamUsersReducer,
+      channels: channelsReducer,
+      channelUsers: channelUsersReducer,
+      messages: messagesReducer,
+      socket: socketReducer,
+      globalModal: globalModalReducer,
+    },
+    middleware: (getDefaultMiddleware) => {
+      return getDefaultMiddleware({ serializableCheck: false }).concat(middleware);
+    },
+  });
+
+export const store = setupStore();
 
 setupAxios(store);
 

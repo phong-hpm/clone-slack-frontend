@@ -1,8 +1,11 @@
 import { useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // redux store
-import { useDispatch } from "store";
+import { useDispatch, useSelector } from "store";
+
+// redux selectors
+import userSelectors from "store/selectors/user.selector";
 
 // redux actions
 import { checkEmail } from "store/actions/user/checkEmail";
@@ -19,7 +22,7 @@ import {
 } from "@mui/material";
 
 // utils
-import { color, rgba } from "utils/constants";
+import { color, rgba, routePaths } from "utils/constants";
 
 // icons
 
@@ -50,25 +53,24 @@ const sx: Record<string, SxProps> = {
 };
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const params = useParams();
+
+  const emailVerifying = useSelector(userSelectors.getEmailVerifying);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSignUp = () => {
-    dispatch(checkEmail({ email: inputRef.current?.value || "" }));
+    if (!inputRef.current?.value) return;
+    dispatch(checkEmail({ email: inputRef.current?.value }));
   };
 
-  // login by Google account hadn't supported yet from server
+  // after [checkEmail] api success, [emailVerifying] will be set
+  // auto navigate after [emailVerifying] has value
   useEffect(() => {
-    let currentURL = window.location.href;
-    const searches = new URLSearchParams(currentURL);
-    const idToken = searches.get("id_token");
-    if (idToken)
-      setTimeout(() => {
-        alert(`id_token: ${idToken}`);
-      }, 100);
-  }, [params]);
+    if (!emailVerifying) return;
+    navigate(routePaths.CONFIRM_CODE_PAGE);
+  }, [emailVerifying, navigate]);
 
   return (
     <Box flexGrow={1} display="flex" justifyContent="center" mt={1}>

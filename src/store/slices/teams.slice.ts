@@ -8,7 +8,7 @@ import { TeamsState, TeamType } from "store/slices/_types";
 
 const initialState: TeamsState = {
   isWaiting: true,
-  isLoading: false,
+  isLoading: true,
   list: [],
   selectedId: "",
 };
@@ -20,6 +20,7 @@ export const teamsSlice = createSlice({
     setTeamsList: (state, action: PayloadAction<TeamType[]>) => {
       state.list = action.payload;
       state.isWaiting = false;
+      state.isLoading = false;
     },
     setSelectedTeamId: (state, action: PayloadAction<string>) => {
       state.selectedId = action.payload;
