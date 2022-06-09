@@ -21,6 +21,8 @@ const SideBar: FC<SideBarProps> = ({ open, onClose }) => {
 
   const [isCollapse, setCollapse] = useState(false);
 
+  if (!open) return <></>;
+
   return (
     <Slide direction="left" in={open}>
       <Box

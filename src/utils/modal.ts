@@ -10,17 +10,17 @@ export const computeAnchorPosition = (
   const position = { ...oldPosition };
 
   const { width: anchorWidth, height: anchorHeight } = anchorElement.getBoundingClientRect();
-  const { horizontal = "center", vertical = "top" } = origin || {};
+  const { horizontal, vertical } = origin || {};
 
   // anchor X
-  if (horizontal === "center") position.left += anchorWidth / 2;
-  else if (horizontal === "right") position.left += anchorWidth;
+  if (horizontal === "right") position.left += anchorWidth;
   else if (horizontal === "left") position.left += 0;
+  else position.left += anchorWidth / 2;
 
   // anchor Y
   if (vertical === "center") position.top += anchorHeight / 2;
-  else if (vertical === "top") position.top += 0;
   else if (vertical === "bottom") position.top += anchorHeight;
+  else position.top += 0;
 
   return position;
 };
@@ -34,18 +34,18 @@ export const computeTransformPosition = (
   const position = { ...oldPosition };
 
   const { width: contentWidth, height: contentHeight } = contentElement.getBoundingClientRect();
-  const { horizontal = "center", vertical = "top" } = origin || {};
+  const { horizontal, vertical } = origin || {};
   const { horizontal: horizontalExtra = 0, vertical: verticalExtra = 0 } = extraOrigin || {};
 
   // transform X
-  if (horizontal === "center") position.left -= contentWidth / 2;
-  else if (horizontal === "right") position.left -= contentWidth + horizontalExtra;
+  if (horizontal === "right") position.left -= contentWidth + horizontalExtra;
   else if (horizontal === "left") position.left += horizontalExtra;
+  else position.left -= contentWidth / 2;
 
   // transform Y
   if (vertical === "center") position.top -= contentHeight / 2;
-  else if (vertical === "top") position.top += verticalExtra;
   else if (vertical === "bottom") position.top -= contentHeight + verticalExtra;
+  else position.top += verticalExtra;
 
   return position;
 };

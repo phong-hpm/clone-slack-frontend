@@ -1,5 +1,8 @@
 // we should take thumbnails from blob:url
 // if we pass a network url, it will take so much time to finish
+/* istanbul ignore next */
+// this function require runable [src] to test
+// so we can't test it
 export const createThumbnails = ({
   src,
   blob,

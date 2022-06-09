@@ -22,6 +22,7 @@ const ArchiveChannelModal = () => {
   const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   const handleSubmit = () => {
+    /* istanbul ignore next */
     if (!selectedChannel?.id) return;
     handleClose();
   };

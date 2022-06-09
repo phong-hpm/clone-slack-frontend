@@ -2,7 +2,17 @@ import { FC, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // components
-import { Box, Typography, Link, Button, Menu, MenuItem, Divider, Container } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Link,
+  Button,
+  Menu,
+  MenuItem,
+  Divider,
+  Container,
+  IconButton,
+} from "@mui/material";
 import SideBar from "./SideBar";
 import SlackIcon from "components/SlackIcon";
 import SvgFileIcon from "components/SvgFileIcon";
@@ -88,7 +98,7 @@ const PageHeader: FC<PageHeaderProps> = ({ isFixed: isFixedProp }) => {
                   onMouseLeave={() => setHoverProduct(false)}
                 >
                   <Typography component="span" fontWeight={700}>
-                    Product{" "}
+                    Product
                     <SvgFileIcon icon="chevron-down-black" height={10} style={{ marginLeft: 6 }} />
                   </Typography>
                 </Link>
@@ -113,17 +123,15 @@ const PageHeader: FC<PageHeaderProps> = ({ isFixed: isFixedProp }) => {
 
             {/* right toolbar */}
             <Box display="flex" alignItems="center">
-              <Box p={2} sx={{ cursor: "pointer" }}>
+              <IconButton sx={{ p: 2 }}>
                 <SvgFileIcon icon="search" fontSize={20} />
-              </Box>
-              <Box
-                p={2}
-                mr={-2}
-                sx={{ cursor: "pointer", display: { lg: "none" } }}
+              </IconButton>
+              <IconButton
+                sx={{ p: 2, mr: -2, display: { lg: "none" } }}
                 onClick={() => setShowSideBar(true)}
               >
                 <SvgFileIcon icon="bar" fontSize={20} />
-              </Box>
+              </IconButton>
               <Link
                 underline="hover"
                 color="inherit"

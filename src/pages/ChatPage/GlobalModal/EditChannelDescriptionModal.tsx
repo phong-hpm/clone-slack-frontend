@@ -21,7 +21,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from "components/Modal";
 // utils
 import { color } from "utils/constants";
 
-const EditChanelDescriptionModal = () => {
+const EditChannelDescriptionModal = () => {
   const dispatch = useDispatch();
 
   const isOpen = useSelector(globalModalSelectors.isOpenEditChannelDescriptionModal);
@@ -30,6 +30,7 @@ const EditChanelDescriptionModal = () => {
   const [value, setValue] = useState("");
 
   const handleSubmit = () => {
+    /* istanbul ignore next */
     if (!selectedChannel?.id || !value) return;
     dispatch(emitEditChannelOptionalFields({ id: selectedChannel.id, desc: value }));
     handleClose();
@@ -79,4 +80,4 @@ const EditChanelDescriptionModal = () => {
   );
 };
 
-export default EditChanelDescriptionModal;
+export default EditChannelDescriptionModal;

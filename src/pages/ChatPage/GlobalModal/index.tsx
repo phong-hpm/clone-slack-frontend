@@ -8,9 +8,9 @@ import globalModalSelectors from "store/selectors/globalModal.selector";
 import AddUserChannelModal from "./AddUserChannelModal";
 import CreateChannelModal from "./CreateChannelModal";
 import ChannelDetailModal from "./ChannelDetailModal";
-import EditChanelNameModal from "./EditChanelNameModal";
-import EditChanelTopicModal from "./EditChanelTopicModal";
-import EditChanelDescriptionModal from "./EditChanelDescriptionModal";
+import EditChannelNameModal from "./EditChannelNameModal";
+import EditChannelTopicModal from "./EditChannelTopicModal";
+import EditChannelDescriptionModal from "./EditChannelDescriptionModal";
 import ArchiveChannelModal from "./ArchiveChannelModal";
 
 /**
@@ -27,9 +27,9 @@ const GlobalModals = () => {
       {globalModalState.isOpenAddUserChannel && <AddUserChannelModal />}
       {globalModalState.isOpenCreateChannel && <CreateChannelModal />}
       {globalModalState.isOpenChannelDetail && <ChannelDetailModal />}
-      {globalModalState.isOpenEditChannelNameModal && <EditChanelNameModal />}
-      {globalModalState.isOpenEditChannelTopicModal && <EditChanelTopicModal />}
-      {globalModalState.isOpenEditChannelDescriptionModal && <EditChanelDescriptionModal />}
+      {globalModalState.isOpenEditChannelNameModal && <EditChannelNameModal />}
+      {globalModalState.isOpenEditChannelTopicModal && <EditChannelTopicModal />}
+      {globalModalState.isOpenEditChannelDescriptionModal && <EditChannelDescriptionModal />}
       {globalModalState.isOpenArchiveChannelModal && <ArchiveChannelModal />}
     </>
   );

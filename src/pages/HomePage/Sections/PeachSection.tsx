@@ -20,7 +20,6 @@ import mapMarketingSources from "utils/mapMarketingSources";
 // constants
 import homepageConstants from "pages/HomePage/_homepage.constants";
 
-/* istanbul ignore next */
 const PeachSection = () => {
   const navigate = useNavigate();
 

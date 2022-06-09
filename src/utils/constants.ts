@@ -6,6 +6,8 @@ export const apiUrl = {
   auth: {
     checkEmail: "auth/check-email",
     confirmEmailCode: "auth/confirm-email-code",
+    refreshToken: "auth/refresh-token",
+    user: "auth/user",
   },
 };
 

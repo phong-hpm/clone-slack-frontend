@@ -16,8 +16,11 @@ import { Box, Button, Divider, Link, SxProps, TextField, Typography } from "@mui
 import SlackIcon from "components/SlackIcon";
 import SvgFileIcon from "components/SvgFileIcon";
 
+// hooks
+import useKeyDown from "hooks/keyboard/useKeyDown";
+
 // utils
-import { color, rgba, routePaths } from "utils/constants";
+import { color, eventKeys, rgba, routePaths } from "utils/constants";
 
 const sx: Record<string, SxProps> = {
   loginGoogleBtn: {
@@ -73,10 +76,10 @@ const Signin = () => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleSignin = () => {
+  const handleSignin = useKeyDown(eventKeys.KEY_ENTER, () => {
     if (!inputRef.current?.value) return;
     dispatch(checkEmail({ email: inputRef.current?.value }));
-  };
+  });
 
   // after [checkEmail] api success, [emailVerifying] will be set
   // auto navigate after [emailVerifying] has value

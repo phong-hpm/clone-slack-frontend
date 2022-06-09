@@ -39,12 +39,13 @@ const useSocket = () => {
     if (!isAuth || !namespace) return;
 
     // setup socket
-    socketRef.current = io(`ws://localhost:8000/${namespace}`, {
+    socketRef.current = io(`ws://${process.env.REACT_APP_SERVER_DOMAIN}/${namespace}`, {
       autoConnect: false,
       auth: { userId: user.id, email: user.email, name: user.name, accessToken },
     });
 
     // logger
+    /* istanbul ignore next */
     if (process.env.NODE_ENV === "development") {
       socketRef.current.onAny((event, ...args) => {
         // console.group(`%c${event}`, "color: #bada55");

@@ -34,9 +34,7 @@ export const ChatPage: FC = () => {
 
   // check teamId param, if not match, navigate to teams-page
   useEffect(() => {
-    if (!params.teamId) return;
-
-    if (!teamIdRegExp.test(params.teamId)) {
+    if (!params.teamId || !teamIdRegExp.test(params.teamId)) {
       navigate(routePaths.TEAM_PAGE);
     } else {
       if (keepRef.current.teamId !== params.teamId) {

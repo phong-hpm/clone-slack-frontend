@@ -50,6 +50,23 @@ test("Click signin while input is empty", async () => {
   mockCheckEmail.mockRestore();
 });
 
+test("Fill input email and press Enter, response OK", async () => {
+  const mockNavigate = useNavigate();
+  mockAxios
+    .onPost(apiUrl.auth.checkEmail)
+    .reply(({ data }) => [200, { ok: true, email: JSON.parse(data).postData.email }]);
+
+  customRender(<Signin />);
+
+  const email = "phonghophamminh@gmail.com";
+  await fillEmailAndClick(email);
+
+  // Press Enter
+  await waitFor(() => userEvent.keyboard("{enter}"));
+  expect(store.getState().user.emailVerifying).toEqual(email);
+  expect(mockNavigate).toBeCalledWith(routePaths.CONFIRM_CODE_PAGE);
+});
+
 test("Fill input email and click signin, response OK", async () => {
   const mockNavigate = useNavigate();
   mockAxios

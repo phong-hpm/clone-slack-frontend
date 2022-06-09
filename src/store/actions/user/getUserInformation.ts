@@ -2,7 +2,7 @@ import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 
 // utils
 import axios from "utils/axios";
-import { stateDefault } from "utils/constants";
+import { apiUrl, stateDefault } from "utils/constants";
 
 // types
 import { UserState, TeamsState } from "store/slices/_types";
@@ -12,7 +12,7 @@ import { AxiosResponseCustom } from "store/actions/_types";
 export const getUserInformation = createAsyncThunk<
   AxiosResponseCustom<GetUserInformationResponseData>
 >("auth/getUserInformation", async () => {
-  const response = await axios.get("auth/user");
+  const response = await axios.get(apiUrl.auth.user);
   return response;
 });
 

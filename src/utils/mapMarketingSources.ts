@@ -3,7 +3,7 @@ const videoExtensions = ["mp4"];
 const mapMarketingSources = (file: string, page = "homepage") => {
   const [fileName, extension] = file.split(".");
   const type = videoExtensions.includes(extension) ? "video" : "image";
-  const url = `http://localhost:8000/files/marketing/${page}/${type}/${fileName}`;
+  const url = `${process.env.REACT_APP_SERVER_BASE_URL}/files/marketing/${page}/${type}/${fileName}`;
 
   const src = `${url}.${extension}`;
   if (type === "video") return { src };

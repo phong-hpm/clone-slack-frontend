@@ -2,6 +2,7 @@ import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 
 // utils
 import axios from "utils/axios";
+import { apiUrl } from "utils/constants";
 
 // types
 import { RootState } from "store/_types";
@@ -14,7 +15,7 @@ export const renewAccessToken = createAsyncThunk<AxiosResponseCustom<RenewAccess
   async (_, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const postData = { refreshToken: state.user.refreshToken };
-    const response = await axios.post("auth/refresh-token", { postData });
+    const response = await axios.post(apiUrl.auth.refreshToken, { postData });
     return response;
   }
 );

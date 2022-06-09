@@ -16,4 +16,5 @@ export const getPlatform = () => {
   if (/(iPhone|iPod|iPad)/i.test(platform)) return platformSortName.IOS;
   if (/Win/i.test(platform)) return platformSortName.WINDOW;
   if (/android/i.test(platform)) return platformSortName.ANDROID;
+  return "";
 };

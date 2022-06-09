@@ -29,7 +29,9 @@ import ModalFooter from "./ModalFooter";
 import useKeyboard from "hooks/keyboard/useKeyboard";
 import { eventKeys } from "utils/constants";
 
-if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#root");
+/* istanbul ignore next */
+if (process.env.NODE_ENV === "test") ReactModal.setAppElement("body");
+else ReactModal.setAppElement("#root");
 
 export interface ModalProps extends ReactModalProps {
   isOpen: boolean;

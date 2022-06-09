@@ -32,7 +32,7 @@ export const addNecessaryFields = (delta: Delta, channelUserList: UserType[], id
   const ops = delta.ops?.map((op) => {
     // mention operation
     if (op?.insert?.mention?.id) {
-      const mentionId = op?.insert?.mention.id || "";
+      const mentionId = op.insert.mention.id;
 
       let user: UserType | undefined;
       if (notifyMentions[mentionId]) user = notifyMentions[mentionId];

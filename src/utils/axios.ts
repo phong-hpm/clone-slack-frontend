@@ -1,10 +1,14 @@
 import axios from "axios";
 import { AnyAction, EnhancedStore, MiddlewareArray } from "@reduxjs/toolkit";
 
+// redux slices
 import { setTokens } from "store/slices/user.slice";
 
+// utils
+import { apiUrl } from "./constants";
+
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: process.env.REACT_APP_SERVER_BASE_URL,
   headers: {
     "content-type": "application/json",
   },
@@ -25,52 +29,52 @@ export const setupAxios = (store: EnhancedStore<any, AnyAction, MiddlewareArray<
       }
       return config;
     },
+    /* istanbul ignore next */
     (error) => Promise.reject(error)
   );
 
   axiosInstance.interceptors.response.use(
     (res) => res,
     async (error) => {
-      const {
-        config,
-        response: { status },
-      } = error;
-      const originalRequest = config;
-
+      const status = error?.response?.status;
+      const originalRequest = error?.config;
       // handle error 401
-      if (status === 401 && retryTimes) {
+      if (status === 401) {
         if (isRefreshing) {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve) => {
             queues.push(() => {
               resolve(axiosInstance(originalRequest));
             });
           });
         }
 
-        retryTimes--;
-        isRefreshing = true;
-        return new Promise((resolve, reject) => {
-          const refreshToken = localStorage.getItem("refreshToken") || "";
-          axiosInstance
-            .post("/auth/refresh-token", { postData: { refreshToken } })
-            .then(({ data }) => {
-              originalRequest.headers["x-access-token"] = data.accessToken;
-              // update access token to localstorage
-              localStorage.setItem("accessToken", data.accessToken);
-              console.log("data", data);
-              // update access token to redux
-              store.dispatch(setTokens({ accessToken: data.accessToken }));
-              resolve(axiosInstance(originalRequest));
-            })
-            .catch(() => {
-              localStorage.removeItem("accessToken");
-              store.dispatch(setTokens({ refreshToken: "", accessToken: "" }));
-            })
-            .then(() => {
-              onRefreshed();
-              isRefreshing = false;
-            });
-        });
+        // prevent getting new accessToken multiple times
+        if (retryTimes) {
+          retryTimes--;
+          isRefreshing = true;
+          return new Promise((resolve, reject) => {
+            const refreshToken = localStorage.getItem("refreshToken") || "";
+            axiosInstance
+              .post(apiUrl.auth.refreshToken, { postData: { refreshToken } })
+              .then(({ data }) => {
+                originalRequest.headers["x-access-token"] = data.accessToken;
+                // update access token to localstorage
+                localStorage.setItem("accessToken", data.accessToken);
+                // update access token to redux
+                store.dispatch(setTokens({ accessToken: data.accessToken }));
+                resolve(axiosInstance(originalRequest));
+              })
+              .catch((refreshTokenError) => {
+                localStorage.removeItem("accessToken");
+                store.dispatch(setTokens({ refreshToken: "", accessToken: "" }));
+                reject(refreshTokenError);
+              })
+              .then(() => {
+                onRefreshed();
+                isRefreshing = false;
+              });
+          });
+        }
       }
 
       return Promise.reject(error);

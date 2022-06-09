@@ -37,7 +37,8 @@ const AllTheProviders: FC = ({ children }) => {
 };
 
 const customRender = (ui: ReactElement, options?: Omit<RenderOptions, "wrapper">) => {
-  return render(ui, { wrapper: AllTheProviders, ...options });
+  const wrapper = render(ui, { wrapper: AllTheProviders, ...options });
+  return wrapper;
 };
 
 export * from "@testing-library/react";

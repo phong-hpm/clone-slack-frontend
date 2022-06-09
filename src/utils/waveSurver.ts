@@ -21,28 +21,6 @@ export const buildProgressTime = (time: number) => {
   return `${minutes}:${String(seconds).padStart(2, "0")}`;
 };
 
-export const minimizePeaks = (peaks: number[], width: number) => {
-  const result: number[] = [];
-
-  let index = 0;
-  const range = Math.ceil((peaks.length / width) * 2);
-  let curRange = 0;
-  let curVal = 0;
-  while (peaks[index]) {
-    if (curRange === range) {
-      result.push(curVal);
-      curRange = 0;
-      curVal = 0;
-    } else {
-      curVal += peaks[index];
-      curRange++;
-    }
-    index++;
-  }
-
-  return result;
-};
-
 export const buildPeaks = (peaks: number[], barMinHeight = 0.15) => {
   if (!peaks.length) return [];
 
@@ -70,6 +48,6 @@ export const drawBars = (waveSurfer: WaveSurfer, peaks: number[]) => {
 
 export const updateBarHeight = (waveSurfer: WaveSurfer, barMinHeight: number) => {
   let splitPeaks = [...(waveSurfer.backend as any).splitPeaks[0]];
-  const peaks = buildPeaks(splitPeaks || [], barMinHeight);
+  const peaks = buildPeaks(splitPeaks, barMinHeight);
   drawBars(waveSurfer, peaks);
 };

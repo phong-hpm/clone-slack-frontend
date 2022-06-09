@@ -25,7 +25,7 @@ import SlackIcon from "components/SlackIcon";
 // utils
 import { color } from "utils/constants";
 
-const EditChanelNameModal = () => {
+const EditChannelNameModal = () => {
   const dispatch = useDispatch();
 
   const isOpen = useSelector(globalModalSelectors.isOpenEditChannelNameModal);
@@ -49,6 +49,7 @@ const EditChanelNameModal = () => {
   };
 
   const handleSubmit = () => {
+    /* istanbul ignore next */
     if (!selectedChannel?.id || !value) return;
     if (selectedChannel?.type === "group_message") {
       dispatch(emitChangeToPrivatechannel({ id: selectedChannel.id, name: value }));
@@ -166,4 +167,4 @@ const EditChanelNameModal = () => {
   );
 };
 
-export default EditChanelNameModal;
+export default EditChannelNameModal;

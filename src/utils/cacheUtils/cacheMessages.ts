@@ -10,6 +10,7 @@ export const getCachedMessages = (channelId: string) => {
     if (Array.isArray(data.messages)) result.messages = data.messages;
   } catch {
   } finally {
+    result.channelId = channelId;
     return result;
   }
 };
