@@ -28,7 +28,7 @@ const TranscriptModal: FC<TranscriptModalProps> = ({
   ...props
 }) => {
   const handleClickScript = (currentTime: number) => {
-    if (onClickScript) onClickScript(currentTime);
+    onClickScript?.(currentTime);
   };
 
   return (

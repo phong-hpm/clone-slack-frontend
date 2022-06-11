@@ -10,7 +10,7 @@ import defaultAvatar from "assets/images/default_avatar.png";
 import { rgba, color } from "utils/constants";
 
 export interface UserAvatarLengthProps extends AvatarProps {
-  length?: number;
+  length: number;
 }
 
 const UserAvatarLength: FC<UserAvatarLengthProps> = ({ length, ...props }) => {

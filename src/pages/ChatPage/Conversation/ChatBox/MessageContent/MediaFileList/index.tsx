@@ -22,7 +22,9 @@ export interface MediaFileListProps {
 }
 
 const MediaFileList: FC<MediaFileListProps> = ({ messageId, messageUserId, files }) => {
-  const userOwner = useSelector(channelUsersSelectors.getChannelUserById(messageUserId));
+  const userOwner = useSelector((state) =>
+    channelUsersSelectors.getChannelUserById(state, messageUserId)
+  );
 
   const [isCollapsed, setCollapsed] = useState(false);
 

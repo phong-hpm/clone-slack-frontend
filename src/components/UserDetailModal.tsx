@@ -42,10 +42,10 @@ const UserDetailModal: FC<UserDetailModalProps> = ({ user, ...props }) => {
 
       <ModalFooter>
         <Box display="flex" justifyContent="end">
-          <Button variant="outlined" sx={{ mr: 2 }} onClick={() => {}}>
+          <Button variant="outlined" sx={{ mr: 2 }}>
             Set Status
           </Button>
-          <Button variant="contained" color="error" size="medium" onClick={() => {}}>
+          <Button variant="contained" color="error" size="medium">
             Edit Profile
           </Button>
         </Box>

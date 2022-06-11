@@ -50,7 +50,7 @@ const FullScreenModal: FC<FullScreenModalProps> = ({
     onAfterOpen && onAfterOpen(containerRef.current);
 
     if (containerRef.current) {
-      // useing appendChild will help [video] can play continously
+      // using appendChild will help [video] can play continously
       if (playerInstance.video.containerEl) {
         containerRef.current.appendChild(playerInstance.video.containerEl);
       }
@@ -65,7 +65,7 @@ const FullScreenModal: FC<FullScreenModalProps> = ({
   };
 
   const handleClose = () => {
-    onClose();
+    onClose?.();
     updateState({ isFullScreen: false });
   };
 
@@ -155,7 +155,7 @@ const FullScreenModal: FC<FullScreenModalProps> = ({
               </Box>
 
               <Box hidden={tabValue !== "thread"} px={2.5} py={2}>
-                <Box>Thread</Box>
+                <Box>Thread tab</Box>
               </Box>
               <Box
                 hidden={tabValue !== "transcript"}
@@ -163,7 +163,7 @@ const FullScreenModal: FC<FullScreenModalProps> = ({
                 py={2}
                 overflow={["visible", "auto"]}
               >
-                {(state.scripts || []).map((script) => {
+                {state.scripts.map((script) => {
                   return (
                     <Box key={script.currentTime} mb={2}>
                       <Link

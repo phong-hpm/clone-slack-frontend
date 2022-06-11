@@ -14,9 +14,7 @@ const ComponentRenderer = ({ keys, onEnter }: { keys: string | string[]; onEnter
 
 test("test press enter when callback is null", () => {
   customRender(
-    <ComponentRenderer keys={eventKeys.KEY_ENTER} onEnter={null as unknown as () => void} />,
-    {},
-    false
+    <ComponentRenderer keys={eventKeys.KEY_ENTER} onEnter={null as unknown as () => void} />
   );
 
   userEvent.keyboard("${enter}");
@@ -29,23 +27,21 @@ test("test listen single key", () => {
 
   expect(mockEnter).not.toBeCalled();
   userEvent.keyboard("${enter}");
-  expect(mockEnter).toBeCalled();
+  expect(mockEnter).toBeCalledWith();
 });
 
 test("test listen multiple key", () => {
   const mockEnter = jest.fn();
   customRender(
-    <ComponentRenderer keys={[eventKeys.KEY_ENTER, eventKeys.KEY_BACKSPACE]} onEnter={mockEnter} />,
-    {},
-    false
+    <ComponentRenderer keys={[eventKeys.KEY_ENTER, eventKeys.KEY_BACKSPACE]} onEnter={mockEnter} />
   );
 
   expect(mockEnter).not.toBeCalled();
   userEvent.keyboard("${enter}");
-  expect(mockEnter).toBeCalled();
+  expect(mockEnter).toBeCalledWith();
   mockEnter.mockClear();
 
   expect(mockEnter).not.toBeCalled();
   userEvent.keyboard("${backspace}");
-  expect(mockEnter).toBeCalled();
+  expect(mockEnter).toBeCalledWith();
 });

@@ -28,7 +28,9 @@ const DeleteMessageModal: FC<DeleteMessageModalProps> = ({
   onSubmit,
   ...props
 }) => {
-  const userOwner = useSelector(channelUsersSelectors.getChannelUserById(message.user));
+  const userOwner = useSelector((state) =>
+    channelUsersSelectors.getChannelUserById(state, message.user)
+  );
 
   const handleSubmit = () => {
     onClose && onClose();

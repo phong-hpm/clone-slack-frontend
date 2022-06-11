@@ -28,11 +28,10 @@ const Video = forwardRef<VideoInstance, VideoProps>(
       containerEl: containerRef.current!,
     }));
 
-    const handleCanPlay = () => {
+    const handleCanPlay = (event: React.SyntheticEvent<HTMLVideoElement>) => {
       setLoading(false);
 
-      if (!videoRef.current) return;
-      const { videoWidth = 1, videoHeight = 0 } = videoRef.current;
+      const { videoWidth, videoHeight } = event.target as HTMLVideoElement;
       setRatio(Math.floor((videoHeight / videoWidth) * 10e6) / 10e6);
     };
 

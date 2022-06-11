@@ -17,14 +17,13 @@ const EmojiPicker: FC<EmojiPickerProps> = (props) => {
   useEffect(() => {
     const element = ref.current;
 
-    if (!element) return;
     const picker = new Picker({ ...props, ref } as any) as unknown as Node;
-    element.appendChild(picker);
+    element?.appendChild(picker);
 
     return () => {
       // props can be changed, and new picker will be appened
       // we have to remove current Emoji Picker before add a new one
-      element.removeChild(picker);
+      element?.removeChild(picker);
     };
   }, [props]);
 

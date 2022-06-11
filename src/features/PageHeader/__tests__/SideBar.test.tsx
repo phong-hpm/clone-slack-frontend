@@ -83,6 +83,6 @@ describe("Test actions", () => {
 
     // bar button
     userEvent.click(screen.getAllByRole("button")[0]);
-    expect(mockClose).toBeCalled();
+    expect(mockClose).toBeCalledWith(expect.objectContaining({ type: "click" }));
   });
 });

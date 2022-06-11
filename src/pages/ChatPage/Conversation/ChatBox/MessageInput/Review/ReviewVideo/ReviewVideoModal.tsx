@@ -14,7 +14,7 @@ import { buildProgressTime } from "utils/waveSurver";
 import { MessageFileType } from "store/slices/_types";
 import { VideoInstance } from "components/Video/_types";
 import { createThumbnails } from "utils/videoRecorder";
-import LoadingWrapper from "components/Loading";
+import LoadingWrapper from "components/LoadingWrapper";
 
 export interface ReviewVideoModalProps extends ModalProps {
   file: MessageFileType;

@@ -21,15 +21,14 @@ const getDownloadMediaUrl = (url?: string) => {
   return `${origin}${paths.join("/")}`;
 };
 
-const getLastPathname = (url?: string) => {
-  if (!url) return "";
+const getLastPathname = (url: string) => {
   const { pathname } = new URL(url);
   const paths = pathname.split("/");
   return paths[paths.length - 1];
 };
 
 const MoreMenu: FC<MoreMenuProps> = ({
-  url,
+  url = "",
   type,
   onClickDelete,
   onClickEditThumbnail,
@@ -40,13 +39,12 @@ const MoreMenu: FC<MoreMenuProps> = ({
     if (!url) return;
     const anchorEl = document.createElement("a");
     anchorEl.download = getLastPathname(url);
-    console.log(anchorEl.download);
     anchorEl.href = getDownloadMediaUrl(url);
     anchorEl.click();
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(url || "");
+    navigator.clipboard.writeText(url);
   };
 
   return (
@@ -58,18 +56,18 @@ const MoreMenu: FC<MoreMenuProps> = ({
       onClick={() => onClose && onClose({}, "backdropClick")}
       {...props}
     >
-      {type === "video" && <MenuItem onClick={() => {}}>Open in thread</MenuItem>}
+      {type === "video" && <MenuItem>Open in thread</MenuItem>}
       <MenuItem onClick={() => window.open(getDownloadMediaUrl(url))}>Open in new window</MenuItem>
-      {type === "video" && <MenuItem onClick={() => {}}>View details</MenuItem>}
+      {type === "video" && <MenuItem>View details</MenuItem>}
       {type === "audio" && <MenuItem onClick={handleDownload}>Download</MenuItem>}
 
       <Divider />
 
       {type === "video" && <MenuItem onClick={handleDownload}>Download</MenuItem>}
-      <MenuItem onClick={() => {}}>Share clip...</MenuItem>
+      <MenuItem>Share clip...</MenuItem>
       <MenuItem onClick={handleCopy}>Copy link to {type} clip</MenuItem>
-      {type === "audio" && <MenuItem onClick={() => {}}>View details</MenuItem>}
-      <MenuItem onClick={() => {}}>Add to saved items</MenuItem>
+      {type === "audio" && <MenuItem>View details</MenuItem>}
+      <MenuItem>Add to saved items</MenuItem>
       {type === "video" && <MenuItem onClick={onClickEditThumbnail}>Edit thumbnail...</MenuItem>}
 
       <Divider />

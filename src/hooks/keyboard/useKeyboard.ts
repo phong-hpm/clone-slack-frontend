@@ -63,8 +63,9 @@ const useKeyboard: UseKeyboardType = ({ target, keyDownListener, keyUpListener }
 
   // add [keydown] listener to [target.element]
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) =>
+    const onKeyDown = (event: KeyboardEvent) => {
       handleKeyDown(event as unknown as React.KeyboardEvent);
+    };
 
     if (target && "keyDown" in target) {
       if (target?.element && target?.keyDown) {
@@ -83,7 +84,7 @@ const useKeyboard: UseKeyboardType = ({ target, keyDownListener, keyUpListener }
 
     if (target && "keyUp" in target) {
       if (target?.element && target?.keyUp) {
-        target.element.addEventListener("keydown", onKeyUp);
+        target.element.addEventListener("keyup", onKeyUp);
       }
     }
 

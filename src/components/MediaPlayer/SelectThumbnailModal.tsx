@@ -31,7 +31,7 @@ const SelectThumnailModal: FC<SelectThumnailModalProps> = ({
   const [thumbnails, setThumbnails] = useState<string[]>([]);
 
   const handleSelect = () => {
-    onSelect && onSelect(selected || "");
+    selected && onSelect && onSelect(selected);
     onClose();
   };
 

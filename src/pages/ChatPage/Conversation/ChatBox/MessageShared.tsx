@@ -33,7 +33,9 @@ const MessageShared: FC<MessageSharedProps> = ({
   message,
   userOwner: userOwnerProp,
 }) => {
-  const userOwner = useSelector(channelUsersSelectors.getChannelUserById(message.user));
+  const userOwner = useSelector((state) =>
+    channelUsersSelectors.getChannelUserById(state, message.user)
+  );
 
   return (
     <Box position="relative" px={2}>

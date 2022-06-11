@@ -10,7 +10,6 @@ export interface ModalHeaderProps extends BoxProps {
   isBorder?: boolean;
   // this prop will be set by [Modal] component
   isUncontrolledBorder?: boolean;
-  children?: string | JSX.Element | JSX.Element[] | boolean;
 }
 
 const ModalHeader: FC<ModalHeaderProps> = ({

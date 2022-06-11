@@ -41,7 +41,6 @@
     "react-window-infinite-loader": "^1.0.7",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.1",
-    "reselect": "^4.1.5",
     "shortid": "^2.2.16",
     "socket.io-client": "^4.4.1",
     "swiper": "^8.2.2",
@@ -95,14 +94,18 @@
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
       "!src/*/constants.ts",
-      "!src/**/*/*.constants.tsx"
+      "!src/**/*/*.constants.tsx",
+      "!src/App.tsx",
+      "!src/index.tsx",
+      "!src/reportWebVitals.ts",
+      "!src/service-worker.ts",
+      "!src/serviceWorkerRegistration.ts",
+      "!src/store/middlewareRegister.ts"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/tests/",
-      "/muiThemes/",
-      "/utils/cacheUtils.ts",
-      "/store/middlewareRegister.ts"
+      "/muiThemes/"
     ],
     "coverageThreshold": {
       "global": {

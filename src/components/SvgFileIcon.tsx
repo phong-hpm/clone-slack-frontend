@@ -9,14 +9,8 @@ const SvgFileIcon: FC<SvgFileIconProps> = ({ icon, ...props }) => {
   const [instance, setInstace] = useState<{ ReactComponent: FC<SVGProps<SVGSVGElement>> }>();
 
   useEffect(() => {
-    if (!icon) return;
-
-    try {
-      if (icons[icon].ReactComponent) {
-        setInstace(icons[icon]);
-      }
-    } catch {
-      console.error(`icons ${icon} didn't exist`);
+    if (icons?.[icon]?.ReactComponent) {
+      setInstace(icons[icon]);
     }
   }, [icon]);
 

@@ -3,7 +3,7 @@ import { Delta } from "quill";
 import { TranScriptType } from "components/MediaPlayer/VideoPlayer/_types";
 
 // modal.slice.tsx -----------------
-export interface ModalState {
+export interface GlobalModalState {
   isOpenAddUserChannel: boolean;
   isOpenCreateChannel: boolean;
   isOpenChannelDetail: boolean;

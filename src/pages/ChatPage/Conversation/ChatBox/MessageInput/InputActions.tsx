@@ -43,7 +43,7 @@ const InputActions: FC<InputActionsProps> = ({
   onCancel,
   onSend,
 }) => {
-  const { appState, setFocus } = useContext(InputContext);
+  const { quillReact, appState, setFocus } = useContext(InputContext);
 
   const anchorRef = useRef<HTMLDivElement>();
   const microButtonRef = useRef<HTMLButtonElement>(null);
@@ -85,7 +85,15 @@ const InputActions: FC<InputActionsProps> = ({
     }
 
     if (configActions.emoji) {
-      actions.push({ icon: "emoji", action: () => setShowEmojiModal(true), ref: emojiButtonRef });
+      actions.push({
+        ref: emojiButtonRef,
+        icon: "emoji",
+        action: () => {
+          setShowEmojiModal(true);
+          // blur quill to help EditLink input can auto focus
+          quillReact?.getEditor().blur();
+        },
+      });
     }
 
     if (configActions.mention) {

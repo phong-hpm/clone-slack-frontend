@@ -1,27 +1,14 @@
-import { createSelector } from "reselect";
-
 // types
 import { RootState } from "store/_types";
 
-const getUserState = (state: RootState) => state.user;
-
-const isAuth = createSelector([getUserState], (auth) => auth.isAuth);
-const isLoading = createSelector([getUserState], (auth) => auth.isLoading);
-
-const getAccessToken = createSelector([getUserState], (auth) => auth.accessToken);
-const getRefreshToken = createSelector([getUserState], (auth) => auth.refreshToken);
-const getEmailVerifying = createSelector([getUserState], (auth) => auth.emailVerifying);
-const getUser = createSelector([getUserState], (auth) => auth.user);
-const getUserId = createSelector([getUser], (user) => user.id);
-
 const userSelectors = {
-  isAuth,
-  isLoading,
-  getAccessToken,
-  getRefreshToken,
-  getEmailVerifying,
-  getUser,
-  getUserId,
+  isAuth: (state: RootState) => state.user.isAuth,
+  isLoading: (state: RootState) => state.user.isLoading,
+  getAccessToken: (state: RootState) => state.user.accessToken,
+  getRefreshToken: (state: RootState) => state.user.refreshToken,
+  getEmailVerifying: (state: RootState) => state.user.emailVerifying,
+  getUser: (state: RootState) => state.user.user,
+  getUserId: (state: RootState) => state.user.user.id,
 };
 
 export default userSelectors;

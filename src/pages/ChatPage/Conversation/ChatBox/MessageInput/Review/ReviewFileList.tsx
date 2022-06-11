@@ -19,7 +19,6 @@ const UploadingFileList: FC<UploadingFileListProps> = () => {
         <Box key={file.id} mr={0.5}>
           {file.type === "audio" ? (
             <ReviewAudioCard
-              isRemove
               height={34}
               width={143}
               data={{ src: file.url, duration: file.duration, wavePeaks: file.wavePeaks }}

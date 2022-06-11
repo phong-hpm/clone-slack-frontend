@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // types
-import { ModalState } from "store/slices/_types";
+import { GlobalModalState } from "store/slices/_types";
 
-const initialState: ModalState = {
+const initialState: GlobalModalState = {
   isOpenAddUserChannel: false,
   isOpenCreateChannel: false,
   isOpenChannelDetail: false,

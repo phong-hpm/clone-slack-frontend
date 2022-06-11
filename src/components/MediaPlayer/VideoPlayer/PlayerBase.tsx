@@ -67,9 +67,10 @@ const PlayerBase = forwardRef<PlayerBaseInstance, PlayerBaseProps>(
     };
 
     const handleChangeSpeed = (value: string) => {
-      if (!videoInstanceRef.current.videoEl) return;
-      updateState({ speed: value });
-      videoInstanceRef.current.videoEl.playbackRate = Number(value);
+      if (videoInstanceRef.current.videoEl) {
+        updateState({ speed: value });
+        videoInstanceRef.current.videoEl.playbackRate = Number(value);
+      }
     };
 
     const handlePlayPause = () => {

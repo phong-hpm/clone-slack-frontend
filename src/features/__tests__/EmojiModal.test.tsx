@@ -38,6 +38,6 @@ describe("Test actions", () => {
 
     userEvent.click(screen.getByTestId("trigger-emoji-select"));
     expect(mockEmojiSelect).toBeCalledWith({ id: "emojiId" });
-    expect(mockClose).toBeCalled();
+    expect(mockClose).toBeCalledWith();
   });
 });

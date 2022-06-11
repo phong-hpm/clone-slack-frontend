@@ -23,20 +23,12 @@ import { AudioPlayerDataType } from "./_types";
 const startLoadPercent = 1;
 
 export interface AudioPlayerProps extends AudioWaveSurferProps {
-  isRemove?: boolean;
   isControls?: boolean;
   onDelete?: () => void;
   data: AudioPlayerDataType;
 }
 
-const AudioPlayer: FC<AudioPlayerProps> = ({
-  isRemove,
-  isControls,
-  data,
-  onDelete,
-  onCreated,
-  ...props
-}) => {
+const AudioPlayer: FC<AudioPlayerProps> = ({ isControls, data, onDelete, onCreated, ...props }) => {
   const moreButtonRef = useRef<HTMLButtonElement>(null);
 
   const [isShowMoreMenu, setShowMoreMenu] = useState(false);
@@ -55,19 +47,17 @@ const AudioPlayer: FC<AudioPlayerProps> = ({
   );
 
   const handlePlay = () => {
-    if (!waveSurfer || !data.src) return;
-    // audio is loading
-    if (isPlaying && loadPercent < 100) return;
+    if (waveSurfer && data.src) {
+      // audio have not loaded yet
+      if (loadPercent === startLoadPercent) waveSurfer.load(data.src, data.wavePeaks);
 
-    // audio have not loaded yet
-    if (loadPercent === startLoadPercent) waveSurfer.load(data.src, data.wavePeaks);
-
-    if (isPlaying) {
-      setPlaying(false);
-      waveSurfer.pause();
-    } else {
-      setPlaying(true);
-      waveSurfer.play();
+      if (isPlaying) {
+        setPlaying(false);
+        waveSurfer.pause();
+      } else {
+        setPlaying(true);
+        waveSurfer.play();
+      }
     }
   };
 
@@ -93,7 +83,7 @@ const AudioPlayer: FC<AudioPlayerProps> = ({
       <Box position="relative">
         {isPlaying && loadPercent < 100 && (
           <Box position="absolute" top={-3} left={-3}>
-            <CircularProgress variant="determinate" value={loadPercent || startLoadPercent} />
+            <CircularProgress variant="determinate" value={loadPercent} />
           </Box>
         )}
 

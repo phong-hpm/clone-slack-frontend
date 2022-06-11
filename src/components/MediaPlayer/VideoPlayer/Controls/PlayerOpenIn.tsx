@@ -10,7 +10,7 @@ export interface PlayerOpenInProps {}
 const PlayerOpenIn: FC<PlayerOpenInProps> = () => {
   return (
     <Tooltip title="Open in...">
-      <IconButtonCustom onClick={() => {}}>
+      <IconButtonCustom>
         <SlackIcon icon="new-window" />
       </IconButtonCustom>
     </Tooltip>
