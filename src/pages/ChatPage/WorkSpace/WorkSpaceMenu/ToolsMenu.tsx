@@ -8,10 +8,10 @@ export interface ToolsMenuProps {}
 const ToolsMenu: FC<ToolsMenuProps> = () => {
   return (
     <List component="div" disablePadding>
-      <MenuItem onClick={() => {}}>
+      <MenuItem>
         <Typography>Workflow builder</Typography>
       </MenuItem>
-      <MenuItem onClick={() => {}}>
+      <MenuItem>
         <Typography>Analytics</Typography>
       </MenuItem>
     </List>

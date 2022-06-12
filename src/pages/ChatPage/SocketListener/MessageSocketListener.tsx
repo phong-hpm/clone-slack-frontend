@@ -1,4 +1,4 @@
-import { createContext, FC, useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 // redux store
@@ -16,6 +16,7 @@ import {
   pushMoreMessagesList,
 } from "store/slices/messages.slice";
 import { setMessageSocket } from "store/slices/socket.slice";
+import { setSelectedChannelId } from "store/slices/channels.slice";
 
 // hooks
 import useSocket from "hooks/useSocket";
@@ -33,17 +34,8 @@ import {
   ShareMessageToChannelListener,
   UploadMessageListener,
 } from "./_types";
-import { setSelectedChannelId } from "store/slices/channels.slice";
 
-const initialContext: MessageContextType = {
-  updateNamespace: () => {},
-};
-
-export const MessageSocketContext = createContext<MessageContextType>(initialContext);
-
-export interface MessageSocketProviderProps {}
-
-export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children }) => {
+export const MessageSocketListener = () => {
   const dispatch = useDispatch();
   const { teamId } = useParams();
 
@@ -178,9 +170,7 @@ export const MessageSocketProvider: FC<MessageSocketProviderProps> = ({ children
     dispatch,
   ]);
 
-  const value = useMemo(() => ({ socket, updateNamespace }), [socket, updateNamespace]);
-
-  return <MessageSocketContext.Provider value={value}>{children}</MessageSocketContext.Provider>;
+  return <></>;
 };
 
-export default MessageSocketProvider;
+export default MessageSocketListener;

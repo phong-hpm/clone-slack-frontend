@@ -10,10 +10,10 @@ export interface AdministrationMenuProps {
 const AdministrationMenu: FC<AdministrationMenuProps> = ({ userName }) => {
   return (
     <List component="div" disablePadding>
-      <MenuItem onClick={() => {}}>
+      <MenuItem>
         <Typography>Customize {userName}</Typography>
       </MenuItem>
-      <MenuItem onClick={() => {}}>
+      <MenuItem>
         <Typography>Manage apps</Typography>
       </MenuItem>
     </List>

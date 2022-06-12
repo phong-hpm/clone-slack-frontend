@@ -79,7 +79,7 @@ const AboutTab = () => {
 
   const isShowLeave = ["public_channel", "private_channel"].includes(selectedChannel.type);
   const isShowChannelName = userId === selectedChannel.creator && isShowLeave;
-  const isShowOptionalFields = isShowLeave || selectedChannel.type === "general";
+  const isShowOptionalFields = selectedChannel.type === "general" || isShowLeave;
 
   return (
     <Box>

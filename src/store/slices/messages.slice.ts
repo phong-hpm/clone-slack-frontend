@@ -28,7 +28,7 @@ export const messagesSlice = createSlice({
       state.list[index] = newMessage;
 
       index = state.dayMessageList.findIndex(({ message }) => message?.id === newMessage.id);
-      state.dayMessageList[index].message = newMessage;
+      if (index > -1) state.dayMessageList[index].message = newMessage;
     },
     removeMessage: (state, action: PayloadAction<string>) => {
       const id = action.payload;

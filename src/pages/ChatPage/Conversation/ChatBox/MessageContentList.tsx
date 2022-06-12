@@ -33,7 +33,6 @@ const MessageContentList: FC<MessageContentListProps> = () => {
   const keepRef = useRef<{
     listRef?: VariableSizeList<DayMessageType[]> | null;
     timeoutId?: NodeJS.Timer;
-    isRendered?: boolean;
   }>({});
 
   // this function is very expensive
@@ -46,13 +45,6 @@ const MessageContentList: FC<MessageContentListProps> = () => {
       // KEEP THIS LINE after set [rowHeights]
       keepRef.current.listRef?.resetAfterIndex(index);
     }
-
-    // keepRef.current.isRendered = false;
-    clearTimeout(keepRef.current.timeoutId!);
-
-    keepRef.current.timeoutId = setTimeout(() => {
-      keepRef.current.isRendered = true;
-    }, 100);
   }, []);
 
   // isLoading will be true when emiting load data from server
@@ -63,8 +55,6 @@ const MessageContentList: FC<MessageContentListProps> = () => {
       </Box>
     );
   }
-
-  console.log("render");
 
   return (
     <Box ref={containerRef} flex="1" pb={3}>
@@ -79,7 +69,6 @@ const MessageContentList: FC<MessageContentListProps> = () => {
                 itemCount={dayMessageList.length + (hasMore ? 1 : 0)}
                 loadMoreItems={() => {
                   dispatch(emitLoadMoreMessages({ limit: 10 }));
-                  console.log("loadMoreItems");
                 }}
               >
                 {({ ref: setListRef, onItemsRendered }) => {
@@ -89,7 +78,6 @@ const MessageContentList: FC<MessageContentListProps> = () => {
                         setListRef(ref);
                         keepRef.current.listRef = ref;
                       }}
-                      direction="vertical"
                       width={width}
                       height={height}
                       itemKey={(index, data) =>

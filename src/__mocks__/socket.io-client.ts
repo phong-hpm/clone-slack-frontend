@@ -1,12 +1,16 @@
-const mockConnect = jest.fn();
 const mockOn = jest.fn();
 const mockEmit = jest.fn();
-
-module.exports = () => ({
-  connected: true,
+let connected = false;
+const ioObject = {
+  connected,
   on: mockOn,
   emit: mockEmit,
+  connect: () => (connected = true),
   disconnect: () => {},
-});
+};
+
+const io = () => ioObject;
+
+module.exports = io;
 
 export {};

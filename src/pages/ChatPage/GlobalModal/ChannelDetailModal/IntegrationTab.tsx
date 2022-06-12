@@ -11,7 +11,7 @@ import ProTag from "features/ProTag";
 // types
 import FieldGroup from "components/FieldGroup";
 
-const IntergrationTab = () => {
+const IntegrationTab = () => {
   const selectedChannel = useSelector(channelsSelectors.getSelectedChannel);
 
   if (!selectedChannel) return <></>;
@@ -75,4 +75,4 @@ const IntergrationTab = () => {
   );
 };
 
-export default IntergrationTab;
+export default IntegrationTab;

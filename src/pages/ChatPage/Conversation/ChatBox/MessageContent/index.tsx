@@ -80,7 +80,7 @@ const MessageContent: FC<MessageContentProps> = ({
 
   useEffect(() => {
     // wait for update user mention
-    if (!user.id || !quillRef.current || !channelUserList?.length) return;
+    if (!user.id || !quillRef.current || !channelUserList.length) return;
     if (!message.delta.ops?.length || keepRef.current.displayDelta) return;
 
     keepRef.current.displayDelta = addNecessaryFields(message.delta, channelUserList, user.id);
@@ -100,7 +100,7 @@ const MessageContent: FC<MessageContentProps> = ({
       : isHovering
       ? "rgb(39, 36, 44)"
       : "";
-  if (!message.reactions) console.log("message.reactions", message);
+
   const isDisplayMessageActions = isHovering && !isEditing;
   const isDisplayStared = !isEditing && !isMessageOnly && message.isStarred;
   const isDisplayReaction = !isEditing && !isMessageOnly && !!Object.keys(message.reactions).length;

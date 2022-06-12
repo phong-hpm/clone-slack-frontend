@@ -4,8 +4,19 @@ import "./resizeObserver";
 jest.mock("react-router-dom");
 jest.mock("emoji-mart");
 
+// remove warning from libaries
+const ignoreList = ["componentWillReceiveProps", "componentWillUpdate"];
+const originalWarn = console.warn.bind(console.warn);
+console.warn = (msg, ...args) => {
+  for (const ignore of ignoreList) {
+    if (msg.toString().includes(ignore)) return false;
+  }
+  return originalWarn(msg, ...args);
+};
+
 // Error: "Cannot flush updates when React is already rendering"
 Object.defineProperty(HTMLMediaElement.prototype, "muted", { set: jest.fn() });
+HTMLCanvasElement.prototype.getContext = (() => {}) as any;
 
 // can not import wavesurfer.js, so ignore this modal
 jest.mock(

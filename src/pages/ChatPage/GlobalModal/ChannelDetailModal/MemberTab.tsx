@@ -9,6 +9,9 @@ import channelsSelectors from "store/selectors/channels.selector";
 import channelUsersSelectors from "store/selectors/channelUsers.selector";
 import teamUsersSelectors from "store/selectors/teamUsers.selector";
 
+// redux slices
+import { setOpenAddUserChannelModal } from "store/slices/globalModal.slice";
+
 // components
 import {
   Box,
@@ -21,15 +24,14 @@ import {
   IconButton,
 } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
+import UserMentionCard from "components/UserMentionCard";
 
 // utils
 import { color, rgba } from "utils/constants";
-import UserMentionCard from "components/UserMentionCard";
+import { searchUser } from "utils/searchUser";
 
 // types
 import { UserType } from "store/slices/_types";
-import { searchUser } from "utils/searchUser";
-import { setOpenAddUserChannelModal } from "store/slices/globalModal.slice";
 
 const MemberTab = () => {
   const dispatch = useDispatch();
@@ -114,7 +116,7 @@ const MemberTab = () => {
         />
       </Box>
 
-      {/* user in channel list */}
+      {/* users who is in this channel */}
       <Box pt={2} bgcolor={color.PRIMARY_BACKGROUND}>
         {!searchValue && renderAddPeopleItem()}
 
@@ -129,7 +131,7 @@ const MemberTab = () => {
         {searchedInChannelList.map(renderUser)}
       </Box>
 
-      {/* user not channel list */}
+      {/* users who is not in this channel */}
       {!!searchedNotInChannelList.length && (
         <Box flexGrow={1} bgcolor={color.MIN_SOLID}>
           <Divider />
@@ -148,14 +150,14 @@ const MemberTab = () => {
 
       {!searchedInChannelList.length && !searchedNotInChannelList.length && (
         <Box display="flex" flexDirection="column" alignItems="center" py={4}>
-          <Typography>No matches found for a</Typography>
+          <Typography>No matches found for {searchValue}</Typography>
           <Button
             variant="outlined"
             size="large"
             sx={{ mt: 2 }}
             onClick={() => dispatch(setOpenAddUserChannelModal(true))}
           >
-            Add People
+            Add people
           </Button>
         </Box>
       )}

@@ -25,7 +25,7 @@ export interface ChannelListProps {
   label: string;
   selectedChannel?: ChannelType;
   channels: ChannelType[];
-  onClickAdd: () => void;
+  onClickAdd?: () => void;
   addText?: string;
 }
 
@@ -54,13 +54,12 @@ const ChannelList: FC<ChannelListProps> = ({
 
   const handleClickAdd = (event: React.MouseEvent) => {
     event.stopPropagation();
-    onClickAdd();
+    onClickAdd?.();
   };
 
   const handleSelectChannel = (id: string) => {
     setSelectedId(id);
-    // [setTimeout] will ask [navigate] wait for this component re-render
-    setTimeout(() => navigate(`${routePaths.CHATBOX_PAGE}/${keepRef.current.teamId}/${id}`), 1);
+    navigate(`${routePaths.CHATBOX_PAGE}/${keepRef.current.teamId}/${id}`);
   };
 
   useEffect(() => {
@@ -141,7 +140,7 @@ const ChannelList: FC<ChannelListProps> = ({
         {isMouseEnter && (
           <>
             <Box ml={1}>
-              <IconButton size="small" onClick={(e) => e.stopPropagation()}>
+              <IconButton size="small">
                 <SlackIcon icon="ellipsis-vertical-filled" />
               </IconButton>
             </Box>

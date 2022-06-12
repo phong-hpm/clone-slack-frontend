@@ -43,6 +43,15 @@ export const emitEditChannelName = createAsyncThunk<{}, { id: string; name: stri
   }
 );
 
+export const emitEditChannelMute = createAsyncThunk<{}, { id: string; isMuted: boolean }>(
+  "socket/emitEditChannelMute",
+  async (data, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    const channelSocket = state.socket.channelSocket;
+    channelSocket?.emit(SocketEvent.EMIT_EDIT_CHANNEL_OPTIONAL_FIELDS, { data });
+  }
+);
+
 export const emitEditChannelOptionalFields = createAsyncThunk<
   {},
   { id: string } & Partial<Pick<ChannelType, "isStarred" | "topic" | "desc" | "notification">>

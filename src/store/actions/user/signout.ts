@@ -17,6 +17,7 @@ export const userExtraReducers = (builder: ActionReducerMapBuilder<UserState>) =
 
       state.accessToken = "";
       state.refreshToken = "";
+      state.isAuth = false;
       state.isLoading = false;
     })
     .addCase(signout.rejected, (state) => {

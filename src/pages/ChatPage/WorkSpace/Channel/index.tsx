@@ -37,21 +37,21 @@ const ChannelContent = () => {
   return (
     <Box mt={1.5}>
       <List component="div" disablePadding>
-        <ListItemButton sx={{ p: 0, pl: 1.25 }} onClick={() => {}}>
+        <ListItemButton sx={{ p: 0, pl: 1.25 }}>
           <ListItemIcon sx={{ minWidth: 28 }}>
             <SlackIcon fontSize="inherit" icon="mentions" />
           </ListItemIcon>
           <Typography sx={{ lineHeight: "28px" }}>Mentions & reactions</Typography>
         </ListItemButton>
 
-        <ListItemButton sx={{ p: 0, pl: 1.25 }} onClick={() => {}}>
+        <ListItemButton sx={{ p: 0, pl: 1.25 }}>
           <ListItemIcon sx={{ minWidth: 28 }}>
             <SlackIcon fontSize="inherit" icon="buildings" />
           </ListItemIcon>
           <Typography sx={{ lineHeight: "28px" }}>Slack Connect</Typography>
         </ListItemButton>
 
-        <ListItemButton sx={{ p: 0, pl: 1.25 }} onClick={() => {}}>
+        <ListItemButton sx={{ p: 0, pl: 1.25 }}>
           <ListItemIcon sx={{ minWidth: 28 }}>
             <SlackIcon icon="ellipsis-vertical-filled" />
           </ListItemIcon>
@@ -64,7 +64,6 @@ const ChannelContent = () => {
           label="Starred"
           selectedChannel={selectedChannel}
           channels={channelData.starred}
-          onClickAdd={() => dispatch(setOpenCreateChannelModal(true))}
         />
       )}
 

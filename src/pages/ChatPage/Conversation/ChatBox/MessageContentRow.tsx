@@ -144,15 +144,15 @@ const MessageContentRow: FC<MessageContentRowProps> = ({
               Jump to...
             </Typography>
           </MenuItem>
-          <MenuItem onClick={() => {}}>Today</MenuItem>
-          <MenuItem onClick={() => {}}>Yesterday</MenuItem>
-          <MenuItem onClick={() => {}}>Last Week</MenuItem>
-          <MenuItem onClick={() => {}}>Last Month</MenuItem>
-          <MenuItem onClick={() => {}}>The very begining</MenuItem>
+          <MenuItem>Today</MenuItem>
+          <MenuItem>Yesterday</MenuItem>
+          <MenuItem>Last Week</MenuItem>
+          <MenuItem>Last Month</MenuItem>
+          <MenuItem>The very begining</MenuItem>
 
           <Divider />
 
-          <MenuItem onClick={() => {}}>Jump to a specific date</MenuItem>
+          <MenuItem>Jump to a specific date</MenuItem>
         </Menu>
       )}
     </>

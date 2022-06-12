@@ -53,7 +53,7 @@ interface OptionType {
   user: UserType;
 }
 
-const AddUserChannelChannel = () => {
+const AddUserChannelModal = () => {
   const dispatch = useDispatch();
 
   const isOpen = useSelector(globalModalSelectors.isOpenAddUserChannel);
@@ -86,13 +86,15 @@ const AddUserChannelChannel = () => {
   );
 
   const handleSubmit = () => {
-    if (!selectedChannel?.id || !selectedList.length) return;
-    dispatch(
-      emitAddUserToChannel({
-        id: selectedChannel.id,
-        userIds: selectedList.map((option) => option.user.id),
-      })
-    );
+    if (selectedChannel?.id && selectedList.length) {
+      dispatch(
+        emitAddUserToChannel({
+          id: selectedChannel.id,
+          userIds: selectedList.map((option) => option.user.id),
+        })
+      );
+    }
+
     handleClose();
   };
 
@@ -229,4 +231,4 @@ const AddUserChannelChannel = () => {
   );
 };
 
-export default AddUserChannelChannel;
+export default AddUserChannelModal;

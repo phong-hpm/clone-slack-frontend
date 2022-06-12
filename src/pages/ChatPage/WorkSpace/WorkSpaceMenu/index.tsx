@@ -65,7 +65,7 @@ const WorkSpaceMenu: FC<WorkSpaceMenuProps> = ({ onClose, ...props }) => {
         onOpen={() => setSelected(title)}
         onClose={() => setSelected("")}
       >
-        <MenuItem selected={selected === title} onClick={handleClose}>
+        <MenuItem selected={selected === title}>
           <Box display="flex" justifyContent="space-between" alignItems="center" width="100%">
             <Typography>{title}</Typography>
             <Typography color={color.MAX_SOLID}>
@@ -78,7 +78,7 @@ const WorkSpaceMenu: FC<WorkSpaceMenuProps> = ({ onClose, ...props }) => {
   };
 
   return (
-    <Menu onClose={onClose} PaperProps={{ sx: { maxWidth: 300 } }} {...props}>
+    <Menu PaperProps={{ sx: { maxWidth: 300 } }} onClose={onClose} {...props}>
       <MenuItem onClick={handleClose} disabled sx={{ opacity: "1 !important" }}>
         <Box display="flex" py={1}>
           <Avatar sizes="36">
@@ -86,9 +86,11 @@ const WorkSpaceMenu: FC<WorkSpaceMenuProps> = ({ onClose, ...props }) => {
           </Avatar>
           <Box ml={1.5}>
             <Typography fontWeight={900}>{user.name}</Typography>
-            <Typography variant="h5" color={color.HIGH}>
-              phonghoworkspace.slack.com
-            </Typography>
+            {user.workspaceUrl && (
+              <Typography variant="h5" color={color.HIGH}>
+                {user.workspaceUrl}
+              </Typography>
+            )}
           </Box>
         </Box>
       </MenuItem>
@@ -98,6 +100,7 @@ const WorkSpaceMenu: FC<WorkSpaceMenuProps> = ({ onClose, ...props }) => {
       <MenuItem
         sx={{ py: 1, whiteSpace: "normal" }}
         onClick={() => {
+          handleClose();
           window.open("https://app.slack.com/plans/T03C86ABPDX?entry_point=team_menu_plan_info");
         }}
       >
@@ -156,7 +159,7 @@ const WorkSpaceMenu: FC<WorkSpaceMenuProps> = ({ onClose, ...props }) => {
           handleClose();
         }}
       >
-        Sign out of Phong Ho
+        Sign out of {user.name}
       </MenuItem>
     </Menu>
   );

@@ -28,6 +28,7 @@ export interface UserType {
   timeZone: string;
   isOnline?: boolean;
   avatar?: string;
+  workspaceUrl?: string;
 }
 
 export interface ChannelUsersState {
@@ -141,8 +142,9 @@ export interface ChannelType {
   partner?: UserType;
   avatar?: string;
   topic?: string;
-  notification?: "all" | "mention" | "off" | "muted";
+  notification?: "all" | "mention" | "off";
   isStarred?: boolean;
+  isMuted?: boolean;
 }
 
 export interface ChannelsState {

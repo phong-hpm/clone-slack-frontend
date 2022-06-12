@@ -149,7 +149,7 @@ describe("Update day messages", () => {
       updatedTime: 1651942800009,
     },
     message_3: {
-      id: "message_2",
+      id: "message_3",
       type: "message",
       delta: { ops: [{ insert: "hi\n" }] } as unknown as Delta,
       user: "U-o29OsxUsn",

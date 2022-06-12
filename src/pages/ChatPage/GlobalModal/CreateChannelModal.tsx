@@ -6,6 +6,9 @@ import { useSelector, useDispatch } from "store";
 // redux actions
 import { emitAddChannel } from "store/actions/socket/channelSocket.action";
 
+// redux slices
+import { setOpenCreateChannelModal } from "store/slices/globalModal.slice";
+
 // redux selector
 import globalModalSelectors from "store/selectors/globalModal.selector";
 
@@ -26,7 +29,6 @@ import SlackIcon from "components/SlackIcon";
 
 // utils
 import { color } from "utils/constants";
-import { setOpenCreateChannelModal } from "store/slices/globalModal.slice";
 
 const learnMoreUrl =
   "https://slack.com/help/articles/360017938993-What-is-a-channel?utm_medium=in-prod&utm_source=in-prod&utm_campaign=cd_in-prod_in-prod_all_en_sharedchannels-betterinvites_cr-create-channel_ym-201911";
@@ -152,6 +154,7 @@ const CreateChannelModal = () => {
             <TextField
               type="text"
               fullWidth
+              placeholder="Description"
               InputProps={{ sx: { px: 0, py: 0.5 } }}
               onBlur={(e) => setDesc(e.target.value)}
             />
@@ -177,6 +180,7 @@ const CreateChannelModal = () => {
               )}
             </Typography>
           </Box>
+
           <Box position="relative">
             <Switch checked={isPrivate} onChange={(_, checked) => setIsPrivate(checked)} />
             {isPrivate && (

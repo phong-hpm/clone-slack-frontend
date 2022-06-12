@@ -89,9 +89,8 @@ describe("Test actions", () => {
     userEvent.type(screen.getByPlaceholderText("Add a topic"), "topic");
     userEvent.click(screen.getByText("Save"));
     expectModalClosed();
-    expect(mockIO().emit as jest.Mock).toBeCalledWith(
-      SocketEvent.EMIT_EDIT_CHANNEL_OPTIONAL_FIELDS,
-      { data: { id: channelData.id, topic: "topic" } }
-    );
+    expect(channelSocket.emit).toBeCalledWith(SocketEvent.EMIT_EDIT_CHANNEL_OPTIONAL_FIELDS, {
+      data: { id: channelData.id, topic: "topic" },
+    });
   });
 });

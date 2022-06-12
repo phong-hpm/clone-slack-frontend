@@ -5,13 +5,13 @@ import { useDispatch, useSelector } from "store";
 import ReactQuill from "react-quill";
 import { Link, Typography, Box } from "@mui/material";
 import SvgFileIcon from "components/SvgFileIcon";
+import SlackIcon from "components/SlackIcon";
 
 // redux selectors
 import channelsSelectors from "store/selectors/channels.selector";
 
 // utils
 import { color } from "utils/constants";
-import SlackIcon from "components/SlackIcon";
 import {
   setOpenAddUserChannelModal,
   setOpenEditChannelDescriptionModal,

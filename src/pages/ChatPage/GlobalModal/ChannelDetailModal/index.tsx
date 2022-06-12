@@ -19,14 +19,14 @@ import { Modal, ModalHeader, ModalBody } from "components/Modal";
 import SlackIcon from "components/SlackIcon";
 import AboutTab from "./AboutTab";
 import MemberTab from "./MemberTab";
-import IntergrationTab from "./IntergrationTab";
+import IntegrationTab from "./IntegrationTab";
 import SettingTab from "./SettingTab";
 import NotificationMenu from "./NotificationMenu";
 
 // utils
 import { color } from "utils/constants";
 
-const AddUserChannelChannel = () => {
+const ChannelDetailModal = () => {
   const dispatch = useDispatch();
 
   const isOpen = useSelector(globalModalSelectors.isOpenChannelDetail);
@@ -46,8 +46,8 @@ const AddUserChannelChannel = () => {
       ? ["about", "integrations"]
       : ["about", "members", "integrations", "settings"];
 
-  let notificationTooltip = "You will be notified about all messages sent to this channel";
   let notificationLabel = "Get Notifications for All Messages";
+  let notificationTooltip = "You will be notified about all messages sent to this channel";
   if (selectedChannel.notification === "mention") {
     notificationLabel = "Get notifications for @ Mentions";
     notificationTooltip = "You will be notified when you're mentioned in this channel";
@@ -55,6 +55,10 @@ const AddUserChannelChannel = () => {
   if (selectedChannel.notification === "off") {
     notificationLabel = "Notifications Off";
     notificationTooltip = "You won't get notifications about this channel";
+  }
+  if (selectedChannel.isMuted) {
+    notificationLabel = "Muted";
+    notificationTooltip = "You'll only see a badge if you're mentioned in this channel";
   }
 
   return (
@@ -74,7 +78,7 @@ const AddUserChannelChannel = () => {
 
           {/* actions */}
           <Box display="flex" mt={1.5}>
-            <Tooltip title="Star channel">
+            <Tooltip title={selectedChannel.isStarred ? "Remove from Starred" : "Star channel"}>
               <Button
                 variant="outlined"
                 size="medium"
@@ -102,7 +106,10 @@ const AddUserChannelChannel = () => {
                 sx={{ ml: 1 }}
                 onClick={(event) => setNotificationAnchor(event.currentTarget as HTMLButtonElement)}
               >
-                <SlackIcon icon="bell-o" fontSize="medium" />
+                <SlackIcon
+                  icon={selectedChannel.isMuted ? "bell-slash" : "bell-o"}
+                  fontSize="medium"
+                />
                 <Typography variant="h5" mx={1} fontWeight={700} lineHeight="15px">
                   {notificationLabel}
                 </Typography>
@@ -131,7 +138,7 @@ const AddUserChannelChannel = () => {
             >
               {tabList.map((tab) => {
                 let label = tab;
-                if (tab === "members") label = `Members ${selectedChannel.users.length}`;
+                if (tab === "members") label = `members ${selectedChannel.users.length}`;
                 return (
                   <Tab
                     key={tab}
@@ -156,7 +163,7 @@ const AddUserChannelChannel = () => {
       <ModalBody display="flex" p={0} bgcolor={color.MIN_SOLID}>
         {tabValue === "about" && <AboutTab />}
         {tabValue === "members" && <MemberTab />}
-        {tabValue === "integrations" && <IntergrationTab />}
+        {tabValue === "integrations" && <IntegrationTab />}
         {tabValue === "settings" && <SettingTab />}
       </ModalBody>
 
@@ -171,4 +178,4 @@ const AddUserChannelChannel = () => {
   );
 };
 
-export default AddUserChannelChannel;
+export default ChannelDetailModal;

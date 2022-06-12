@@ -36,7 +36,7 @@ import {
   UpdatedRemovedListener,
 } from "./_types";
 
-export const ChannelSocketProvider = () => {
+export const ChannelSocketListener = () => {
   const dispatch = useDispatch();
 
   const selectedTeamId = useSelector(teamsSelectors.getSelectedTeamId);
@@ -151,4 +151,4 @@ export const ChannelSocketProvider = () => {
   return <></>;
 };
 
-export default ChannelSocketProvider;
+export default ChannelSocketListener;
