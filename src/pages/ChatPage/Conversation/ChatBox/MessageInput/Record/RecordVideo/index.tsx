@@ -75,7 +75,7 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
           isOpen={status === "review"}
           file={file}
           downloadable
-          onRepeat={handleRepeat}
+          onStartOver={handleRepeat}
           onSelectThumbnail={handleSelectThumbnail}
           onUpdateThumbList={handleUpdateThumbList}
           onDone={handleDoneReview}

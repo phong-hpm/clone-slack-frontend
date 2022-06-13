@@ -9,14 +9,15 @@ import { color, rgba } from "utils/constants";
 // types
 import { VideoInstance } from "./_types";
 
-export interface VideoProps extends React.VideoHTMLAttributes<HTMLVideoElement> {
+export interface VideoProps
+  extends Omit<React.VideoHTMLAttributes<HTMLVideoElement>, "onPause" | "onPlaying"> {
   ratio?: number;
   boxProps?: BoxProps;
   setPlaying?: (bol: boolean) => void;
 }
 
 const Video = forwardRef<VideoInstance, VideoProps>(
-  ({ ratio: ratioProp, style, boxProps, onWaiting, onPlaying, setPlaying, ...props }, ref) => {
+  ({ ratio: ratioProp, style, boxProps, onWaiting, setPlaying, ...props }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 

@@ -77,7 +77,6 @@ const MessageActions: FC<MessageActionsProps> = ({
       isHide: isSystem,
       tooltip: "Realy in thread",
       slackIcon: "comment-alt",
-      onClick: () => {},
     },
     {
       tooltip: "Share message",

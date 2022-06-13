@@ -18,7 +18,7 @@ import LoadingWrapper from "components/LoadingWrapper";
 
 export interface ReviewVideoModalProps extends ModalProps {
   file: MessageFileType;
-  onRepeat?: () => void;
+  onStartOver?: () => void;
   onThumbnail?: () => void;
   onUpdateThumbList?: (thumbList: string[]) => void;
   onDownload?: () => void;
@@ -28,7 +28,7 @@ export interface ReviewVideoModalProps extends ModalProps {
 const ReviewVideoModal: FC<ReviewVideoModalProps> = ({
   isOpen,
   file,
-  onRepeat,
+  onStartOver,
   onUpdateThumbList,
   onDownload,
   onThumbnail,
@@ -73,13 +73,14 @@ const ReviewVideoModal: FC<ReviewVideoModalProps> = ({
       anchorOrigin={{ horizontal: "center", vertical: "top" }}
       transformOrigin={{ horizontal: "center", vertical: "bottom" }}
       transformExtra={{ vertical: 8 }}
+      IconCloseProps={{ top: 20, right: 20 }}
       {...props}
     >
-      <ModalHeader py={1.5}>
-        {onRepeat && (
+      <ModalHeader py={2.5}>
+        {onStartOver && (
           <Box display="flex" width="100%" justifyContent="end">
             {/* start over button */}
-            <Button variant="text" size="medium" sx={{ ml: -1.25 }} onClick={onRepeat}>
+            <Button variant="text" size="medium" sx={{ ml: -1.25 }} onClick={onStartOver}>
               <SlackIcon icon="repeat" />
               <Typography fontWeight={700} color={color.HIGH} sx={{ ml: 1 }}>
                 Start Over
@@ -97,8 +98,7 @@ const ReviewVideoModal: FC<ReviewVideoModalProps> = ({
             poster={file.thumb}
             ratio={9 / 16}
             style={{ borderRadius: 8 }}
-            onPause={() => setPlaying(false)}
-            onPlaying={() => setPlaying(true)}
+            setPlaying={setPlaying}
             onTimeUpdate={(event) =>
               setCurrentTime(Math.floor((event.target as HTMLVideoElement).currentTime))
             }

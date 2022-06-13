@@ -6,7 +6,7 @@ import SlackIcon from "components/SlackIcon";
 
 // utils
 import { color, deviceKind } from "utils/constants";
-import { MediaDeviceInfoType } from "../../_types";
+import { MediaDeviceInfoType } from "pages/ChatPage/Conversation/ChatBox/MessageInput/_types";
 
 const settingOptions = [
   { label: "Camera", kind: deviceKind.CAMERA },
@@ -27,6 +27,7 @@ const RecordSettingMenu: FC<RecordSettingMenuProps> = ({
   selectedVideoId,
   onSelectAudioDevice,
   onSelectVideoDevice,
+  onClose,
   ...props
 }) => {
   const [selectedSetting, setSelectedSeting] = useState("");
@@ -44,11 +45,12 @@ const RecordSettingMenu: FC<RecordSettingMenuProps> = ({
             <MenuItem
               selected={isSelected}
               key={device.label}
-              onClick={() =>
+              onClick={() => {
                 kind === deviceKind.MICROPHONE
                   ? onSelectAudioDevice(device.deviceId)
-                  : onSelectVideoDevice(device.deviceId)
-              }
+                  : onSelectVideoDevice(device.deviceId);
+                onClose?.({}, "backdropClick");
+              }}
             >
               <Typography>{device.label}</Typography>
             </MenuItem>
@@ -65,6 +67,7 @@ const RecordSettingMenu: FC<RecordSettingMenuProps> = ({
       transformOrigin={{ vertical: "bottom", horizontal: "left" }}
       PaperProps={{ sx: { minWidth: "225px !important" } }}
       sx={{ zIndex: 1500 }}
+      onClose={onClose}
       {...props}
     >
       {settingOptions.map((option) => {
@@ -72,6 +75,7 @@ const RecordSettingMenu: FC<RecordSettingMenuProps> = ({
           <Tooltip
             key={option.kind}
             arrow={false}
+            disableInteractive={false}
             classes={{ popper: "tooltip-menu auto-width" }}
             placement="right-start"
             title={renderDevicesList(option.kind)}

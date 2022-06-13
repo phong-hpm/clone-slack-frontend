@@ -1,15 +1,16 @@
 import { FC, useState } from "react";
 
 // components
-import { Box, IconButton } from "@mui/material";
+import { Box, BoxProps, IconButton } from "@mui/material";
 import AudioPlayer, { AudioPlayerProps } from "components/MediaPlayer/AudioPlayer";
 import SlackIcon from "components/SlackIcon";
 
 export interface ReviewAudioCardProps extends AudioPlayerProps {
   onRemove?: () => void;
+  boxProps?: BoxProps;
 }
 
-const ReviewAudioCard: FC<ReviewAudioCardProps> = ({ onRemove, ...props }) => {
+const ReviewAudioCard: FC<ReviewAudioCardProps> = ({ onRemove, boxProps, ...props }) => {
   const [isHovering, setHovering] = useState(false);
 
   return (
@@ -17,6 +18,7 @@ const ReviewAudioCard: FC<ReviewAudioCardProps> = ({ onRemove, ...props }) => {
       position="relative"
       onMouseOver={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
+      {...boxProps}
     >
       <AudioPlayer {...props} />
 

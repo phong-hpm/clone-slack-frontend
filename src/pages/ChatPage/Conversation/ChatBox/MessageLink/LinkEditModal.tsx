@@ -12,7 +12,7 @@ import {
   LinkCustomEventDetailType,
 } from "pages/ChatPage/Conversation/ChatBox/MessageInput/_types";
 
-const EditLinkModal: FC = () => {
+const LinkEditModal: FC = () => {
   // using ref, we can update anchorEl and user before component's rendering
   // it will make sure data were available when component re-render
   // support for case user is moving mouse too fast
@@ -26,9 +26,7 @@ const EditLinkModal: FC = () => {
   const [isDisabled, setDisabled] = useState(true);
 
   const handleClose = () => {
-    if (keepRef.current.setFocus) {
-      keepRef.current.setFocus(true, keepRef.current.range?.index);
-    }
+    keepRef.current.setFocus?.(true, keepRef.current.range?.index);
     keepRef.current = {};
     setOpen(false);
   };
@@ -90,6 +88,7 @@ const EditLinkModal: FC = () => {
               autoFocus
               fullWidth
               type="text"
+              placeholder="Text"
               defaultValue={keepRef.current.linkValue?.text || ""}
               onChange={handleChange}
             />
@@ -102,6 +101,7 @@ const EditLinkModal: FC = () => {
               inputRef={hrefRef}
               fullWidth
               type="text"
+              placeholder="Link"
               defaultValue={keepRef.current.linkValue?.href || ""}
               onChange={handleChange}
             />
@@ -133,4 +133,4 @@ const EditLinkModal: FC = () => {
   );
 };
 
-export default EditLinkModal;
+export default LinkEditModal;

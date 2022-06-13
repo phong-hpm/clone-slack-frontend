@@ -97,7 +97,7 @@ const MediaFileDeleteModal: FC<MediaFileDeleteModalProps> = ({
               </Typography>
             ) : (
               <Typography variant="h5" color={color.MAX_SOLID}>
-                {userOwner?.name || ""}{" "}
+                {!!userOwner?.name && userOwner?.name}{" "}
                 {`${dayFormat.dayO(file.createdTime)} at ${dayFormat.fullTimeA(file.createdTime)}`}
               </Typography>
             )}

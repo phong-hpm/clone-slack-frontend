@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { FC } from "react";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "@mui/material/styles";

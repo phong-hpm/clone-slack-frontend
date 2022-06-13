@@ -59,6 +59,8 @@ const LinkDetailModal: FC = () => {
     return () => window.removeEventListener("open-link-detail-modal", handleOpenLinkDetailModal);
   }, []);
 
+  if (!isOpen) return <></>;
+
   return (
     <Modal
       anchorEl={keepRef.current.anchorEl}

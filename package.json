@@ -92,15 +92,7 @@
       "^.+\\.(js|jsx)$": "babel-jest"
     },
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}",
-      "!src/*/constants.ts",
-      "!src/**/*/*.constants.tsx",
-      "!src/App.tsx",
-      "!src/index.tsx",
-      "!src/reportWebVitals.ts",
-      "!src/service-worker.ts",
-      "!src/serviceWorkerRegistration.ts",
-      "!src/store/middlewareRegister.ts"
+      "src/**/*.{js,jsx,ts,tsx}"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",

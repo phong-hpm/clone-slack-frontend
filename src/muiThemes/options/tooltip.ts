@@ -49,6 +49,7 @@ const components: Theme["components"] = {
         "&.auto-width": {
           ".MuiTooltip-tooltip": {
             width: "auto",
+            maxWidth: "initial !important",
           },
         },
       },

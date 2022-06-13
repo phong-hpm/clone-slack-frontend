@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import * as Redux from "redux";
 import { PayloadAction } from "@reduxjs/toolkit";
 

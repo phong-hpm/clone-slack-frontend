@@ -8,11 +8,11 @@ import { ModalHeader } from "components/Modal";
 // types
 import { StatusType } from "./_types";
 
-export interface RecordModalHeaderProps {
+export interface RecordVideoModalHeaderProps {
   status: StatusType;
 }
 
-const RecordModalHeader: FC<RecordModalHeaderProps> = ({ status }) => {
+const RecordVideoModalHeader: FC<RecordVideoModalHeaderProps> = ({ status }) => {
   return (
     <ModalHeader>
       {status === "active" && (
@@ -20,7 +20,7 @@ const RecordModalHeader: FC<RecordModalHeaderProps> = ({ status }) => {
           <Typography variant="h3">Record video clip</Typography>
           <Box>
             <IconButton size="large" sx={{ borderRadius: 1 }}>
-              <SlackIcon icon="question-circle" fontSize="large" />
+              <SlackIcon icon="question-circle" fontSize="medium" />
             </IconButton>
           </Box>
         </Box>
@@ -29,4 +29,4 @@ const RecordModalHeader: FC<RecordModalHeaderProps> = ({ status }) => {
   );
 };
 
-export default RecordModalHeader;
+export default RecordVideoModalHeader;

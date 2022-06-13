@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { setUser } from "store/slices/user.slice";
 
@@ -82,5 +82,59 @@ describe("Test actions", () => {
     expect(store.getState().user.refreshToken).toEqual("");
     expect(store.getState().user.isAuth).toBeFalsy();
     expect(mockOnClose).toBeCalledWith({}, "backdropClick");
+  });
+
+  test("Hover on Administration", async () => {
+    const mockOnClose = jest.fn();
+    customRender(<WorkSpaceMenu open anchorEl={anchorEl} title="title" onClose={mockOnClose} />);
+
+    // Hover
+    userEvent.hover(screen.getByText("Administration"));
+    await waitFor(() => expect(screen.getByText(`Customize ${userData.name}`)).toBeInTheDocument());
+
+    // Unhover
+    userEvent.unhover(screen.getByText("Administration"));
+    await waitFor(() => expect(screen.queryByText(`Customize ${userData.name}`)).toBeNull());
+  });
+
+  test("Hover on Tools", async () => {
+    const mockOnClose = jest.fn();
+    customRender(<WorkSpaceMenu open anchorEl={anchorEl} title="title" onClose={mockOnClose} />);
+
+    // Hover
+    userEvent.hover(screen.getByText("Tools"));
+    await waitFor(() => expect(screen.getByText("Workflow builder")).toBeInTheDocument());
+
+    // Unhover
+    userEvent.unhover(screen.getByText("Tools"));
+    await waitFor(() => expect(screen.queryByText("Workflow builder")).toBeNull());
+  });
+
+  test("Hover on Add workspaces", async () => {
+    const mockOnClose = jest.fn();
+    customRender(<WorkSpaceMenu open anchorEl={anchorEl} title="title" onClose={mockOnClose} />);
+
+    // Hover
+    userEvent.hover(screen.getByText("Add workspaces"));
+    await waitFor(() =>
+      expect(screen.getByText("Signin to another workspace")).toBeInTheDocument()
+    );
+
+    // Unhover
+    userEvent.unhover(screen.getByText("Add workspaces"));
+    await waitFor(() => expect(screen.queryByText("Signin to another workspace")).toBeNull());
+  });
+
+  test("Hover on Switch workspaces", async () => {
+    const mockOnClose = jest.fn();
+    customRender(<WorkSpaceMenu open anchorEl={anchorEl} title="title" onClose={mockOnClose} />);
+
+    // Hover
+    userEvent.hover(screen.getByText("Switch workspaces"));
+    await waitFor(() => expect(screen.getByText("Your another workspaces")).toBeInTheDocument());
+
+    // Unhover
+    userEvent.unhover(screen.getByText("Switch workspaces"));
+    await waitFor(() => expect(screen.queryByText("Your another workspaces")).toBeNull());
   });
 });

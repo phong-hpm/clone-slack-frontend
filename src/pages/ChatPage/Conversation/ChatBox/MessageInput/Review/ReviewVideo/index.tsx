@@ -5,15 +5,13 @@ import ReviewVideoModal, { ReviewVideoModalProps } from "./ReviewVideoModal";
 
 // types
 import { MessageFileType } from "store/slices/_types";
-import SelectThumnailModal from "../../../../../../../components/MediaPlayer/SelectThumbnailModal";
+import SelectThumnailModal from "components/MediaPlayer/SelectThumbnailModal";
 
 export interface ReviewVideoProps extends Omit<ReviewVideoModalProps, "onDownload"> {
   file: MessageFileType;
   downloadable?: boolean;
-  onRepeat?: () => void;
   onDone?: () => void;
   onSelectThumbnail?: (thumb: string) => void;
-  onUpdateThumbList?: (thumbList: string[]) => void;
 }
 
 const ReviewVideo: FC<ReviewVideoProps> = ({
@@ -26,7 +24,7 @@ const ReviewVideo: FC<ReviewVideoProps> = ({
   const [isShowThumbnailModal, setShowThumbnailModal] = useState(false);
 
   const handleDownload = () => {
-    console.log("url");
+    window.open(file.url);
   };
 
   return (
@@ -39,7 +37,7 @@ const ReviewVideo: FC<ReviewVideoProps> = ({
         onThumbnail={() => setShowThumbnailModal(true)}
       />
 
-      {!!file.url && (
+      {isShowThumbnailModal && (
         <SelectThumnailModal
           isOpen={isShowThumbnailModal}
           src={file.url}

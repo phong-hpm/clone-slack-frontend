@@ -22,7 +22,7 @@ import { MessageFileType, UserType } from "store/slices/_types";
 import { VideoPlayerDataType } from "components/MediaPlayer/VideoPlayer/_types";
 import { Box, CircularProgress } from "@mui/material";
 import { AudioPlayerDataType } from "components/MediaPlayer/AudioPlayer/_types";
-import SelectThumnailModal from "components/MediaPlayer/SelectThumbnailModal";
+import SelectThumbnailModal from "components/MediaPlayer/SelectThumbnailModal";
 
 export interface MediaFileProps {
   messageId: string;
@@ -116,8 +116,8 @@ const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
         </Box>
       )}
 
-      {file.url && (
-        <SelectThumnailModal
+      {isShowThumbnailModal && !!file.url && (
+        <SelectThumbnailModal
           isOpen={isShowThumbnailModal}
           src={file.url}
           thumb={file.thumb}
@@ -127,13 +127,15 @@ const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
         />
       )}
 
-      <MediaFileDeleteModal
-        isOpen={isShowDeleteModal}
-        file={file}
-        userOwner={userOwner}
-        onSubmit={handleDelete}
-        onClose={() => setShowDeleteModal(false)}
-      />
+      {isShowDeleteModal && (
+        <MediaFileDeleteModal
+          isOpen={isShowDeleteModal}
+          file={file}
+          userOwner={userOwner}
+          onSubmit={handleDelete}
+          onClose={() => setShowDeleteModal(false)}
+        />
+      )}
     </Box>
   );
 };

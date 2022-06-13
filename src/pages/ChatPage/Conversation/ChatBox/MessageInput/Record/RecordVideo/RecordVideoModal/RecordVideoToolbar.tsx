@@ -3,13 +3,13 @@ import { FC, useRef, useState } from "react";
 // components
 import { Box, IconButton } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
-import RecordSettingMenu from "../RecordSettingMenu";
+import RecordSettingMenu from "./RecordSettingMenu";
 
 // utils
 import { color } from "utils/constants";
 
 // types
-import { MediaDeviceInfoType } from "../../../_types";
+import { MediaDeviceInfoType } from "pages/ChatPage/Conversation/ChatBox/MessageInput/_types";
 
 export interface RecordVideoToolbarProps {
   isEnabledAudio: boolean;

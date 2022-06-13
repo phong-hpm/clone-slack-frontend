@@ -7,7 +7,7 @@ import defaultAvatarLarge from "assets/images/default_avatar_large.png";
 import { useSelector } from "store";
 
 // redux selectors
-import channelUsersSelectors from "store/selectors/channelUsers.selector";
+import teamUsersSelectors from "store/selectors/teamUsers.selector";
 
 // components
 import { Avatar, Box, Button, Typography } from "@mui/material";
@@ -20,7 +20,7 @@ import { UserType } from "store/slices/_types";
 // quill-mention is using javascript event to trigger action
 // that why this component is working with javascript event only
 const MentionDetailModal: FC = () => {
-  const channelUserList = useSelector(channelUsersSelectors.getChannelUserList);
+  const teamUserList = useSelector(teamUsersSelectors.getTeamUserList);
 
   // using ref, we can update anchorEl and user before component's rendering
   // it will make sure data were available when component re-render
@@ -40,13 +40,14 @@ const MentionDetailModal: FC = () => {
 
   const handleOpen = useCallback(
     (id: string, node: HTMLSpanElement) => {
-      const user = channelUserList.find((usr) => usr.id === id);
-      if (!user) return;
-      keepRef.current.anchorEl = node;
-      keepRef.current.user = user;
-      setOpen(true);
+      const user = teamUserList.find((usr) => usr.id === id);
+      if (user) {
+        keepRef.current.anchorEl = node;
+        keepRef.current.user = user;
+        setOpen(true);
+      }
     },
-    [channelUserList]
+    [teamUserList]
   );
 
   // handle click event
@@ -95,10 +96,10 @@ const MentionDetailModal: FC = () => {
 
       <ModalFooter>
         <Box display="flex" justifyContent="end">
-          <Button variant="outlined" sx={{ mr: 2 }} onClick={() => {}}>
+          <Button variant="outlined" sx={{ mr: 2 }}>
             Set Status
           </Button>
-          <Button variant="contained" color="error" size="medium" onClick={() => {}}>
+          <Button variant="contained" color="error" size="medium">
             Edit Profile
           </Button>
         </Box>

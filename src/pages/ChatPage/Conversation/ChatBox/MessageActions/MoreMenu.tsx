@@ -38,8 +38,6 @@ const MoreMenu: FC<MoreMenuProps> = ({
 
   const { handleKeyDown } = useKeyboard({
     keyDownListener: {
-      [eventKeys.KEY_U]: () => {},
-      [eventKeys.KEY_P]: () => {},
       [eventKeys.KEY_E]: () => isEditable && onClickEdit(),
       [eventKeys.KEY_BACKSPACE]: () => isDeletable && onClickDelete(),
       [eventKeys.KEY_DELETE]: () => isDeletable && onClickDelete(),
@@ -61,11 +59,11 @@ const MoreMenu: FC<MoreMenuProps> = ({
       onMouseDown={() => onClose && onClose()}
       onClose={onClose}
     >
-      {!isSystem && <MenuItem onMouseDown={() => {}}>Get notified about new replies</MenuItem>}
+      {!isSystem && <MenuItem>Get notified about new replies</MenuItem>}
 
       {!isSystem && <Divider />}
 
-      <MenuItem onMouseDown={() => {}}>
+      <MenuItem>
         <Box display="flex" justifyContent="space-between" width="100%">
           <Typography>Mark unread</Typography>
           <Typography color={color.HIGH}>U</Typography>
@@ -82,7 +80,7 @@ const MoreMenu: FC<MoreMenuProps> = ({
           onOpen={() => setSelectRemind(true)}
           onClose={() => setSelectRemind(false)}
         >
-          <MenuItem selected={isSelectRemind}>
+          <MenuItem data-testid="test" selected={isSelectRemind}>
             <Box display="flex" justifyContent="space-between" width="100%">
               <Typography>Remind me about this</Typography>
               <SlackIcon color={color.HIGH} icon="chevron-right" />
@@ -93,12 +91,12 @@ const MoreMenu: FC<MoreMenuProps> = ({
 
       <Divider />
 
-      <MenuItem onMouseDown={() => {}}>Copy link</MenuItem>
+      <MenuItem>Copy link</MenuItem>
 
       <Divider />
 
       {!isSystem && (
-        <MenuItem onMouseDown={() => {}}>
+        <MenuItem>
           <Box display="flex" justifyContent="space-between" width="100%">
             <Typography>Pin to channel</Typography>
             <Typography color={color.HIGH}>P</Typography>
@@ -131,7 +129,7 @@ const MoreMenu: FC<MoreMenuProps> = ({
 
       {!isSystem && <Divider />}
 
-      <MenuItem onMouseDown={() => {}}>
+      <MenuItem>
         <Box display="flex" justifyContent="space-between" width="100%">
           <Typography>Add a message shortcut...</Typography>
           <SlackIcon color={color.HIGH} icon="external-link" fontSize="medium" />

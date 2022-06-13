@@ -71,11 +71,13 @@ const ReviewVideoCard: FC<ReviewVideoCardProps> = ({
         </Box>
       )}
 
-      <ReviewVideo
-        isOpen={isShowReviewModal}
-        file={file}
-        onClose={() => setShowReviewModal(false)}
-      />
+      {isShowReviewModal && (
+        <ReviewVideo
+          isOpen={isShowReviewModal}
+          file={file}
+          onClose={() => setShowReviewModal(false)}
+        />
+      )}
     </Box>
   );
 };

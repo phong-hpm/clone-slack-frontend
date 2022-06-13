@@ -140,7 +140,7 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
                 height: "auto !important",
               }}
             >
-              {option.type === "public_channel" && (
+              {["public_channel", "general"].includes(option.type) && (
                 <Box m={0.25}>
                   <SlackIcon icon="hash-medium" color={color.LIGHT} />
                 </Box>
@@ -155,7 +155,6 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
                   <img src={defaultAvatar} alt="" />
                 </Avatar>
               )}
-
               {option.type === "group_message" && (
                 <Box color={color.PRIMARY}>
                   <UserAvatarLength
@@ -168,7 +167,10 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
             </Box>
           }
           label={
-            <Typography fontWeight={700} ml={option.type === "public_channel" ? -0.5 : 0.5}>
+            <Typography
+              fontWeight={700}
+              ml={["public_channel", "general"].includes(option.type) ? -0.5 : 0.5}
+            >
               {option.name}
             </Typography>
           }
@@ -209,7 +211,7 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
             )}
           </Box>
           <Box p={0.5}>
-            <Typography fontWeight={700}>{option.name || "unknow"}</Typography>
+            <Typography fontWeight={700}>{option.name}</Typography>
           </Box>
         </Box>
       </li>

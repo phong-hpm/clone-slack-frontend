@@ -3,8 +3,8 @@ import { FC, useCallback, useEffect, useRef, useState } from "react";
 // components
 import { Modal, ModalBody, ModalProps } from "components/Modal";
 import { Box, Typography } from "@mui/material";
-import RecordModalHeader from "./RecordModalHeader";
-import RecordModalFooter from "./RecordModalFooter";
+import RecordVideoModalHeader from "./RecordVideoModalHeader";
+import RecordVideoModalFooter from "./RecordVideoModalFooter";
 import RecordVideoToolbar from "./RecordVideoToolbar";
 import RecorderManager from "./RecorderManager";
 
@@ -17,11 +17,11 @@ import { StatusType } from "./_types";
 // sounds
 import popSound from "assets/media/pop_sound.mp3";
 
-export interface RecordModalProps extends ModalProps {
+export interface RecordVideoModalProps extends ModalProps {
   onNext: (url: string, duration: number) => void;
 }
 
-const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
+const RecordVideoModal: FC<RecordVideoModalProps> = ({ isOpen, onNext, onClose, ...props }) => {
   const mergedRef = useRef<HTMLVideoElement>(null);
   const cameraRef = useRef<HTMLVideoElement>(null);
   const screenRef = useRef<HTMLVideoElement>(null);
@@ -42,6 +42,11 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
   const [countDown, setCountDown] = useState(0);
   const [selectedDevice, setSelectedDevice] = useState({ audio: "", video: "" });
   const [enabledDevice, setEnabledDevice] = useState({ audio: true, video: true });
+
+  const handleClose = () => {
+    keepRef.current.recorderManager?.stop();
+    onClose();
+  };
 
   const handleDone = useCallback(() => {
     const { recorderManager } = keepRef.current;
@@ -70,7 +75,8 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
         // wait for catching error if it has
         await recorderManager.createScreenStream(audio, video);
       }
-    } catch {
+    } catch (e) {
+      console.log(e);
       // if user cancel sharescreen or video, reset [isShareScreen] state
       setShareScreen(false);
     }
@@ -177,9 +183,11 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
       anchorOrigin={{ horizontal: "center", vertical: "top" }}
       transformOrigin={{ horizontal: "center", vertical: "bottom" }}
       transformExtra={{ vertical: 8 }}
+      IconCloseProps={{ top: 20, right: 20 }}
+      onClose={handleClose}
       {...props}
     >
-      <RecordModalHeader status={status} />
+      <RecordVideoModalHeader status={status} />
 
       <ModalBody pt={6} pb={4}>
         <Box position="relative" sx={{ borderRadius: 2, overflow: "hidden" }}>
@@ -188,11 +196,6 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
             position={isShareScreen ? "relative" : "absolute"}
             sx={{ opacity: isShareScreen ? "1" : "0" }}
           >
-            {/*
-              sharescreen video can not apply any fixed resolution
-              size of sharecreen video have to fit with user's monitor
-              ratio={keepRef.current.resolution.height / keepRef.current.resolution.width}
-            */}
             <video ref={screenRef} autoPlay />
             <Box position="absolute" top="0" bottom="0" left="0" right="0">
               <video ref={mergedRef} autoPlay />
@@ -239,7 +242,7 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
         </Box>
       </ModalBody>
 
-      <RecordModalFooter
+      <RecordVideoModalFooter
         isDisabledRecord={isDisabledRecord}
         isShareScreen={isShareScreen}
         isPlaying={isPlaying}
@@ -254,4 +257,4 @@ const RecordModal: FC<RecordModalProps> = ({ isOpen, onNext, ...props }) => {
   );
 };
 
-export default RecordModal;
+export default RecordVideoModal;

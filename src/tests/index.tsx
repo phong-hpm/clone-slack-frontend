@@ -28,11 +28,13 @@ beforeEach(() => {
 
 const AllTheProviders: FC = ({ children }) => {
   return (
-    <Provider store={store}>
-      <Router location={history.location} navigator={history}>
-        {children}
-      </Router>
-    </Provider>
+    <div data-testid="container">
+      <Provider store={store}>
+        <Router location={history.location} navigator={history}>
+          {children}
+        </Router>
+      </Provider>
+    </div>
   );
 };
 

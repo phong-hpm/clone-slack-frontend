@@ -14,7 +14,7 @@ import { StatusType } from "./_types";
 // sounds
 import { buildProgressTime } from "utils/waveSurver";
 
-export interface RecordModalFooterProps {
+export interface RecordVideoModalFooterProps {
   isDisabledRecord: boolean;
   isShareScreen: boolean;
   isPlaying: boolean;
@@ -26,7 +26,7 @@ export interface RecordModalFooterProps {
   onDone: () => void;
 }
 
-const RecordModalFooter: FC<RecordModalFooterProps> = ({
+const RecordVideoModalFooter: FC<RecordVideoModalFooterProps> = ({
   isDisabledRecord,
   isShareScreen,
   isPlaying,
@@ -59,12 +59,7 @@ const RecordModalFooter: FC<RecordModalFooterProps> = ({
         <Box>
           {/* upload video button */}
           {status === "active" && (
-            <Button
-              variant="text"
-              size="large"
-              sx={{ ml: -1.25, color: color.HIGH }}
-              onClick={() => {}}
-            >
+            <Button variant="text" size="large" sx={{ ml: -1.25, color: color.HIGH }}>
               <SlackIcon icon="cloud-upload" />
               <Typography fontWeight={700} sx={{ ml: 1 }}>
                 Upload video
@@ -120,4 +115,4 @@ const RecordModalFooter: FC<RecordModalFooterProps> = ({
   );
 };
 
-export default RecordModalFooter;
+export default RecordVideoModalFooter;

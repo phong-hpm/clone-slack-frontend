@@ -29,7 +29,7 @@ class RecorderManager {
   screenInstanceRef: React.MutableRefObject<HTMLVideoElement | null>;
   mergedInstanceRef: React.MutableRefObject<HTMLVideoElement | null>;
 
-  render = (id: number) => {};
+  render: (id: number) => void;
   onDuration: (sec: number) => void;
   selectedDevice = { audio: "", video: "" };
 
@@ -139,14 +139,6 @@ class RecorderManager {
     };
   }
 
-  getCameraStream() {
-    return this.cameraStream;
-  }
-
-  getScreenStream() {
-    return this.screenStream;
-  }
-
   setEnableAudio(enabled: boolean) {
     this.cameraStream?.getAudioTracks().forEach((track) => (track.enabled = enabled));
     this.screenStream?.getAudioTracks().forEach((track) => (track.enabled = enabled));
@@ -161,7 +153,6 @@ class RecorderManager {
     this.onDuration(0);
 
     this.recorder!.start(this.timeFrame);
-    console.log(this.recorder!.videoBitsPerSecond);
   }
 
   stopCamera() {
@@ -173,12 +164,14 @@ class RecorderManager {
   }
 
   stop() {
-    if (this.timeoutId) clearTimeout(this.timeoutId);
+    clearTimeout(this.timeoutId!);
     this.stopScreen();
     this.stopCamera();
     this.recorder?.state === "recording" && this.recorder.stop();
   }
 
+  /* istanbul ignore next */
+  // [Canvas] not working on jest env, so we can't test this function
   async makeComposite({
     cameraEl,
     screenEl,
@@ -209,6 +202,8 @@ class RecorderManager {
     );
   }
 
+  /* istanbul ignore next */
+  // [Canvas] not working on jest env, so we can't test this function
   async mergeStreams() {
     const cameraEl = this.cameraInstanceRef.current;
     const screenEl = this.screenInstanceRef.current;
