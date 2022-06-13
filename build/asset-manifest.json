@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.246f7934.css",
-    "main.js": "/static/js/main.0a854acd.js",
+    "main.js": "/static/js/main.5b073df7.js",
     "static/js/787.0495a21a.chunk.js": "/static/js/787.0495a21a.chunk.js",
     "static/media/Circular-pro-bold.ttf": "/static/media/Circular-pro-bold.e15545172b9eb31efb73.ttf",
     "static/media/Circular-pro-book.ttf": "/static/media/Circular-pro-book.b0f909666c06534881be.ttf",
@@ -39,11 +39,11 @@
     "static/media/chevron-down-black.svg": "/static/media/chevron-down-black.d9bb0efb2a494ea0cd7af26602361c35.svg",
     "static/media/time.svg": "/static/media/time.27c09a2d1c08d43482c86daa504a4dbf.svg",
     "main.246f7934.css.map": "/static/css/main.246f7934.css.map",
-    "main.0a854acd.js.map": "/static/js/main.0a854acd.js.map",
+    "main.5b073df7.js.map": "/static/js/main.5b073df7.js.map",
     "787.0495a21a.chunk.js.map": "/static/js/787.0495a21a.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.246f7934.css",
-    "static/js/main.0a854acd.js"
+    "static/js/main.5b073df7.js"
   ]
 }
