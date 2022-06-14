@@ -87,6 +87,9 @@
     ]
   },
   "jest": {
+    "testMatch": [
+      "<rootDir>/src/__tests__/**/*/*.test.{ts,tsx}"
+    ],
     "transform": {
       "^.+\\.(ts|tsx)?$": "ts-jest",
       "^.+\\.(js|jsx)$": "babel-jest"
@@ -96,7 +99,7 @@
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
-      "/tests/",
+      "/__tests__/",
       "/muiThemes/"
     ],
     "coverageThreshold": {
