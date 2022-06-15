@@ -28,6 +28,8 @@ export interface UseQuillReactProps {
   autoFocus?: boolean;
 }
 
+// Too many api of Quill don't work in jest environment, so we can't test it
+/* istanbul ignore next */
 // this hook will help InutMain store some logics, which are related to react-quill
 export const useQuillReact = ({ autoFocus }: UseQuillReactProps) => {
   const { quillReact, updateQuillState, updateAppState, setFocus } = useContext(InputContext);

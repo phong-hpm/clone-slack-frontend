@@ -9,7 +9,6 @@ import {
 
 // redux selectors
 import teamUsersSelectors from "store/selectors/teamUsers.selector";
-import channelUsersSelectors from "store/selectors/channelUsers.selector";
 import messagesSelectors from "store/selectors/messages.selector";
 
 // utils
@@ -46,14 +45,12 @@ const messagesHandlers = (watcher: WatcherType) => {
   // map [dayMessageList] when call [pushMoreMessagesList]
   watcher(
     (state, dispatch, action: ReturnType<typeof pushMoreMessagesList>) => {
-      let channelUserList = channelUsersSelectors.getChannelUserList(state);
+      let teamUserList = teamUsersSelectors.getTeamUserList(state);
       let messageList = messagesSelectors.getMessageList(state);
 
-      if (!channelUserList || !messageList) return;
-
-      if (messageList.length && channelUserList.length) {
+      if (messageList.length && teamUserList.length) {
         const hasMore = action.payload.hasMore;
-        const dayMessages = mapDayMessageList(messageList, channelUserList);
+        const dayMessages = mapDayMessageList(messageList, teamUserList);
         dispatch(setDayMessageList({ hasMore, dayMessages }));
       }
     },
@@ -64,12 +61,12 @@ const messagesHandlers = (watcher: WatcherType) => {
   // push [dayMessageList] when call [addMessage]
   watcher(
     (state, dispatch, action: ReturnType<typeof addMessage>) => {
-      let channelUserList = channelUsersSelectors.getChannelUserList(state);
+      let teamUserList = teamUsersSelectors.getTeamUserList(state);
       let dayMessageList = messagesSelectors.getDayMessageList(state);
 
       // all messages and days in [...messageList] will be keeped references
       // we can't use [mapDayMessageList] because [dayMessageList] can be very large
-      const dayMessages = pushDayMessage([...dayMessageList], channelUserList, action.payload);
+      const dayMessages = pushDayMessage([...dayMessageList], teamUserList, action.payload);
       dispatch(setDayMessageList({ dayMessages }));
     },
     // callback will be fired when user call these actions
@@ -79,13 +76,13 @@ const messagesHandlers = (watcher: WatcherType) => {
   // push [dayMessageList] when call [removeMessage]
   watcher(
     (state, dispatch, action: ReturnType<typeof removeMessage>) => {
-      if (!action.payload) return;
+      if (action.payload) {
+        let dayMessageList = messagesSelectors.getDayMessageList(state);
 
-      let dayMessageList = messagesSelectors.getDayMessageList(state);
-
-      // all messages and day in [...messageList] will be keeped references
-      const dayMessages = removeDayMessage([...dayMessageList], action.payload);
-      dispatch(setDayMessageList({ dayMessages }));
+        // all messages and day in [...messageList] will be keeped references
+        const dayMessages = removeDayMessage([...dayMessageList], action.payload);
+        dispatch(setDayMessageList({ dayMessages }));
+      }
     },
     // callback will be fired when user call these actions
     [removeMessage]

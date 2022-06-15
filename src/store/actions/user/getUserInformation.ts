@@ -22,12 +22,12 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<UserState>) =
       state.isLoading = true;
     })
     .addCase(getUserInformation.fulfilled, (state, action) => {
-      const { ok = false, user } = action.payload.data;
+      const { ok, user } = action.payload.data;
       if (ok) {
         state.user = user;
       }
 
-      state.isAuth = ok;
+      state.isAuth = !!ok;
       state.isLoading = false;
     })
     .addCase(getUserInformation.rejected, (state) => {
@@ -44,9 +44,12 @@ export const teamsExtraReducers = (builder: ActionReducerMapBuilder<TeamsState>)
       state.isLoading = true;
     })
     .addCase(getUserInformation.fulfilled, (state, action) => {
-      const { user } = action.payload.data;
+      const { ok, user } = action.payload.data;
 
-      state.list = user.teams;
+      if (ok) {
+        state.list = user.teams;
+      }
+
       state.isLoading = false;
     })
     .addCase(getUserInformation.rejected, (state) => {

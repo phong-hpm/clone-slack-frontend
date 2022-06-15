@@ -26,7 +26,7 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<UserState>) =
       state.isLoading = true;
     })
     .addCase(renewAccessToken.fulfilled, (state, action) => {
-      const { ok = false, accessToken } = action.payload.data;
+      const { ok, accessToken } = action.payload.data;
 
       if (ok) {
         localStorage.setItem("accessToken", accessToken);
@@ -39,7 +39,7 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<UserState>) =
         state.refreshToken = "";
       }
 
-      state.isAuth = ok;
+      state.isAuth = !!ok;
       state.isLoading = false;
     })
     .addCase(renewAccessToken.rejected, (state) => {

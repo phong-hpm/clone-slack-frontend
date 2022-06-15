@@ -6,6 +6,8 @@ import userEvent from "@testing-library/user-event";
 import { setUser } from "store/slices/user.slice";
 import { setDayMessageList, setLoading } from "store/slices/messages.slice";
 import { setMessageSocket } from "store/slices/socket.slice";
+import { setChannelsList, setSelectedChannelId } from "store/slices/channels.slice";
+import { setTeamUserList } from "store/slices/teamUsers.slice";
 
 // components
 import MessageContentList from "pages/ChatPage/Conversation/ChatBox";
@@ -17,10 +19,8 @@ import { SocketEvent } from "utils/constants";
 // types
 import { Delta } from "quill";
 import { ChannelType } from "store/slices/_types";
-import { setChannelsList, setSelectedChannelId } from "store/slices/channels.slice";
-import { setTeamUserList } from "store/slices/teamUsers.slice";
 
-jest.mock("pages/ChatPage/Conversation/ChatBox/MessageContent", () => () => (
+jest.mock("pages/ChatPage/Conversation/ChatBox/MessageContent/index.tsx", () => () => (
   <div>MessageContent</div>
 ));
 

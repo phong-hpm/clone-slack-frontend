@@ -9,6 +9,9 @@ export const apiUrl = {
     refreshToken: "auth/refresh-token",
     user: "auth/user",
   },
+  message: {
+    uploadFile: "message/upload-files",
+  },
 };
 
 export const SocketEventDefault = {

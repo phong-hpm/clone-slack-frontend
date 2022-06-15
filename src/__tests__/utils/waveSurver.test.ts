@@ -1,3 +1,6 @@
+import MockWaveSurder from "wavesurfer.js";
+
+// utils
 import { buildProgressTime, createWaveSurfer, drawBars, updateBarHeight } from "utils/waveSurver";
 
 // these test cases exist for coverage only
@@ -5,20 +8,13 @@ import { buildProgressTime, createWaveSurfer, drawBars, updateBarHeight } from "
 // we don't need to test them
 describe("coverage", () => {
   test("createWaveSurfer", () => {
-    try {
-      createWaveSurfer({});
-    } catch {}
+    createWaveSurfer({});
   });
 });
 
 describe("waveSurver", () => {
   const peaks = [0.15, -0.1, 0.8, 0.5];
-  const mockClearWave = jest.fn();
-  const mockDrawBars = jest.fn();
-  const mockWaveSurfer = {
-    drawer: { clearWave: mockClearWave, drawBars: mockDrawBars },
-    backend: { splitPeaks: [peaks] },
-  };
+  const mockWaveSurfer = MockWaveSurder.create({ container: document.createElement("div") });
 
   test("buildProgressTime", () => {
     expect(buildProgressTime(58)).toEqual("0:58");
@@ -28,15 +24,20 @@ describe("waveSurver", () => {
   test("drawBars", () => {
     drawBars(mockWaveSurfer as any, peaks);
 
-    expect(mockClearWave).toBeCalledWith();
-    expect(mockDrawBars).toBeCalledWith(peaks, 0, 0, peaks.length);
+    expect(mockWaveSurfer.drawer.clearWave).toBeCalledWith();
+    expect(mockWaveSurfer.drawer.drawBars).toBeCalledWith(peaks, 0, 0, peaks.length);
   });
 
   test("updateBarHeight when peaks has value", () => {
     // update bar with
     updateBarHeight(mockWaveSurfer as any, 0.2);
-    expect(mockClearWave).toBeCalledWith();
-    expect(mockDrawBars).toBeCalledWith([0.2, -0.2, 1, 0.625], 0, 0, peaks.length);
+    expect(mockWaveSurfer.drawer.clearWave).toBeCalledWith();
+    expect(mockWaveSurfer.drawer.drawBars).toBeCalledWith(
+      [0.2, -0.2, 1, 0.625],
+      0,
+      0,
+      peaks.length
+    );
   });
 
   test("updateBarHeight when peaks is empty", () => {
@@ -45,7 +46,7 @@ describe("waveSurver", () => {
       undefined as unknown as number
     );
 
-    expect(mockClearWave).toBeCalledWith();
-    expect(mockDrawBars).toBeCalledWith([], 0, 0, 0);
+    expect(mockWaveSurfer.drawer.clearWave).toBeCalledWith();
+    expect(mockWaveSurfer.drawer.drawBars).toBeCalledWith([], 0, 0, 0);
   });
 });

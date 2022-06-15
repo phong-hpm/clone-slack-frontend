@@ -36,6 +36,8 @@ export interface InputMainProps {
   onSend?: (delta: Delta, files: MessageFileType[]) => void;
 }
 
+// Too many api of Quill don't work in jest environment, so we can't test it
+/* istanbul ignore next */
 const InputMain: FC<InputMainProps> = ({
   className,
   autoFocus = false,

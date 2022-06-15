@@ -47,6 +47,7 @@ const DeleteMessageModal: FC<DeleteMessageModalProps> = ({
       transformOrigin={{ horizontal: "center", vertical: "bottom" }}
       transformExtra={{ vertical: 8 }}
       style={{ content: { width: "32.5rem" } }}
+      onEnter={handleSubmit}
       onClose={onClose}
       {...props}
     >

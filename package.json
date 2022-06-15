@@ -95,7 +95,8 @@
       "^.+\\.(js|jsx)$": "babel-jest"
     },
     "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}"
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/**/_types.ts"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",

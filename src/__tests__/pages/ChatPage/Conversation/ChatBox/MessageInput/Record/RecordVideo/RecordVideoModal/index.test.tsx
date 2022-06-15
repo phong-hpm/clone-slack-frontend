@@ -59,8 +59,6 @@ Object.assign(navigator, {
   },
 });
 
-window.HTMLMediaElement.prototype.play = jest.fn();
-
 const renderComponent = (props?: Partial<RecordVideoModalProps>) => {
   return render(
     <div data-testid="container">
@@ -140,9 +138,18 @@ describe("Test Toolbar actions", () => {
     // wait for recoderManager loaded
     await waitFor(() => expect(screen.getByText("Record video clip")).toBeInTheDocument());
 
-    await waitFor(() => userEvent.click(screen.getByText("cog-o")));
+    userEvent.click(screen.getByText("cog-o"));
+    userEvent.hover(screen.getByText("Microphone"));
+    await waitFor(() =>
+      expect(screen.getByText("Internal Microphone (Built-in)")).toBeInTheDocument()
+    );
+
+    userEvent.unhover(screen.getByText("Microphone"));
+    await waitFor(() => expect(screen.queryByText("Internal Microphone (Built-in)")).toBeNull());
+
     userEvent.hover(screen.getByText("Microphone"));
     await waitFor(() => userEvent.click(screen.getByText("Internal Microphone (Built-in)")));
+    await waitFor(() => expect(screen.queryByText("Internal Microphone (Built-in)")).toBeNull());
   });
 
   test("Change video device on setting toolbar", async () => {
@@ -152,9 +159,16 @@ describe("Test Toolbar actions", () => {
     // wait for recoderManager loaded
     await waitFor(() => expect(screen.getByText("Record video clip")).toBeInTheDocument());
 
-    await waitFor(() => userEvent.click(screen.getByText("cog-o")));
+    userEvent.click(screen.getByText("cog-o"));
+    userEvent.hover(screen.getByText("Camera"));
+    await waitFor(() => expect(screen.getByText("FaceTime HD Camera")).toBeInTheDocument());
+
+    userEvent.unhover(screen.getByText("Camera"));
+    await waitFor(() => expect(screen.queryByText("FaceTime HD Camera")).toBeNull());
+
     userEvent.hover(screen.getByText("Camera"));
     await waitFor(() => userEvent.click(screen.getByText("FaceTime HD Camera")));
+    await waitFor(() => expect(screen.queryByText("FaceTime HD Camera")).toBeNull());
   });
 });
 
@@ -223,8 +237,8 @@ describe("Test actions", () => {
       await waitFor(() => expect(screen.getByText("Record video clip")).toBeInTheDocument());
 
       jest.useFakeTimers();
-      await waitFor(() => userEvent.click(screen.getByText("Record")));
-      await waitFor(() => userEvent.click(screen.getByText("Stop")));
+      userEvent.click(screen.getByText("Record"));
+      userEvent.click(screen.getByText("Stop"));
 
       expect(screen.queryByText(/Recording begins in/)).toBeNull();
       expect(screen.queryByText("Stop")).toBeNull();
@@ -239,7 +253,7 @@ describe("Test actions", () => {
       await waitFor(() => expect(screen.getByText("Record video clip")).toBeInTheDocument());
 
       jest.useFakeTimers();
-      await waitFor(() => userEvent.click(screen.getByText("Record")));
+      userEvent.click(screen.getByText("Record"));
       jumpToTimer(3000);
       expect(screen.getByText("Pause")).toBeInTheDocument();
 
@@ -258,12 +272,12 @@ describe("Test actions", () => {
       await waitFor(() => expect(screen.getByText("Record video clip")).toBeInTheDocument());
 
       jest.useFakeTimers();
-      await waitFor(() => userEvent.click(screen.getByText("Record")));
+      userEvent.click(screen.getByText("Record"));
       // wait for 3 sec countdown
       jumpToTimer(3000);
       // wait for 5 sec recording
       jumpToTimer(5000);
-      await waitFor(() => userEvent.click(screen.getByText("Stop")));
+      userEvent.click(screen.getByText("Stop"));
       expect(mockOnNext).toBeCalledWith("blob:http://localhost:3000/url_id", 5);
     });
 
@@ -275,7 +289,7 @@ describe("Test actions", () => {
       await waitFor(() => expect(screen.getByText("Record video clip")).toBeInTheDocument());
 
       jest.useFakeTimers();
-      await waitFor(() => userEvent.click(screen.getByText("Record")));
+      userEvent.click(screen.getByText("Record"));
       // wait for 3 sec countdown
       jumpToTimer(3000);
       // wait for 5 mins to stop recorder automatically
@@ -292,8 +306,8 @@ describe("Test actions", () => {
       await waitFor(() => expect(screen.getByText("Record video clip")).toBeInTheDocument());
       await waitFor(() => userEvent.click(screen.getByText("Share screen")));
 
-      await waitFor(() => userEvent.click(screen.getByText("Record")));
-      await waitFor(() => userEvent.click(screen.getByText("Stop")));
+      userEvent.click(screen.getByText("Record"));
+      userEvent.click(screen.getByText("Stop"));
 
       expect(screen.queryByText(/Recording begins in/)).toBeNull();
       expect(screen.queryByText("Stop")).toBeNull();
@@ -308,7 +322,7 @@ describe("Test actions", () => {
       await waitFor(() => userEvent.click(screen.getByText("Share screen")));
 
       jest.useFakeTimers();
-      await waitFor(() => userEvent.click(screen.getByText("Record")));
+      userEvent.click(screen.getByText("Record"));
       jumpToTimer(3000);
       expect(screen.getByText("Pause")).toBeInTheDocument();
 
@@ -328,10 +342,10 @@ describe("Test actions", () => {
       await waitFor(() => userEvent.click(screen.getByText("Share screen")));
 
       jest.useFakeTimers();
-      await waitFor(() => userEvent.click(screen.getByText("Record")));
+      userEvent.click(screen.getByText("Record"));
       jumpToTimer(5000);
 
-      await waitFor(() => userEvent.click(screen.getByText("Stop")));
+      userEvent.click(screen.getByText("Stop"));
       expect(mockOnNext).toBeCalledWith("blob:http://localhost:3000/url_id", expect.any(Number));
     });
   });

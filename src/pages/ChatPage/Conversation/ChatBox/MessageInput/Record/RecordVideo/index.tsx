@@ -14,12 +14,12 @@ import InputContext from "../../InputContext";
 // types
 import { MessageFileType } from "store/slices/_types";
 
-export interface VideoRecordProps {
-  isStart?: boolean;
+export interface RecordVideoProps {
+  isOpen?: boolean;
   onClose: () => void;
 }
 
-const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
+const RecordVideo: FC<RecordVideoProps> = ({ isOpen, onClose }) => {
   const { setInputFile } = useContext(InputContext);
 
   const [status, setStatus] = useState<RecordStatusType>("ready");
@@ -38,22 +38,22 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
     setStatus("review");
   };
 
-  const handleRepeat = () => {
+  const handleStartOver = () => {
     setStatus("recording");
     setFile(null);
   };
 
   const handleSelectThumbnail = (thumb: string) => {
-    if (file) setFile({ ...file, thumb });
+    file && setFile({ ...file, thumb });
   };
 
   const handleUpdateThumbList = (thumbList: string[]) => {
-    if (file) setFile({ ...file, thumb: thumbList[0], thumbList });
+    file && setFile({ ...file, thumb: thumbList[0], thumbList });
   };
 
   const handleDoneReview = () => {
     handleClose();
-    if (file) setInputFile(file);
+    file && setInputFile(file);
   };
 
   const handleClose = () => {
@@ -62,9 +62,9 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
   };
 
   useEffect(() => {
-    setStatus(isStart ? "recording" : "ready");
-    if (!isStart) setFile(null);
-  }, [isStart]);
+    setStatus(isOpen ? "recording" : "ready");
+    !isOpen && setFile(null);
+  }, [isOpen]);
 
   return (
     <>
@@ -75,7 +75,7 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
           isOpen={status === "review"}
           file={file}
           downloadable
-          onStartOver={handleRepeat}
+          onStartOver={handleStartOver}
           onSelectThumbnail={handleSelectThumbnail}
           onUpdateThumbList={handleUpdateThumbList}
           onDone={handleDoneReview}
@@ -86,4 +86,4 @@ const VideoRecord: FC<VideoRecordProps> = ({ isStart, onClose }) => {
   );
 };
 
-export default VideoRecord;
+export default RecordVideo;

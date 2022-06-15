@@ -39,11 +39,6 @@ export const userSlice = createSlice({
       if (refreshToken) state.refreshToken = refreshToken;
       state.isAuth = true;
     },
-    clearTokens: (state) => {
-      state.accessToken = "";
-      state.refreshToken = "";
-      state.isAuth = false;
-    },
     setIsAuth: (state, action: PayloadAction<boolean>) => {
       state.isAuth = action.payload;
     },
@@ -57,6 +52,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setEmailVerifying, setIsAuth, setUser, setTokens, clearTokens } = userSlice.actions;
+export const { setEmailVerifying, setIsAuth, setUser, setTokens } = userSlice.actions;
 
 export default userSlice.reducer;

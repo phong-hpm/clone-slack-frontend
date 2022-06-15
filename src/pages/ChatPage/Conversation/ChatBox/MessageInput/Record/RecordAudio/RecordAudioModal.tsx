@@ -1,9 +1,9 @@
 import { FC, useCallback, useContext, useEffect, useRef, useState } from "react";
-import MicrophonePlugin from "wavesurfer.js/src/plugin/microphone";
 import { v4 as uuid } from "uuid";
 
 // components
 import WaveSurfer from "wavesurfer.js";
+import MicrophonePlugin from "wavesurfer.js/src/plugin/microphone";
 import { Modal, ModalProps } from "components/Modal";
 import AudioWaveSurfer from "components/AudioWaveSurfer";
 import { Box, IconButton } from "@mui/material";
@@ -19,9 +19,9 @@ import popSound from "assets/media/pop_sound.mp3";
 // context
 import InputContext from "../../InputContext";
 
-export interface AudioRecordModalProps extends ModalProps {}
+export interface RecordAudioModalProps extends ModalProps {}
 
-const AudioRecordModal: FC<AudioRecordModalProps> = ({ isOpen, onClose, ...props }) => {
+const RecordAudioModal: FC<RecordAudioModalProps> = ({ isOpen, onClose, ...props }) => {
   const { setInputFile } = useContext(InputContext);
 
   const keepRef = useRef({
@@ -112,9 +112,7 @@ const AudioRecordModal: FC<AudioRecordModalProps> = ({ isOpen, onClose, ...props
 
       // recorder stop listener
       mediaRecorder.onstop = () => {
-        if (keepRef.current.isSave) {
-          updateInputFile(new Blob(audioChunks, { type: "audio/webm" }));
-        }
+        keepRef.current.isSave && updateInputFile(new Blob(audioChunks, { type: "audio/webm" }));
       };
 
       // play pop sound
@@ -131,7 +129,7 @@ const AudioRecordModal: FC<AudioRecordModalProps> = ({ isOpen, onClose, ...props
 
   // keep isOpen prop
   useEffect(() => {
-    if (isOpen) setTime("0:00");
+    isOpen && setTime("0:00");
   }, [waveSurfer, isOpen]);
 
   return (
@@ -161,4 +159,4 @@ const AudioRecordModal: FC<AudioRecordModalProps> = ({ isOpen, onClose, ...props
   );
 };
 
-export default AudioRecordModal;
+export default RecordAudioModal;

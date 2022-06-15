@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 
 // redux slices
 import { setUser } from "store/slices/user.slice";
@@ -15,7 +16,6 @@ jest.mock("pages/ChatPage/Conversation/ChatBox/MessageInput", () => () => <div>M
 
 // types
 import { ChannelType } from "store/slices/_types";
-import userEvent from "@testing-library/user-event";
 
 const user_1 = {
   id: "U-111111111",

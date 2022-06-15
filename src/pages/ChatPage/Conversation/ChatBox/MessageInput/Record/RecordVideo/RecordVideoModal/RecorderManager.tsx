@@ -127,9 +127,7 @@ class RecorderManager {
   createRecorder(stream: MediaStream) {
     this.recorder = new MediaRecorder(stream);
 
-    this.recorder.ondataavailable = ({ data }) => {
-      if (data.size > 0) this.chunks.push(data);
-    };
+    this.recorder.ondataavailable = ({ data }) => data.size > 0 && this.chunks.push(data);
     this.recorder.onstart = () => this.startCountDuration();
     this.recorder.onresume = () => this.startCountDuration();
     this.recorder.onpause = () => this.stopCountDuration();

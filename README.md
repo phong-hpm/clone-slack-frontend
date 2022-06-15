@@ -14,6 +14,7 @@ This project is in development, so there are many bugs have not been fixed.
 
 When you change data on the server directly, you need to clear cache on frontend.
 by deleting `updatedTime` on `localStorage` and refresh page, page will get new data from server
+When test suite `RecordVideoModal` failed, you can run test with flag `--maxWorkers=50%` or `--maxWorkers=1`.
 
 ## Run
 

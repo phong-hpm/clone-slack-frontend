@@ -33,6 +33,8 @@ const InputContext = createContext<InputContextType>(initialContext as unknown a
 
 export interface MessageInputProviderProps extends Pick<ContextAppStateType, "configActions"> {}
 
+// Too many api of Quill don't work in jest environment, so we can't test it
+/* istanbul ignore next */
 export const MessageInputProvider: FC<MessageInputProviderProps> = ({
   configActions,
   children,

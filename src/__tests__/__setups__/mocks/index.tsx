@@ -10,7 +10,12 @@ URL.revokeObjectURL = jest.fn();
 URL.createObjectURL = () => "blob:http://localhost:3000/url_id";
 
 // remove warning from libaries
-const ignoreList = ["componentWillReceiveProps", "componentWillUpdate", "isOptionEqualToValue"];
+const ignoreList = [
+  "componentWillReceiveProps",
+  "componentWillUpdate",
+  "isOptionEqualToValue",
+  "which is more than the warning threshold",
+];
 const originalWarn = console.warn.bind(console.warn);
 console.warn = (msg, ...args) => {
   for (const ignore of ignoreList) {
@@ -22,12 +27,15 @@ console.warn = (msg, ...args) => {
 // Error: "Cannot flush updates when React is already rendering"
 Object.defineProperty(HTMLMediaElement.prototype, "muted", { set: jest.fn() });
 HTMLCanvasElement.prototype.getContext = (() => {}) as any;
+window.HTMLMediaElement.prototype.play = () => Promise.resolve();
 
-// can not import wavesurfer.js, so ignore this modal
-jest.mock(
-  "pages/ChatPage/Conversation/ChatBox/MessageInput/Record/RecordAudio/RecordAudioModal",
-  () => () => <div>RecordAudioModal</div>
-);
+// range(...).getBoundingClientRect is not a function
+document.createRange = () => {
+  const range = new Range();
+  range.getBoundingClientRect = jest.fn();
+  range.getClientRects = jest.fn(() => ({ item: () => null, length: 0 })) as any;
+  return range;
+};
 
 process.env.REACT_APP_SERVER_BASE_URL = "http://localhost:9999";
 process.env.REACT_APP_SERVER_DOMAIN = "localhost:8000";

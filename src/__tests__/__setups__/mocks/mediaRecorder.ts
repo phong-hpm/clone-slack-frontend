@@ -7,6 +7,12 @@ class MediaRecorderMock {
   onpause = jest.fn();
   onerror = jest.fn();
   ondataavailable = jest.fn();
+
+  constructor(stream: MediaRecorder) {
+    // assign [this] to stream, will help us can control this outside
+    Object.assign(stream, this);
+  }
+
   start = () => {
     this.state = "recording";
     this.ondataavailable({ data: new Blob(["1"]) });

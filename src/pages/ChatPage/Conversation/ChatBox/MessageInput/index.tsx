@@ -50,8 +50,6 @@ const MessageInput: FC<MessageInputProps> = ({
     (delta: Delta, files: MessageFileType[]) => {
       // controlled
       if (onSend) return onSend(delta, files);
-      // prevent
-      if (!isAutoSend) return;
 
       // uncontrolled
       if (files.length) dispatch(uploadFiles({ files, delta }));

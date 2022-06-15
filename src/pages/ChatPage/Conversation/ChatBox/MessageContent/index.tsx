@@ -6,9 +6,12 @@ import defaultAvatar from "assets/images/default_avatar.png";
 // redux store
 import { useDispatch, useSelector } from "store";
 
+// store actions
+import { emitEditMessage, emitRemoveMessage } from "store/actions/socket/messageSocket.action";
+
 // redux selectors
 import userSelectors from "store/selectors/user.selector";
-import channelUsersSelectors from "store/selectors/channelUsers.selector";
+import teamUsersSelectors from "store/selectors/teamUsers.selector";
 
 // components
 import ReactQuill from "react-quill";
@@ -19,7 +22,12 @@ import MessageActions from "pages/ChatPage/Conversation/ChatBox/MessageActions";
 import Bookmark from "./Bookmark";
 import Reactions from "./Reactions";
 import MediaFileList from "./MediaFileList";
+import TimeCard from "components/TimeCard";
+import UserNameCard from "components/UserNameCard";
+import MessageShared from "../MessageShared";
 import ShareMessageModal from "./ShareMessageModal";
+import DeleteMessageModal from "./DeleteMessageModal";
+import UserDetailModal from "components/UserDetailModal";
 
 // utils
 import { dayFormat } from "utils/dayjs";
@@ -29,12 +37,6 @@ import { updateEditableLinkField } from "utils/message";
 
 // types
 import { UserType, MessageType } from "store/slices/_types";
-import TimeCard from "components/TimeCard";
-import UserNameCard from "components/UserNameCard";
-import DeleteMessageModal from "./DeleteMessageModal";
-import MessageShared from "../MessageShared";
-import UserDetailModal from "components/UserDetailModal";
-import { emitEditMessage, emitRemoveMessage } from "store/actions/socket/messageSocket.action";
 
 export interface MessageContentProps {
   isPreventSharedMessage?: boolean;
@@ -60,7 +62,7 @@ const MessageContent: FC<MessageContentProps> = ({
   const keepRef = useRef<{ displayDelta?: Delta }>({});
 
   const user = useSelector(userSelectors.getUser);
-  const channelUserList = useSelector(channelUsersSelectors.getChannelUserList);
+  const teamUserList = useSelector(teamUsersSelectors.getTeamUserList);
 
   const [isHovering, setHovering] = useState(false);
   const [isEditing, setEditing] = useState(false);
@@ -80,12 +82,12 @@ const MessageContent: FC<MessageContentProps> = ({
 
   useEffect(() => {
     // wait for update user mention
-    if (!user.id || !quillRef.current || !channelUserList.length) return;
+    if (!user.id || !quillRef.current || !teamUserList.length) return;
     if (!message.delta.ops?.length || keepRef.current.displayDelta) return;
 
-    keepRef.current.displayDelta = addNecessaryFields(message.delta, channelUserList, user.id);
+    keepRef.current.displayDelta = addNecessaryFields(message.delta, teamUserList, user.id);
     quillRef.current.getEditor().setContents(keepRef.current.displayDelta);
-  }, [user.id, channelUserList, message.id, message.delta]);
+  }, [user.id, teamUserList, message.id, message.delta]);
 
   // after [isEditing] state change, we should reset [isHovering] state
   // 1: when user change status to editing, should remove hovering status
@@ -265,7 +267,7 @@ const MessageContent: FC<MessageContentProps> = ({
           onSubmit={handleDelete}
         />
       )}
-      {/* demete message modal */}
+      {/* user detail modal */}
       {isShowUserModal && !!userOwner && (
         <UserDetailModal
           isOpen={isShowUserModal}

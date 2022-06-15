@@ -12,17 +12,15 @@ import {
   Button,
 } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
+import EmojiModal from "features/EmojiModal";
+import RecordAudioModal from "./Record/RecordAudio";
+import RecordVideo from "./Record/RecordVideo";
 
 // context
 import InputContext from "./InputContext";
 
 // utils
 import { color } from "utils/constants";
-import EmojiModal from "features/EmojiModal";
-import RecordAudioModal from "./Record/RecordAudio";
-
-// types
-import RecordVideo from "./Record/RecordVideo";
 
 export interface InputActionsProps {
   isShowToolbar: boolean;
@@ -45,7 +43,7 @@ const InputActions: FC<InputActionsProps> = ({
 }) => {
   const { quillReact, appState, setFocus } = useContext(InputContext);
 
-  const anchorRef = useRef<HTMLDivElement>();
+  const scheduleAnchorRef = useRef<HTMLDivElement>(null);
   const microButtonRef = useRef<HTMLButtonElement>(null);
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -63,7 +61,6 @@ const InputActions: FC<InputActionsProps> = ({
       actions.push({
         icon: "plus",
         style: { backgroundColor: "rgba(255, 255, 255, 0.04)", borderRadius: "50%" },
-        action: () => {},
       });
       actions.push({ isDivider: true });
     }
@@ -90,7 +87,7 @@ const InputActions: FC<InputActionsProps> = ({
         icon: "emoji",
         action: () => {
           setShowEmojiModal(true);
-          // blur quill to help EditLink input can auto focus
+          // blur quill to help Input search emoji work
           quillReact?.getEditor().blur();
         },
       });
@@ -200,26 +197,29 @@ const InputActions: FC<InputActionsProps> = ({
           <Typography variant="h5">Cancel</Typography>
         </Button>
       )}
-      {renderSendButton()}
-      <Menu
-        variant="menu"
-        open={isShowMenu}
-        anchorEl={anchorRef.current}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        transformOrigin={{ vertical: "bottom", horizontal: "right" }}
-        onClose={() => setShowMenu(false)}
-      >
-        <MenuItem disabled>
-          <Typography variant="h5" color={color.HIGH}>
-            Schedule message
-          </Typography>
-        </MenuItem>
-        <MenuItem onClick={() => {}}>Monday at 9:00 AM</MenuItem>
+      <Box ref={scheduleAnchorRef}>{renderSendButton()}</Box>
 
-        <Divider />
+      {!!scheduleAnchorRef.current && (
+        <Menu
+          variant="menu"
+          open={isShowMenu}
+          anchorEl={scheduleAnchorRef.current}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+          onClose={() => setShowMenu(false)}
+        >
+          <MenuItem disabled>
+            <Typography variant="h5" color={color.HIGH}>
+              Schedule message
+            </Typography>
+          </MenuItem>
+          <MenuItem>Monday at 9:00 AM</MenuItem>
 
-        <MenuItem onClick={() => {}}>Custom time</MenuItem>
-      </Menu>
+          <Divider />
+
+          <MenuItem>Custom time</MenuItem>
+        </Menu>
+      )}
 
       {isShowEmojiModal && (
         <EmojiModal
@@ -237,7 +237,7 @@ const InputActions: FC<InputActionsProps> = ({
         />
       )}
       {isShowVideoModal && (
-        <RecordVideo isStart={isShowVideoModal} onClose={() => setShowVideoModal(false)} />
+        <RecordVideo isOpen={isShowVideoModal} onClose={() => setShowVideoModal(false)} />
       )}
     </Box>
   );

@@ -83,9 +83,8 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
   const handleSubmit = () => {
     onClose();
 
-    if (!selectedList.length) return;
-
     if (selectedList.length === 1) {
+      // Share to only 1 channel, it can be a direct_message
       dispatch(
         emitShareMessageToChannel({
           toChannelId: selectedList[0].id,
@@ -93,7 +92,8 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
           sharedMessageId: message.id,
         })
       );
-    } else if (selectingType === "direct_message") {
+    } else if (selectedList.length > 1 && selectingType === "direct_message") {
+      // Share to a group channel, it can be created if didn't exist
       const toUserIds = selectedList.map((c) => c.partner!.id);
       dispatch(
         emitShareMessageToGroupUsers({
@@ -219,7 +219,7 @@ const ShareMessageModal: FC<ShareMessageModalProps> = ({ isOpen, message, onClos
   };
 
   return (
-    <Modal isOpen={isOpen} isCloseBtn onClose={onClose}>
+    <Modal isOpen={isOpen} isCloseBtn onEnter={handleSubmit} onClose={onClose}>
       <ModalHeader>
         <Typography variant="h2">Share this message</Typography>
       </ModalHeader>

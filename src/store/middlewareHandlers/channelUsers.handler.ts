@@ -38,8 +38,8 @@ const channelUsersHandlers = (watcher: WatcherType) => {
 
   watcher(
     (state, dispatch, action: ReturnType<typeof updateChannelUserOnline>) => {
-      const { id, isOnline = false } = action.payload;
-      dispatch(updateChannelParterOnline({ id, online: isOnline }));
+      const { id, isOnline } = action.payload;
+      dispatch(updateChannelParterOnline({ id, online: !!isOnline }));
       dispatch(updateTeamUserOnline(action.payload));
     },
     [updateChannelUserOnline]

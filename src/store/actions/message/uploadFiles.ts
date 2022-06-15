@@ -7,6 +7,7 @@ import channelsSelectors from "store/selectors/channels.selector";
 
 // utils
 import axios from "utils/axios";
+import { apiUrl } from "utils/constants";
 
 // types
 import { RootState } from "store/_types";
@@ -39,11 +40,11 @@ export const uploadFiles = createAsyncThunk<
   for (const file of postData.files) {
     // get blob from blob:url
     const fileBlob = await getBlobFromUrl(file.url);
-    if (fileBlob.size) files.push({ id: file.id, blob: fileBlob });
+    fileBlob.size && files.push({ id: file.id, blob: fileBlob });
 
     if (file.thumb) {
       const thumbBlob = await getBlobFromUrl(file.thumb);
-      if (thumbBlob.size) thumbs.push({ id: file.id, blob: thumbBlob });
+      thumbBlob.size && thumbs.push({ id: file.id, blob: thumbBlob });
     }
 
     if (file.thumbList) {
@@ -61,7 +62,7 @@ export const uploadFiles = createAsyncThunk<
   thumbs.forEach((thumb) => formData.append("thumb", thumb.blob, thumb.id));
   thumbList.forEach((thumb) => formData.append("thumbList", thumb.blob, thumb.id));
 
-  const response = await axios.post("message/upload-files", formData, {
+  const response = await axios.post(apiUrl.message.uploadFile, formData, {
     headers: { "Content-Type": "multipart/form-data" },
     params: { userId, teamId, channelId },
   });

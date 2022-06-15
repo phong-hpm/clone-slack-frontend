@@ -1,15 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import MockWaveSurfer from "wavesurfer.js";
 
 // components
 import AudioPlayer from "components/MediaPlayer/AudioPlayer";
 
-const mockWaveSurfer = {
-  load: jest.fn(),
-  play: jest.fn(),
-  pause: jest.fn(),
-  setPlaybackRate: jest.fn(),
-};
+const mockWaveSurfer = MockWaveSurfer.create({ container: document.createElement("div") });
 jest.mock("components/AudioWaveSurfer", () => {
   const AudioWaveSurfer = (props: any) => {
     jest.requireActual("react").useEffect(() => {

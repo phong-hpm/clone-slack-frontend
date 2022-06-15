@@ -45,9 +45,6 @@ export const channelsSlice = createSlice({
     setSelectedChannelId: (state, action: PayloadAction<string>) => {
       state.selectedId = action.payload;
     },
-    resetState: (state) => {
-      state.list = [];
-    },
   },
 });
 
@@ -58,7 +55,6 @@ export const {
   updateChannel,
   removeChannel,
   updateChannelParterOnline,
-  resetState,
 } = channelsSlice.actions;
 
 export default channelsSlice.reducer;

@@ -164,11 +164,17 @@ describe("Test redux store", () => {
     };
     spyListener(SocketEvent.ON_EDITED_MESSAGE, data);
     store.dispatch(setMessagesList({ hasMore: true, messages: [{ ...message_1, team: "" }] }));
+    store.dispatch(
+      setDayMessageList({ hasMore: true, dayMessages: [{ message: { ...message_1, team: "" } }] })
+    );
 
     customRender(<MessageSocketListener />);
 
     // expect store
     expect(store.getState().messages.list).toEqual([{ ...message_1, team: "T-12345678" }]);
+    expect(store.getState().messages.dayMessageList).toEqual([
+      { message: { ...message_1, team: "T-12345678" } },
+    ]);
   });
 
   test("when server return shared message to channel", () => {

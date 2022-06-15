@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import MockWaveSurfer from "wavesurfer.js";
 
 // components
 import AudioWaveSurfer from "components/AudioWaveSurfer";
@@ -8,23 +9,11 @@ import { customRender } from "__tests__/__setups__";
 import { color, rgba } from "utils/constants";
 import * as utilWaveSurfer from "utils/waveSurver";
 
-const mockWaveSurfer = {
-  setHeight: jest.fn(),
-  on: jest.fn(),
-  drawer: { drawPeaks: jest.fn() },
-};
-
-const mockCreate = jest.fn();
-
-jest.mock("wavesurfer.js", () => ({
-  __esModule: true,
-  default: { create: (arg: any) => mockCreate(arg) },
-}));
+const mockWaveSurfer = MockWaveSurfer.create({ container: document.createElement("div") });
 
 beforeEach(() => {
   jest.clearAllMocks();
-  mockCreate.mockImplementation(() => mockWaveSurfer);
-  mockWaveSurfer.on.mockImplementation((_, callback) => callback());
+  (mockWaveSurfer.on as jest.Mock).mockImplementation((_, callback) => callback());
   jest.spyOn(utilWaveSurfer, "drawBars").mockImplementation();
   jest.spyOn(utilWaveSurfer, "updateBarHeight").mockImplementation();
 });
@@ -32,21 +21,12 @@ beforeEach(() => {
 describe("Test render", () => {
   test("Wavesuerfer will be created while rendering", () => {
     // prevent fire [audioprocess]
-    mockWaveSurfer.on.mockImplementation(() => {});
+    (mockWaveSurfer.on as jest.Mock).mockImplementation(() => {});
 
     const mockOnCreated = jest.fn();
     customRender(<AudioWaveSurfer onCreated={mockOnCreated} />);
 
     expect(screen.getByText("0:00")).toBeInTheDocument();
-    expect(mockCreate).toBeCalledWith({
-      container: expect.any(HTMLElement),
-      cursorColor: "transparent",
-      progressColor: color.HIGHLIGHT,
-      waveColor: rgba(color.MAX, 0.3),
-      barWidth: 3,
-      barRadius: 3,
-      barGap: 4,
-    });
     expect(mockWaveSurfer.setHeight).toBeCalledWith(40);
     expect(mockOnCreated).toBeCalledWith(mockWaveSurfer);
   });
@@ -59,7 +39,7 @@ describe("Test render", () => {
 
   test("When has initial duration", () => {
     // prevent fire [audioprocess]
-    mockWaveSurfer.on.mockImplementation(() => {});
+    (mockWaveSurfer.on as jest.Mock).mockImplementation(() => {});
     customRender(<AudioWaveSurfer duration={2 * 60 + 15} />);
 
     expect(screen.getByText("2:15")).toBeInTheDocument();
@@ -83,7 +63,7 @@ describe("Test render", () => {
   });
 
   test("When has onProgress listener", () => {
-    mockWaveSurfer.on.mockImplementation((event, callback) => {
+    (mockWaveSurfer.on as jest.Mock).mockImplementation((event, callback) => {
       if (event === "audioprocess") callback(15);
       else callback();
     });

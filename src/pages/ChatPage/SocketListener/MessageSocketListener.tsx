@@ -71,7 +71,7 @@ export const MessageSocketListener = () => {
     [dispatch]
   );
 
-  const handleUpdateMessage: UploadMessageListener = useCallback(
+  const handleEditMessage: UploadMessageListener = useCallback(
     ({ channelId, message, updatedTime }) => {
       // update cached [messages]
       cacheUtils.setChannelUpdatedTime(channelId, { message: updatedTime });
@@ -151,9 +151,9 @@ export const MessageSocketListener = () => {
       .on(SocketEvent.ON_MORE_MESSAGES, handleMoreMessages)
       .on(SocketEvent.ON_ADDED_MESSAGE, handleAddNewMessage)
       .on(SocketEvent.ON_SHARE_MESSAGE_TO_CHANNEL, handleShareMessageToChannel)
-      .on(SocketEvent.ON_EDITED_MESSAGE, handleUpdateMessage)
+      .on(SocketEvent.ON_EDITED_MESSAGE, handleEditMessage)
       .on(SocketEvent.ON_REMOVED_MESSAGE, handleRemoveMessage)
-      .on(SocketEvent.ON_REMOVED_MESSAGE_FILE, handleUpdateMessage);
+      .on(SocketEvent.ON_REMOVED_MESSAGE_FILE, handleEditMessage);
 
     !socket.connected && socket.connect();
     return () => {
@@ -165,7 +165,7 @@ export const MessageSocketListener = () => {
     handleAddNewMessage,
     handleMoreMessages,
     handleShareMessageToChannel,
-    handleUpdateMessage,
+    handleEditMessage,
     handleRemoveMessage,
     dispatch,
   ]);

@@ -1,15 +1,11 @@
 import { FC } from "react";
 
-import AudioRecordModal, { AudioRecordModalProps } from "./RecordAudioModal";
+import RecordAudioModal, { RecordAudioModalProps } from "./RecordAudioModal";
 
-export interface AudioRecordProps extends AudioRecordModalProps {}
+export interface RecordAudioProps extends RecordAudioModalProps {}
 
-const AudioRecord: FC<AudioRecordProps> = ({ ...props }) => {
-  return (
-    <>
-      <AudioRecordModal {...props} />
-    </>
-  );
+const RecordAudio: FC<RecordAudioProps> = ({ ...props }) => {
+  return <RecordAudioModal {...props} />;
 };
 
-export default AudioRecord;
+export default RecordAudio;

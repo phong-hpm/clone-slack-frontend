@@ -23,16 +23,16 @@ export const authExtraReducers = (builder: ActionReducerMapBuilder<UserState>) =
       state.isLoading = true;
     })
     .addCase(confirmEmailCode.fulfilled, (state, action) => {
-      const { ok = false, accessToken, refreshToken } = action.payload.data;
+      const { ok, accessToken, refreshToken } = action.payload.data;
 
-      if (ok && accessToken && refreshToken) {
+      if (!!ok && accessToken && refreshToken) {
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
         state.accessToken = accessToken;
         state.refreshToken = refreshToken;
       }
 
-      state.isAuth = ok;
+      state.isAuth = !!ok;
       state.isLoading = false;
     })
     .addCase(confirmEmailCode.rejected, (state) => {

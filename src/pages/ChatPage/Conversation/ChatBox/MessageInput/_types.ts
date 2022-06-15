@@ -55,7 +55,7 @@ export interface LinkCustomEventDetailType {
   setFocus?: (isFocus: boolean, index?: number) => void;
 }
 
-// VideoRecordModal.tsx -----------------
+// RecordVideoModal.tsx -----------------
 export interface MediaDeviceInfoType {
   deviceId: string;
   groupId: string;

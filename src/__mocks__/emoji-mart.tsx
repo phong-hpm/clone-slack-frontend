@@ -1,5 +1,3 @@
-import ReactDOMServer from "react-dom/server";
-
 import { EmojiIconType } from "components/Emoji/_types";
 
 const emojiIcons = {
