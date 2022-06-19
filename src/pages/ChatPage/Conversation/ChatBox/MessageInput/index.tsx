@@ -13,6 +13,7 @@ import channelsSelectors from "store/selectors/channels.selector";
 // components
 import { MessageInputProvider } from "./InputContext";
 import InputMain, { InputMainProps } from "./InputMain";
+import InputDropZone from "./InputDropZone";
 
 // types
 import { Delta } from "quill";
@@ -68,6 +69,8 @@ const MessageInput: FC<MessageInputProps> = ({
         //   that mean this [Input] is used as native input only
         onSend={onSend || isAutoSend ? handleSend : undefined}
       />
+
+      <InputDropZone />
     </MessageInputProvider>
   );
 };

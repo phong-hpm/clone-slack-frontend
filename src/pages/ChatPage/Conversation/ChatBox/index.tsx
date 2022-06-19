@@ -11,7 +11,7 @@ import LinkEditModal from "./MessageLink/LinkEditModal";
 
 const ChatBox: FC = () => {
   return (
-    <Box className="container" flex="1" minHeight="1px" display="flex" flexDirection="column">
+    <Box height="100%" flex="1" minHeight="1px" display="flex" flexDirection="column">
       <MessageContentList />
 
       <MentionDetailPopover />

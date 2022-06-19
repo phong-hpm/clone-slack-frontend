@@ -25,6 +25,7 @@ const components: Theme["components"] = {
         props: { size: "small" },
         style: {
           height: 4,
+          "& .MuiSlider-thumb::after": { height: 30 },
         },
       },
       {

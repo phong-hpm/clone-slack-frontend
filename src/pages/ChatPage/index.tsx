@@ -20,6 +20,8 @@ import WorkSpace from "./WorkSpace";
 import Conversation from "./Conversation";
 import ChatBar from "./ChatBar";
 import GlobalModals from "./GlobalModal";
+import MessageSocketListener from "pages/ChatPage/SocketListener/MessageSocketListener";
+import ChannelSocketListener from "pages/ChatPage/SocketListener/ChannelSocketListener";
 
 export const ChatPage: FC = () => {
   const dispatch = useDispatch();
@@ -69,6 +71,9 @@ export const ChatPage: FC = () => {
       <Box flex="1" display="flex" minHeight="1px">
         <WorkSpace />
         <Conversation />
+
+        <MessageSocketListener />
+        <ChannelSocketListener />
       </Box>
 
       <GlobalModals />
