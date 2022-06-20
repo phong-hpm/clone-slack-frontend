@@ -77,7 +77,7 @@ const PageHeader: FC<PageHeaderProps> = ({ isFixed: isFixedProp }) => {
             mx={-3}
             px={3}
             py={1.5}
-            borderRadius={isFixed ? 10 : 0}
+            borderRadius={{ xs: 0, md: isFixed ? 10 : 0 }}
             color={color.MAX_DARK}
             bgcolor={{ xs: "transparent", md: isFixed ? color.LIGHT : "transparent" }}
             boxShadow={isFixed ? `${rgba(color.DARK, 0.08)} 0px 4px 40px 0px` : "none"}

@@ -19,13 +19,21 @@ jobs:
         with:
           node-version: 14.x
 
-  install:
+  clear-cache:
     runs-on: self-hosted
     needs: setup
 
     steps:
+      - name: Clear Cache
+        run: npm cache clean --force
+
+  install:
+    runs-on: self-hosted
+    needs: clear-cache
+
+    steps:
       - name: Install node_modules
-        run: npm ci
+        run: yarn
 
   build:
     runs-on: self-hosted
@@ -39,14 +47,6 @@ jobs:
     runs-on: self-hosted
     needs: build
 
-    # steps:
-    #   - name: publish
-    #     run: npm run publish
-
-  # restart:
-  #   runs-on: self-hosted
-  #   needs: publish
-
-  #   steps:
-  #     - name: copy
-  #       run: pm2 restart m3u8handle.com
+    steps:
+      - name: publish
+        run: npm run publish

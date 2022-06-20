@@ -38,6 +38,6 @@ document.createRange = () => {
 };
 
 process.env.REACT_APP_SERVER_BASE_URL = "http://localhost:9999";
-process.env.REACT_APP_SERVER_DOMAIN = "localhost:8000";
+process.env.REACT_APP_SOCKET_BASE_URL = "ws://localhost:8000";
 
 export {};
