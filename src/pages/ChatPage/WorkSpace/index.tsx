@@ -18,9 +18,6 @@ import { Box } from "@mui/material";
 import Channels from "./Channel";
 import WorkSpaceSidebar from "pages/ChatPage/WorkSpace/WorkSpaceSidebar";
 
-// contexts
-import ChannelSocketProvider from "pages/ChatPage/SocketListener/ChannelSocketListener";
-
 const WorkSpace = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,7 +49,6 @@ const WorkSpace = () => {
       <Routes>
         <Route path="/:channelId" element={<Channels />} />
       </Routes>
-      <ChannelSocketProvider />
     </Box>
   );
 };
