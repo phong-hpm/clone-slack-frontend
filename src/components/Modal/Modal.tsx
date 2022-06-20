@@ -10,7 +10,7 @@ import React, {
 import classnames from "classnames";
 
 // components
-import ReactModal from "react-modal";
+import ReactModal, { setAppElement } from "react-modal";
 import { Box, IconButton, PopoverOrigin, BoxProps } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 import ModalBody from "./ModalBody";
@@ -30,8 +30,7 @@ import useKeyboard from "hooks/keyboard/useKeyboard";
 import { eventKeys } from "utils/constants";
 
 /* istanbul ignore next */
-if (process.env.NODE_ENV === "test") ReactModal.setAppElement("body");
-else ReactModal.setAppElement("#root");
+if (process.env.NODE_ENV !== "test") setAppElement("#root");
 
 export interface ModalProps extends ReactModalProps {
   isOpen: boolean;
@@ -200,22 +199,24 @@ const Modal: FC<ModalProps> = ({
         style={style}
         {...props}
       >
-        {children}
+        <>
+          {children}
 
-        {isCloseBtn && (
-          <Box position="absolute" zIndex="1000" top="12px" right="12px" {...IconCloseProps}>
-            <IconButton onClick={onClose} sx={{ borderRadius: 1 }}>
-              <SlackIcon icon="close" />
-            </IconButton>
-          </Box>
-        )}
-        {isCloseBtnCorner && (
-          <Box position="absolute" zIndex="1000" top={-10} right={-10} {...IconCloseProps}>
-            <IconButton color="secondary" onClick={onClose} size="medium">
-              <SlackIcon fontSize="small" icon="close" />
-            </IconButton>
-          </Box>
-        )}
+          {isCloseBtn && (
+            <Box position="absolute" zIndex="1000" top="12px" right="12px" {...IconCloseProps}>
+              <IconButton onClick={onClose} sx={{ borderRadius: 1 }}>
+                <SlackIcon icon="close" />
+              </IconButton>
+            </Box>
+          )}
+          {isCloseBtnCorner && (
+            <Box position="absolute" zIndex="1000" top={-10} right={-10} {...IconCloseProps}>
+              <IconButton color="secondary" onClick={onClose} size="medium">
+                <SlackIcon fontSize="small" icon="close" />
+              </IconButton>
+            </Box>
+          )}
+        </>
       </ReactModal>
     </Box>
   );

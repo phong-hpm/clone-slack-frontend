@@ -39,7 +39,7 @@ const useSocket = () => {
     if (!isAuth || !namespace) return;
 
     // setup socket
-    socketRef.current = io(`ws://${process.env.REACT_APP_SERVER_DOMAIN}/${namespace}`, {
+    socketRef.current = io(`${process.env.REACT_APP_SOCKET_BASE_URL}/${namespace}`, {
       autoConnect: false,
       auth: { userId: user.id, email: user.email, name: user.name, accessToken },
     });
