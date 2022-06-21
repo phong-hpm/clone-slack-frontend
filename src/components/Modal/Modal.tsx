@@ -10,7 +10,7 @@ import React, {
 import classnames from "classnames";
 
 // components
-import ReactModal, { setAppElement } from "react-modal";
+import ReactModal from "react-modal";
 import { Box, IconButton, PopoverOrigin, BoxProps } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 import ModalBody from "./ModalBody";
@@ -30,7 +30,8 @@ import useKeyboard from "hooks/keyboard/useKeyboard";
 import { eventKeys } from "utils/constants";
 
 /* istanbul ignore next */
-if (process.env.NODE_ENV !== "test") setAppElement("#root");
+if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#root");
+else ReactModal.setAppElement("body");
 
 export interface ModalProps extends ReactModalProps {
   isOpen: boolean;

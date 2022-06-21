@@ -24,7 +24,7 @@ const Image = forwardRef<HTMLImageElement, ImageProps>(
     return (
       <Box
         position="relative"
-        paddingTop={`${ratio * 100}%`}
+        paddingTop={isLoaded ? undefined : `${ratio * 100}%`}
         bgcolor={rgba(color.DARK, 0.2)}
         {...boxProps}
       >
@@ -32,7 +32,7 @@ const Image = forwardRef<HTMLImageElement, ImageProps>(
           {...props}
           ref={ref}
           alt={alt}
-          style={{ position: ratio ? "absolute" : "inherit", ...imageStyle, ...style }}
+          style={{ position: ratio && !isLoaded ? "absolute" : "inherit", ...imageStyle, ...style }}
           onError={() => setError(true)}
           onLoad={() => setLoaded(true)}
         />

@@ -122,7 +122,7 @@ const ReviewVideoModal: FC<ReviewVideoModalProps> = ({
             </Button>
             {/* video timing */}
             <Typography lineHeight={2.5} sx={{ ml: 1 }}>
-              {`${buildProgressTime(currentTime)} / ${buildProgressTime(file.duration)}`}
+              {`${buildProgressTime(currentTime)} / ${buildProgressTime(file.duration || 0)}`}
             </Typography>
           </Box>
 

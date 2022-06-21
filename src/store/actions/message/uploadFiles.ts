@@ -31,7 +31,9 @@ export const uploadFiles = createAsyncThunk<
   const teamId = teamsSelectors.getSelectedTeamId(state);
   const channelId = channelsSelectors.getSelectedChannelId(state);
 
-  const files: { id: string; blob: Blob }[] = [];
+  const videos: { id: string; blob: Blob }[] = [];
+  const audios: { id: string; blob: Blob }[] = [];
+  const images: { id: string; blob: Blob }[] = [];
   const thumbs: { id: string; blob: Blob }[] = [];
   const thumbList: { id: string; blob: Blob }[] = [];
   const delta = postData.delta;
@@ -40,7 +42,12 @@ export const uploadFiles = createAsyncThunk<
   for (const file of postData.files) {
     // get blob from blob:url
     const fileBlob = await getBlobFromUrl(file.url);
-    fileBlob.size && files.push({ id: file.id, blob: fileBlob });
+
+    if (fileBlob.size) {
+      if (file.type === "video") videos.push({ id: file.id, blob: fileBlob });
+      if (file.type === "audio") audios.push({ id: file.id, blob: fileBlob });
+      if (file.type === "image") images.push({ id: file.id, blob: fileBlob });
+    }
 
     if (file.thumb) {
       const thumbBlob = await getBlobFromUrl(file.thumb);
@@ -50,7 +57,7 @@ export const uploadFiles = createAsyncThunk<
     if (file.thumbList) {
       for (const thumbnail of file.thumbList) {
         const thumbBlob = await getBlobFromUrl(thumbnail);
-        thumbList.push({ id: file.id, blob: thumbBlob });
+        thumbBlob.size && thumbList.push({ id: file.id, blob: thumbBlob });
       }
     }
     fileData.push({ ...file, url: "", thumb: "", thumbList: [] });
@@ -58,7 +65,10 @@ export const uploadFiles = createAsyncThunk<
 
   formData.append("delta", new Blob([JSON.stringify(delta)], { type: "application/json" }));
   formData.append("fileData", new Blob([JSON.stringify(fileData)], { type: "application/json" }));
-  files.forEach((file) => formData.append("file", file.blob, file.id));
+
+  images.forEach((image) => formData.append("images", image.blob, image.id));
+  audios.forEach((audio) => formData.append("audios", audio.blob, audio.id));
+  videos.forEach((video) => formData.append("videos", video.blob, video.id));
   thumbs.forEach((thumb) => formData.append("thumb", thumb.blob, thumb.id));
   thumbList.forEach((thumb) => formData.append("thumbList", thumb.blob, thumb.id));
 

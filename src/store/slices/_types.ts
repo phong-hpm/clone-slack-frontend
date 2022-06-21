@@ -74,7 +74,7 @@ export interface MessageFileType {
   createdTime: number;
   type: "image" | "audio" | "video";
   mineType: "image/png" | "audio/webm" | "video/webm";
-  duration: number;
+  duration?: number;
   size?: number;
   wavePeaks?: number[];
   scripts?: TranScriptType[];

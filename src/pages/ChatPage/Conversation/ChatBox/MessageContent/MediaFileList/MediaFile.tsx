@@ -11,6 +11,7 @@ import channelsSelectors from "store/selectors/channels.selector";
 
 // components
 import VideoPlayer from "components/MediaPlayer/VideoPlayer";
+import Image from "components/Image";
 import AudioPlayer from "components/MediaPlayer/AudioPlayer";
 import MediaFileDeleteModal from "./MediaFileDeleteModal";
 
@@ -70,10 +71,20 @@ const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
     <Box
       position="relative"
       display="flex"
+      alignItems="start"
       width={file.type === "audio" ? "auto" : "100%"}
       maxWidth={480}
     >
-      {file.type === "audio" ? (
+      {file.type === "image" && (
+        <Image
+          key={file.id}
+          src={file.url}
+          ratio={file.ratio}
+          boxProps={{ mt: 1, maxWidth: 480, borderRadius: 2, overflow: "hidden" }}
+        />
+      )}
+
+      {file.type === "audio" && (
         <AudioPlayer
           key={file.id}
           isControls
@@ -82,7 +93,9 @@ const MediaFile: FC<MediaFileProps> = ({ messageId, file, userOwner }) => {
           data={audioData}
           onDelete={() => setShowDeleteModal(true)}
         />
-      ) : (
+      )}
+
+      {file.type === "video" && (
         <VideoPlayer
           key={file.id}
           data={videoData}

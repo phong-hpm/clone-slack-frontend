@@ -14,6 +14,7 @@ import ReviewFileList from "pages/ChatPage/Conversation/ChatBox/MessageInput/Rev
 import { MessageFileType } from "store/slices/_types";
 import { ReviewVideoCardProps } from "pages/ChatPage/Conversation/ChatBox/MessageInput/Review/ReviewVideoCard";
 import { ReviewAudioCardProps } from "pages/ChatPage/Conversation/ChatBox/MessageInput/Review/ReviewAudioCard";
+import { ReviewImageCardProps } from "pages/ChatPage/Conversation/ChatBox/MessageInput/Review/ReviewImageCard";
 
 jest.mock("components/MediaPlayer/AudioPlayer", () => () => <div data-testid="AudioPlayer" />);
 jest.mock(
@@ -34,6 +35,23 @@ jest.mock(
       </div>
     )
 );
+jest.mock(
+  "pages/ChatPage/Conversation/ChatBox/MessageInput/Review/ReviewImageCard",
+  () => (props: ReviewImageCardProps) =>
+    (
+      <div data-testid="ReviewImageCard">
+        <div data-testid="fire-onRemove" onClick={() => props.onRemove?.()} />
+      </div>
+    )
+);
+
+const imageFile: MessageFileType = {
+  id: "image-id",
+  type: "image",
+  url: "http://example.com",
+  mineType: "image/png",
+  createdTime: Date.now(),
+};
 
 const audioFile: MessageFileType = {
   id: "audio-id",
@@ -60,6 +78,7 @@ const ComponentSupport: FC = () => {
   useEffect(() => {
     setInputFile(videoFile);
     setInputFile(audioFile);
+    setInputFile(imageFile);
   }, []);
 
   return (
@@ -84,6 +103,7 @@ describe("Test render", () => {
 
     expect(screen.getByTestId("ReviewVideoCard")).toBeInTheDocument();
     expect(screen.getByTestId("ReviewAudioCard")).toBeInTheDocument();
+    expect(screen.getByTestId("ReviewImageCard")).toBeInTheDocument();
   });
 });
 
@@ -91,10 +111,11 @@ describe("Test actions", () => {
   test("Click remove buttons", () => {
     renderComponent();
 
-    expect(screen.getByTestId("inputFiles.length")).toHaveTextContent("2");
+    expect(screen.getByTestId("inputFiles.length")).toHaveTextContent("3");
 
     userEvent.click(within(screen.getByTestId("ReviewVideoCard")).getByTestId("fire-onRemove"));
     userEvent.click(within(screen.getByTestId("ReviewAudioCard")).getByTestId("fire-onRemove"));
+    userEvent.click(within(screen.getByTestId("ReviewImageCard")).getByTestId("fire-onRemove"));
 
     expect(screen.getByTestId("inputFiles.length")).toHaveTextContent("0");
   });

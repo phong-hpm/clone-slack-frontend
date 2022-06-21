@@ -20,8 +20,8 @@ const UploadingFileList: FC<UploadingFileListProps> = () => {
         <Box key={file.id} mr={0.5}>
           {file.type === "image" && (
             <ReviewImageCard
-              file={file}
-              boxProps={{ sx: { mb: 1, mr: 1 } }}
+              src={file.url}
+              boxProps={{ sx: { mt: 1, mr: 1 } }}
               onRemove={() => removeInputFile(file.id)}
             />
           )}
@@ -36,7 +36,7 @@ const UploadingFileList: FC<UploadingFileListProps> = () => {
           {file.type === "video" && (
             <ReviewVideoCard
               file={file}
-              boxProps={{ sx: { mb: 1, mr: 1 } }}
+              boxProps={{ sx: { mt: 1, mr: 1 } }}
               onRemove={() => removeInputFile(file.id)}
             />
           )}

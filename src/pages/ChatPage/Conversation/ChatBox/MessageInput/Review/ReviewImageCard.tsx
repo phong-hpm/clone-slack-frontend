@@ -4,14 +4,14 @@ import { FC, useState } from "react";
 import { Box, BoxProps, IconButton } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
 import Image from "components/Image";
-import ReviewImageModal from "./ReviewVideo/ReviewImageModal";
+import ReviewImageModal from "./ReviewImageModal";
 
 // types
 import { MessageFileType } from "store/slices/_types";
 import { color, rgba } from "utils/constants";
 
 export interface ReviewImageCardProps {
-  file: MessageFileType;
+  src: string;
   isReadOnly?: boolean;
   size?: number;
   boxProps?: BoxProps;
@@ -19,7 +19,7 @@ export interface ReviewImageCardProps {
 }
 
 const ReviewImageCard: FC<ReviewImageCardProps> = ({
-  file,
+  src,
   isReadOnly,
   size = 60,
   boxProps,
@@ -46,7 +46,7 @@ const ReviewImageCard: FC<ReviewImageCardProps> = ({
         sx={{ cursor: "pointer" }}
         onClick={() => !isReadOnly && setShowReviewModal(true)}
       >
-        <Image src={file.url} alt="" style={{ height: "100%", width: "auto" }} />
+        <Image src={src} alt="" style={{ height: "100%", width: "auto" }} />
       </Box>
 
       {/* remove button */}
@@ -61,7 +61,7 @@ const ReviewImageCard: FC<ReviewImageCardProps> = ({
       {isShowReviewModal && (
         <ReviewImageModal
           isOpen={isShowReviewModal}
-          url={file.url}
+          url={src}
           onClose={() => setShowReviewModal(false)}
         />
       )}

@@ -14,7 +14,8 @@ const InputDropZone = () => {
   const [isDragingWrapper, setDragingWrapper] = useState(false);
   const [isDragingZone, setDragingZone] = useState(false);
 
-  const { getRootProps } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
+    noClick: true,
     accept: { "image/*": [] },
     onDragEnter: () => setDragingZone(true),
     onDragLeave: () => setDragingZone(false),
@@ -27,7 +28,6 @@ const InputDropZone = () => {
           createdTime: Date.now(),
           type: "image",
           mineType: file.type as any,
-          duration: 0,
         });
       });
     },
@@ -67,7 +67,9 @@ const InputDropZone = () => {
       top={0}
       bottom={0}
       bgcolor="rgba(26, 29, 33, 0.9)"
-    />
+    >
+      <input data-testid="dropzone" {...getInputProps()} />
+    </Box>
   );
 };
 

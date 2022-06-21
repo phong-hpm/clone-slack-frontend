@@ -37,6 +37,14 @@ test("Test uploadFiles", async () => {
     delta: { ops: [{ insert: "hi\n" }] } as unknown as Delta,
     files: [
       {
+        id: "file_image_1",
+        url: "blob:http://localhost:3000",
+        type: "image",
+        mineType: "image/png",
+        duration: 65,
+        createdTime: Date.now(),
+      },
+      {
         id: "file_audio_1",
         url: "blob:http://localhost:3000",
         type: "audio",
@@ -62,7 +70,9 @@ test("Test uploadFiles", async () => {
     expect(mockSuccess).toBeCalledWith();
     expect(sentData.get("delta")).not.toBeNull();
     expect(sentData.get("fileData")).not.toBeNull();
-    expect(sentData.getAll("file")).toHaveLength(2);
+    expect(sentData.getAll("audios")).toHaveLength(1);
+    expect(sentData.getAll("videos")).toHaveLength(1);
+    expect(sentData.getAll("images")).toHaveLength(1);
     expect(sentData.getAll("thumb")).toHaveLength(1);
     expect(sentData.getAll("thumbList")).toHaveLength(2);
   });
