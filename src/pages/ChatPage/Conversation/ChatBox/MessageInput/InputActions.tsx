@@ -149,7 +149,7 @@ const InputActions: FC<InputActionsProps> = ({
   };
 
   return (
-    <Box display="flex" p={0.75} onClick={() => setFocus(true)}>
+    <Box display="flex" alignItems="end" p={0.75} onClick={() => setFocus(true)}>
       {/* actions group */}
       <Box flex="1" display="flex" py={0.5} color={color.HIGH}>
         {actionList.map(({ isDivider, icon, style, action, ref }, index) => {
@@ -194,7 +194,9 @@ const InputActions: FC<InputActionsProps> = ({
       </Box>
       {!!appState.configActions.cancel && (
         <Button variant="outlined" size="small" sx={{ px: 1.5 }} onClick={onCancel}>
-          <Typography variant="h5">Cancel</Typography>
+          <Typography variant="h5" lineHeight="16px">
+            Cancel
+          </Typography>
         </Button>
       )}
       <Box ref={scheduleAnchorRef}>{renderSendButton()}</Box>

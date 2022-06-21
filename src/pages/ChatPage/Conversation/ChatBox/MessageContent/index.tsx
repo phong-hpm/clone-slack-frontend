@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
 
 // images
 import defaultAvatar from "assets/images/default_avatar.png";
@@ -16,7 +16,7 @@ import teamUsersSelectors from "store/selectors/teamUsers.selector";
 // components
 import ReactQuill from "react-quill";
 import { Delta } from "quill";
-import { Avatar, Box, Link, Typography } from "@mui/material";
+import { Avatar, Box, Link, Typography, useMediaQuery } from "@mui/material";
 import MessageInput from "pages/ChatPage/Conversation/ChatBox/MessageInput";
 import MessageActions from "pages/ChatPage/Conversation/ChatBox/MessageActions";
 import Bookmark from "./Bookmark";
@@ -69,6 +69,12 @@ const MessageContent: FC<MessageContentProps> = ({
   const [isShowUserModal, setShowUserModal] = useState(false);
   const [isShowShareMessageModal, setShowShareMessageModal] = useState(false);
   const [isShowDeleteMessageModal, setShowDeleteMessageModal] = useState(false);
+
+  const editingMessage = useMemo(() => {
+    const addedMessage = addNecessaryFields(message.delta, teamUserList, user.id);
+
+    return updateEditableLinkField(addedMessage, true);
+  }, [message.delta, teamUserList, user.id]);
 
   const handleEdit = (id: string, delta: Delta) => {
     setEditing(false);
@@ -193,7 +199,7 @@ const MessageContent: FC<MessageContentProps> = ({
                 <Box py={0.5}>
                   <MessageInput
                     autoFocus
-                    defaultValue={updateEditableLinkField(message.delta, true)}
+                    defaultValue={editingMessage}
                     configActions={{ emoji: true, cancel: true, send: true }}
                     onCancel={() => setEditing(false)}
                     onSend={(delta) => handleEdit(message.id, delta)}
