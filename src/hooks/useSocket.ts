@@ -71,11 +71,6 @@ const useSocket = () => {
       console.log("SocketEventDefault.CONNECT_ERROR", error);
     });
 
-    // connection's errors listener
-    socketRef.current.on("error", (error) => {
-      console.log("error", error);
-    });
-
     setSocket(socketRef.current);
   }, [isAuth, namespace, accessToken, user, dispatch]);
 

@@ -19,17 +19,9 @@ jobs:
         with:
           node-version: 14.x
 
-  clear-cache:
-    runs-on: self-hosted
-    needs: setup
-
-    steps:
-      - name: Clear Cache
-        run: npm cache clean --force
-
   install:
     runs-on: self-hosted
-    needs: clear-cache
+    needs: setup
 
     steps:
       - name: Install node_modules
