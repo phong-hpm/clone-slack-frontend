@@ -116,7 +116,10 @@ export const ChannelSocketListener = () => {
         // Step 3: asking for channels data
         socket.emit(SocketEvent.EMIT_LOAD_CHANNELS);
       })
-      .on(SocketEventDefault.DISCONNECT, () => {});
+      .on(SocketEventDefault.DISCONNECT, () => {})
+      .on(SocketEventDefault.CONNECT_ERROR, (error) => {
+        console.log("SocketEventDefault.CONNECT_ERROR", error);
+      });
 
     socket
       .on(SocketEvent.ON_CHANNELS, handleSetChannelList)

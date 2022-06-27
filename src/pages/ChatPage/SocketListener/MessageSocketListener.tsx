@@ -144,6 +144,9 @@ export const MessageSocketListener = () => {
           socket.emit(SocketEvent.EMIT_LOAD_MESSAGES, { data: { limit: 20 } });
         }
       })
+      .on(SocketEventDefault.CONNECT_ERROR, (error) => {
+        console.log("SocketEventDefault.CONNECT_ERROR", error);
+      })
       .on(SocketEventDefault.DISCONNECT, () => {});
 
     socket
