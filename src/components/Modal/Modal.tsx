@@ -13,7 +13,9 @@ import classnames from "classnames";
 import ReactModal from "react-modal";
 import { Box, IconButton, PopoverOrigin, BoxProps } from "@mui/material";
 import SlackIcon from "components/SlackIcon";
-import ModalBody from "./ModalBody";
+import ModalHeader from "./ModalHeader";
+import ModalBody, { ModalBodyProps } from "./ModalBody";
+import ModalFooter, { ModalFooterProps } from "./ModalFooter";
 
 // utils
 import {
@@ -21,13 +23,13 @@ import {
   computeTransformPosition,
   computeOverViewportPosition,
 } from "utils/modal";
+import { eventKeys } from "utils/constants";
+
+// custom hooks
+import useKeyboard from "hooks/keyboard/useKeyboard";
 
 // types
 import { Position, ReactModalProps } from "./_types";
-import ModalHeader from "./ModalHeader";
-import ModalFooter from "./ModalFooter";
-import useKeyboard from "hooks/keyboard/useKeyboard";
-import { eventKeys } from "utils/constants";
 
 /* istanbul ignore next */
 if (process.env.NODE_ENV !== "test") ReactModal.setAppElement("#root");
@@ -152,7 +154,7 @@ const Modal: FC<ModalProps> = ({
     setMappingChildren(
       React.Children.map(childrenProp, (child) => {
         if (React.isValidElement(child) && child.type === ModalBody) {
-          return React.cloneElement(child, { onCanScroll: setBodyCanScroll });
+          return React.cloneElement(child, { onCanScroll: setBodyCanScroll } as ModalBodyProps);
         }
 
         return child;
@@ -170,7 +172,9 @@ const Modal: FC<ModalProps> = ({
       React.Children.map(mappingChildren, (child) => {
         if (React.isValidElement(child)) {
           if (child.type === ModalHeader || child.type === ModalFooter) {
-            return React.cloneElement(child, { isUncontrolledBorder: isBodyCanScroll });
+            return React.cloneElement(child, {
+              isUncontrolledBorder: isBodyCanScroll,
+            } as ModalFooterProps);
           }
         }
 
